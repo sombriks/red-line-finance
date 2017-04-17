@@ -1,0 +1,37 @@
+{
+  "name": "red-line-finance",
+  "version": "1.0.0",
+  "description": "have some idea about where did your money went",
+  "main": "index.js",
+  "scripts": {
+    "dev": "budo src/main.js:build.js -o -l"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sombriks/red-line-finance.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sombriks/red-line-finance/issues"
+  },
+  "homepage": "https://github.com/sombriks/red-line-finance#readme",
+  "devDependencies": {
+    "browserify": "^14.3.0",
+    "browserify-css": "^0.10.0",
+    "budo": "^9.4.7",
+    "make": "^0.8.1",
+    "vueify": "^9.4.1"
+  },
+  "dependencies": {
+    "flexboxgrid": "^6.3.1",
+    "vue": "^2.2.6"
+  },
+  "browserify": {
+    "transform": [
+      "browserify-css",
+      "vueify"
+    ]
+  }
+}
