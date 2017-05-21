@@ -11,7 +11,8 @@ Vue.use(MuseUI);
 const router = new VueRouter({
   routes: [
     { path: '/', redirect: '/login' },
-    { path: '/login', component: require("./features/S0001-login/login.vue") }
+    { path: '/login', component: require("./features/S0001-login/login.vue") },
+    { path: '/cadastro', component: require("./features/S0002-cadastro/cadastro.vue") },
   ]
 });
 

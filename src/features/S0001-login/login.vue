@@ -1,32 +1,44 @@
 <template>
   <form @submit.prevent="dologin" class="row center-xs top-xs">
-    <div class="col-xs-4 col-xs-offset-4">
-      xxx
+    <div class="col-xs-8 col-xs-offset-2">
+      <h1 class="r">Red Line finance</h1>
+      <p>Ajuda pra manter o juízo e dicas espertas pras contas não apertarem</p>
+      <mu-text-field type="email" label="Email" labelFloat v-model="usuario.email" required/>
+      <mu-text-field type="password" label="Senha" labelFloat v-model="usuario.senha" required/>
+      <br/>
+      <br/>
+      <mu-raised-button label="Entrar" primary type="submit" fullWidth/>
+      <br/>
+      <br/>
+      <mu-flat-button label="Cadastrar" secondary href="#/cadastro"/>
     </div>
   </form>
 </template>
 
 <script>
 const globalstore = require("../../components/globalstore");
-module.exports =  {
-  name:"Login",
-  created(){
-    if(globalstore.usuario)
-      window.location.href="#/menu"
+module.exports = {
+  name: "Login",
+  created() {
+    if (globalstore.usuario)
+      window.location.href = "#/menu"
   },
-  data(){
+  data() {
     return {
-      globalstore
+      globalstore,
+      usuario: {}
     }
   },
-  methods:{
-    dologin(){
+  methods: {
+    dologin() {
       console.log("login")
     }
   }
 }
 </script>
 
-<style>
-
+<style scoped>
+.r {
+  color: red;
+}
 </style>
