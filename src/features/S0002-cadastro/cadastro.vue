@@ -3,6 +3,7 @@
     <div class="col-xs-8 col-xs-offset-2">
       <h1 class="r">Novo usuário</h1>
       <mu-text-field type="email" label="Email" labelFloat v-model="usuario.email" required/>
+      <mu-text-field label="Seu nome" labelFloat v-model="usuario.nome" required/>
       <mu-text-field type="password" label="Senha" labelFloat v-model="usuario.senha" required/>
       <mu-text-field type="password" label="Senha novamente" labelFloat v-model="usuario.senha2"
         required/>
@@ -26,6 +27,11 @@ module.exports = {
     return {
       usuario: {}
     };
+  },
+  methods:{
+    docadastro(){
+      
+    }
   }
 }
 </script>
