@@ -10,7 +10,7 @@
       <mu-raised-button label="Entrar" primary type="submit" fullWidth/>
       <br/>
       <br/>
-      <mu-flat-button label="Cadastrar" secondary href="#/cadastro"/>
+      <mu-flat-button label="Cadastrar" secondary href="#/cadastro" />
     </div>
   </form>
 </template>
@@ -21,7 +21,7 @@ module.exports = {
   name: "Login",
   created() {
     if (globalstore.usuario)
-      window.location.href = "#/menu"
+      initredir();
   },
   data() {
     return {
@@ -31,7 +31,19 @@ module.exports = {
   },
   methods: {
     dologin() {
-      console.log("login")
+      if (!globalstore.existe(this.usuario)) {
+        alert("Usuário não existe");
+      } else if (!globalstore.autentica(this.usuario)) {
+        alert("Senha incorreta");
+      } else {
+        initredir();
+      }
+    },
+    initredir() {
+      if (!globalstore.usuario.projecoes)
+        window.location.href = "#/projecoes";
+      else
+        window.location.href = "#/lancamentos";
     }
   }
 }
