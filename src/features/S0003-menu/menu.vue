@@ -13,7 +13,6 @@ const globalstore = require("../../components/globalstore");
 module.exports = {
   name: "Menu",
   created() {
-    globalstore.loadcontext();
     window.alert = this.alert;
   },
   data() {

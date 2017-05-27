@@ -5,8 +5,7 @@
 
 <script>
 module.exports =  {
-  name:"Projecao"
-
+  name:"Perfil"
 }
 </script>
 

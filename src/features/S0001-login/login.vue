@@ -21,7 +21,7 @@ module.exports = {
   name: "Login",
   created() {
     if (globalstore.usuario)
-      initredir();
+      this.initredir();
   },
   data() {
     return {
@@ -31,13 +31,13 @@ module.exports = {
   },
   methods: {
     dologin() {
-      if (!globalstore.existe(this.usuario)) {
-        alert("Usuário não existe");
-      } else if (!globalstore.autentica(this.usuario)) {
-        alert("Senha incorreta");
-      } else {
-        initredir();
-      }
+      globalstore.existe(this.usuario).then(_ => {
+        return globalstore.autentica(this.usuario);
+      }).then(_ => {
+        this.initredir();
+      }).catch(e => {
+        alert(e);
+      });
     },
     initredir() {
       if (!globalstore.usuario.projecoes)

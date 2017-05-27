@@ -5,6 +5,7 @@
 
 <script>
 module.exports =  {
+  name:"Lancamento"
 
 }
 </script>

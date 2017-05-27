@@ -18,19 +18,22 @@
 </template>
 
 <script>
+const globalstore = require("../../components/globalstore");
 module.exports = {
   name: "Cadastro",
-  created() {
-
-  },
   data() {
     return {
       usuario: {}
     };
   },
-  methods:{
-    docadastro(){
-      
+  methods: {
+    docadastro() {
+      globalstore.cadastra(this.usuario).then(_ => {
+        alert("Cadastro concluído!");
+        window.location.href = "#/projecoes";
+      }).catch(e => {
+        alert(e);
+      });
     }
   }
 }

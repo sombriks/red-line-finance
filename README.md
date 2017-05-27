@@ -7,9 +7,12 @@
 - ajuda a entender para onde foi o dinheiro
   - usuário tem que ajudar dizendo com o que **gastou** ou quanto **recebeu**.
   - gastar ou receber chamamos de **lançamento**
-- define categorias e subcategorias de lançamentos
+- define **categorias** de lançamentos
 - define categorias de ganhos
-- monta-se uma projeção
+- monta-se uma **projeção**
+  - usuário espera receber X e os gastos serão Y num período de X dias
+  - a partir da projeção dá pra ter uma ideia de quanto deve ser, por exemplo, o gasto diário
+  - as projeções pertencem ao usuário
 - lançamentos de um período são avaliados de acordo com a projeção
 - um usuário só pode ter uma projeção
 - categorias pertencem a uma única projeção

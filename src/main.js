@@ -1,9 +1,13 @@
 
 require("./main.css");
 
+const globalstore = require("./components/globalstore");
+
 const Vue = require("vue");
 const VueRouter = require("vue-router");
 const MuseUI = require("muse-ui");
+
+globalstore.loadcontext();
 
 Vue.use(VueRouter);
 Vue.use(MuseUI);

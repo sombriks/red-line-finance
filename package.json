@@ -4,7 +4,7 @@
   "description": "have some idea about where did your money went",
   "main": "index.js",
   "scripts": {
-    "dev": "budo src/main.js:build.js -o -l"
+    "dev": "budo src/main.js:build.js -o -l -H 127.0.0.1"
   },
   "repository": {
     "type": "git",
@@ -26,7 +26,9 @@
     "vueify": "^9.4.1"
   },
   "dependencies": {
+    "bluebird": "^3.5.0",
     "flexboxgrid": "^6.3.1",
+    "md5": "^2.2.1",
     "muse-ui": "^2.0.3",
     "vue": "^2.2.6",
     "vue-router": "^2.4.0"
