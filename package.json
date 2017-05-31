@@ -4,7 +4,9 @@
   "description": "have some idea about where did your money went",
   "main": "index.js",
   "scripts": {
-    "dev": "budo src/main.js:build.js -o -l -H 127.0.0.1"
+    "dev": "budo src/main.js:build.js -o -l -H 127.0.0.1",
+    "clean": "make clean",
+    "build": "make build"
   },
   "repository": {
     "type": "git",
