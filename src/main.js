@@ -17,6 +17,8 @@ const router = new VueRouter({
     { path: '/', redirect: '/login' },
     { path: '/login', component: require("./features/S0001-login/login.vue") },
     { path: '/cadastro', component: require("./features/S0002-cadastro/cadastro.vue") },
+    { path: '/projecoes', component: require("./features/S0006-projecoes/projecoes.vue") },
+    { path: '/detalheprojecao', component: require("./features/S0006-projecoes/detalheprojecao.vue") },
   ]
 });
 

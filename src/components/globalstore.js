@@ -51,7 +51,6 @@ const glob = {
   },
   autentica(usuario) {
     return new Promise((resolve, reject) => {
-
       glob.usuario = glob.usuarios.filter(e => {
         if (e.email == usuario.email && e.senha == md5(usuario.senha))
           return e;
@@ -67,22 +66,18 @@ const glob = {
         reject("informe seu email");
         return;
       }
-
       if (!usuario.nome) {
         reject("informe seu nome");
         return;
       }
-
       if (!usuario.senha) {
         reject("informe sua senha");
         return;
       }
-
       if (usuario.senha != usuario.senha2) {
         reject("senha e confirmação de senha diferem");
         return;
       }
-
       glob.existe(usuario).then(_ => {
         reject("Usuário com este email já existe");
       }).catch(_ => {

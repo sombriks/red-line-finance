@@ -48,9 +48,3 @@ module.exports = {
   }
 }
 </script>
-
-<style scoped>
-.r {
-  color: red;
-}
-</style>
