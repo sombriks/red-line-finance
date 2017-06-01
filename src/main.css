@@ -2,6 +2,7 @@
 @import "../node_modules/flexboxgrid/css/flexboxgrid.css";
 @import "../node_modules/muse-ui/dist/muse-ui.css";
 @import "../node_modules/muse-ui/dist/theme-dark.css";
+@import "../node_modules/material-design-icons-iconfont/dist/material-design-icons.css";
 
 .r {
   color: red;
