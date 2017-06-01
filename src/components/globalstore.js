@@ -14,6 +14,12 @@ const glob = {
       glob.initcontext();
   },
   savecontext() {
+    // sync usuario logado com o que tem no cadastro
+    if(glob.usuario){
+      glob.usuarios = glob.usuarios.filter(e => e.email != glob.usuario.email);
+      glob.usuarios.push(glob.usuario);
+    }
+    // ah, good to go
     let data = {
       usuario: glob.usuario,
       usuarios: glob.usuarios,
@@ -22,6 +28,7 @@ const glob = {
     };
     data = JSON.stringify(data);
     localStorage.setItem("red-line", data);
+    console.log(glob)
     console.log("context saved");
   },
   initcontext() {

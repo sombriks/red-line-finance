@@ -3,14 +3,16 @@
     <div class="col-xs-8 col-xs-offset-2">
       <h1 class="r">Red Line finance</h1>
       <p>Ajuda pra manter o juízo e dicas espertas pras contas não apertarem</p>
-      <mu-text-field type="email" label="Email" labelFloat v-model="usuario.email" required/>
-      <mu-text-field type="password" label="Senha" labelFloat v-model="usuario.senha" required/>
-      <br/>
-      <br/>
+      <mu-text-field type="email" label="Email" labelFloat v-model="usuario.email" required
+        fullWidth/>
+      <mu-text-field type="password" label="Senha" labelFloat v-model="usuario.senha" required
+        fullWidth/>
       <mu-raised-button label="Entrar" primary type="submit" fullWidth/>
       <br/>
       <br/>
       <mu-flat-button label="Cadastrar" secondary href="#/cadastro" />
+      <br/>
+      <br/>
     </div>
   </form>
 </template>
@@ -40,7 +42,7 @@ module.exports = {
       });
     },
     initredir() {
-      if (!globalstore.usuario.projecoes)
+      if (!globalstore.usuario.projecao)
         window.location.href = "#/projecoes";
       else
         window.location.href = "#/lancamentos";

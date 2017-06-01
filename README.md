@@ -1,7 +1,7 @@
 # Red Line Finance
 
 - **gestor financeiro pessoal**
-- https://sombriks.github.io/red-line-finance/
+- [DEMO](https://sombriks.github.io/red-line-finance/)
 
 ## Feature-storm
 
