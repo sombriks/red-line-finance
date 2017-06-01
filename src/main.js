@@ -1,4 +1,6 @@
 
+console.log("we are on %s mode",process.env.NODE_ENV || "development");
+
 require("./main.css");
 
 const globalstore = require("./components/globalstore");
