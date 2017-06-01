@@ -10,13 +10,13 @@
     <div class="row center-xs top-xs">
       <div class="col-xs-8 col-xs-offset-2">
         <h2 class="r">Projeção atual</h2>
-        <div v-show="!globalstore.usuario.projecao">
+        <div v-show="globalstore.usuario && !globalstore.usuario.projecao">
           <h3 class="r">Parece que você não tem uma projeção ainda!</h3>
           <p>
             <a href="#/detalheprojecao">Crie uma agora mesmo!</a>
           </p>
         </div>
-        <div v-show="globalstore.usuario.projecao">
+        <div v-show="globalstore.usuario && globalstore.usuario.projecao">
   
         </div>
       </div>

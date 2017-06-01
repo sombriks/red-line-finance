@@ -26,6 +26,7 @@ module.exports = {
   name: "Cadastro",
   data() {
     return {
+      globalstore,
       usuario: {}
     };
   },

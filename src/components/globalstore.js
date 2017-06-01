@@ -84,6 +84,7 @@ const glob = {
         delete usuario.senha2;
         usuario.senha = md5(usuario.senha);
         glob.usuarios.push(usuario);
+        glob.usuario = usuario;
         glob.savecontext();
         resolve("OK");
       });

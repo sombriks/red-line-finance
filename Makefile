@@ -6,7 +6,7 @@ clean:
 build: clean
 	NODE_ENV=production browserify src/main.js -o docs/build.js
 	cp index.html docs/index.html
-	cp node_modules/material-design-icons-iconfont/dist/fonts/* \
+cp node_modules/material-design-icons-iconfont/dist/fonts/* \
 	   docs/node_modules/material-design-icons-iconfont/dist/fonts
 	
 	
