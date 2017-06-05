@@ -36,6 +36,7 @@ module.exports = {
       globalstore.cadastra(this.usuario).then(_ => {
         alert("Cadastro concluído!");
         window.location.href = "#/projecoes";
+        window.location.reload();        
       }).catch(e => {
         alert(e);
       });

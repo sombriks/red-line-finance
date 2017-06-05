@@ -1,4 +1,5 @@
 const md5 = require("md5");
+const Vue = require("vue");
 
 const glob = {
   loadcontext() {
@@ -15,7 +16,7 @@ const glob = {
   },
   savecontext() {
     // sync usuario logado com o que tem no cadastro
-    if(glob.usuario){
+    if (glob.usuario) {
       glob.usuarios = glob.usuarios.filter(e => e.email != glob.usuario.email);
       glob.usuarios.push(glob.usuario);
     }
@@ -62,6 +63,7 @@ const glob = {
         if (e.email == usuario.email && e.senha == md5(usuario.senha))
           return e;
       })[0];
+      Vue.set(glob, "usuario", glob.usuario);
       glob.savecontext();
       if (glob.usuario) resolve(glob.usuario);
       else reject("Usuario ou senha incorretos");
@@ -92,6 +94,7 @@ const glob = {
         usuario.senha = md5(usuario.senha);
         glob.usuarios.push(usuario);
         glob.usuario = usuario;
+        Vue.set(glob, "usuario", usuario);
         glob.savecontext();
         resolve("OK");
       });

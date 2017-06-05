@@ -38,6 +38,7 @@ module.exports = {
       }).then(_ => {
         this.initredir();
       }).catch(e => {
+        console.log(e);
         alert(e);
       });
     },

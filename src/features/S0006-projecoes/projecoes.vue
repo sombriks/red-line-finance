@@ -13,12 +13,16 @@
       <div class="col-xs-8 col-xs-offset-2">
         <mu-list>
           <mu-sub-header>Projeção atual</mu-sub-header>
-          <mu-list-item v-show="globalstore.usuario && !globalstore.usuario.projecao" title="Parece que você não tem uma projeção ainda!"></mu-list-item>
-          <mu-list-item v-for="proj in globalstore.usuario.projecao" :title="proj.categoria.nome"
-            :describeText="'$ ' + proj.montante">
-            <mu-icon value="monetization_on" slot="left" class="r" v-if="proj.categoria.tipo == 'Saída'"/>
-            <mu-icon value="monetization_on" slot="left" class="g" v-if="proj.categoria.tipo == 'Entrada'"/>
-            <mu-icon value="indeterminate_check_box" slot="right" @click="removecategoria(proj)"/>
+          <mu-list-item v-show="globalstore.usuario && globalstore.usuario && (!globalstore.usuario.projecao || globalstore.usuario.projecao.length == 0)"
+            title="Parece que você não tem uma projeção ainda!"></mu-list-item>
+          <mu-list-item v-show="globalstore.usuario && globalstore.usuario.projecao" v-for="proj in globalstore.usuario.projecao"
+            :title="proj.categoria.nome" :describeText="'$ ' + proj.montante">
+            <mu-icon value="monetization_on" slot="left" class="r" v-if="proj.categoria.tipo == 'Saída'"
+            />
+            <mu-icon value="monetization_on" slot="left" class="g" v-if="proj.categoria.tipo == 'Entrada'"
+            />
+            <mu-icon value="indeterminate_check_box" slot="right" @click="removecategoria(proj)"
+            />
           </mu-list-item>
         </mu-list>
         <div>
@@ -40,10 +44,11 @@
 
 <script>
 const globalstore = require("../../components/globalstore");
+const Vue = require("vue");
 module.exports = {
   name: "Projecao",
   created() {
-    console.log(this.globalstore.usuario)
+
   },
   data() {
     return {
@@ -55,16 +60,17 @@ module.exports = {
   methods: {
     addcategoria() {
       // TODO ao adicionar a primeira vez a tela não detecta o array novo.
-      globalstore.usuario.projecao = globalstore.usuario.projecao || [];
-      globalstore.usuario.projecao.push({
+      if (!this.globalstore.usuario.projecao)
+        Vue.set(this.globalstore.usuario, "projecao", []);
+      this.globalstore.usuario.projecao.push({
         categoria: this.catsel,
         montante: this.montante
       });
-      globalstore.savecontext();
+      this.globalstore.savecontext();
     },
     removecategoria(c) {
-      globalstore.usuario.projecao = globalstore.usuario.projecao.filter(e => e!= c);
-      globalstore.savecontext();
+      this.globalstore.usuario.projecao = this.globalstore.usuario.projecao.filter(e => e != c);
+      this.globalstore.savecontext();
     }
   }
 }
