@@ -15,6 +15,7 @@
   - a partir da projeção dá pra ter uma ideia de quanto deve ser, por exemplo, o gasto diário
   - as projeções pertencem ao usuário
 - lançamentos de um período são avaliados de acordo com a projeção
+- lançamentos pertencem a um usuário
 - um usuário só pode ter uma projeção
 - categorias pertencem a uma única projeção
 - lançamentos precisam informar uma categoria (cria uma caso não exista)

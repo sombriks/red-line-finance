@@ -10,34 +10,54 @@
       </div>
     </div>
     <div class="row top-xs">
-      <div class="col-xs-8 col-xs-offset-2">
+      <form @submit.prevent="addcategoria"
+            class="col-xs-8 col-xs-offset-2">
         <mu-list>
           <mu-sub-header>Projeção atual</mu-sub-header>
           <mu-list-item v-show="globalstore.usuario && globalstore.usuario && (!globalstore.usuario.projecao || globalstore.usuario.projecao.length == 0)"
-            title="Parece que você não tem uma projeção ainda!"></mu-list-item>
-          <mu-list-item v-show="globalstore.usuario && globalstore.usuario.projecao" v-for="proj in globalstore.usuario.projecao"
-            :title="proj.categoria.nome" :describeText="'$ ' + proj.montante">
-            <mu-icon value="monetization_on" slot="left" class="r" v-if="proj.categoria.tipo == 'Saída'"
-            />
-            <mu-icon value="monetization_on" slot="left" class="g" v-if="proj.categoria.tipo == 'Entrada'"
-            />
-            <mu-icon value="indeterminate_check_box" slot="right" @click="removecategoria(proj)"
-            />
+        
+                        title="Parece que você não tem uma projeção ainda!"></mu-list-item>
+          <mu-list-item v-show="globalstore.usuario && globalstore.usuario.projecao"
+                        v-for="proj in globalstore.usuario.projecao"
+                        :title="proj.categoria.nome"
+                        :describeText="'$ ' + proj.montante">
+            <mu-icon value="monetization_on"
+                     slot="left"
+                     class="r"
+                     v-if="proj.categoria.tipo == 'Saída'" />
+            <mu-icon value="monetization_on"
+                     slot="left"
+                     class="g"
+                     v-if="proj.categoria.tipo == 'Entrada'" />
+            <mu-icon value="indeterminate_check_box"
+                     slot="right"
+                     @click="removecategoria(proj)" />
           </mu-list-item>
         </mu-list>
         <div>
-          <mu-select-field label="Categoria" v-model="catsel" fullWidth>
-            <mu-menu-item v-for="cat in globalstore.categorias" :key="cat.nome" :value="cat"
-              :title="'[' + cat.tipo + '] ' + cat.nome" />
+          <mu-select-field label="Categoria"
+                           v-model="catsel"
+                           fullWidth>
+            <mu-menu-item v-for="cat in globalstore.categorias"
+                          :key="cat.nome"
+                          :value="cat"
+                          :title="'[' + cat.tipo + '] ' + cat.nome" />
           </mu-select-field>
-          <mu-text-field label="Montante" type="number" v-model="montante" labelFloat fullWidth/>
-          <mu-raised-button label="Adicionar categoria" primary icon="add_box" @click="addcategoria"
-            fullWidth />
+          <mu-text-field label="Montante"
+                         type="number"
+                         v-model="montante"
+                         labelFloat
+                         fullWidth/>
+          <mu-raised-button label="Adicionar categoria"
+                            icon="add_box"
+                            type="submit"
+                            primary
+                            fullWidth />
           <br/>
           <br/>
           <br/>
         </div>
-      </div>
+      </form>
     </div>
   </div>
 </template>

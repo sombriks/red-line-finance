@@ -9,7 +9,6 @@ const glob = {
       glob.usuario = data.usuario;
       glob.usuarios = data.usuarios;
       glob.categorias = data.categorias;
-      glob.lancamentos = data.lancamentos;
       console.log("context loaded");
     } else
       glob.initcontext();
@@ -24,8 +23,7 @@ const glob = {
     let data = {
       usuario: glob.usuario,
       usuarios: glob.usuarios,
-      categorias: glob.categorias,
-      lancamentos: glob.lancamentos
+      categorias: glob.categorias
     };
     data = JSON.stringify(data);
     localStorage.setItem("red-line", data);
@@ -42,7 +40,6 @@ const glob = {
       { nome: "Lazer", tipo: "Saída" },
       { nome: "Ganhos", tipo: "Entrada" }
     ];
-    glob.lancamentos = [];
     console.log("context created");
     glob.savecontext();
   },
@@ -92,6 +89,8 @@ const glob = {
       }).catch(_ => {
         delete usuario.senha2;
         usuario.senha = md5(usuario.senha);
+        usuario.lancamentos = [];
+        usuario.projecao = [];
         glob.usuarios.push(usuario);
         glob.usuario = usuario;
         Vue.set(glob, "usuario", usuario);
