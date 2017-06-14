@@ -14,7 +14,8 @@
                         okLabel="OK"
                         cancelLabel="Cancelar"
                         :dateTimeFormat="dformat"
-                        autoOk/>
+                        autoOk
+                        fullWidth />
   
         <mu-select-field label="Categoria"
                          v-model="lancamento.categoria"
@@ -74,7 +75,14 @@ module.exports = {
     addlancamento() {
       if (!this.globalstore.usuario.lancamentos)
         Vue.set(this.globalstore.usuario, "lancamentos", []);
-      
+      this.globalstore.usuario.lancamentos.push(JSON.parse(JSON.stringify(this.lancamento)));
+      this.globalstore.savecontext();
+      alert("Lançamento Salvo!");
+      this.lancamento = {
+        dtlancamento: moment().format("YYYY-MM-DD"),
+        categoria: globalstore.categorias[0],
+        valor: 100
+      };
     }
   }
 }

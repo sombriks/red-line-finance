@@ -22,19 +22,21 @@
   "devDependencies": {
     "browserify": "^14.3.0",
     "browserify-css": "^0.10.0",
-    "budo": "^9.4.7",
+    "budo": "^10.0.3",
     "envify": "^4.0.0",
     "make": "^0.8.1",
     "vueify": "^9.4.1"
   },
   "dependencies": {
     "bluebird": "^3.5.0",
+    "chart.js": "^2.6.0",
     "flexboxgrid": "^6.3.1",
     "material-design-icons-iconfont": "^3.0.3",
     "md5": "^2.2.1",
     "moment": "^2.18.1",
     "muse-ui": "^2.0.3",
-    "vue": "^2.2.6",
+    "vue": "^2.3.4",
+    "vue-chartjs": "^2.6.5",
     "vue-router": "^2.4.0"
   },
   "browserify": {
