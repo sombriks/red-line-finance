@@ -1,5 +1,5 @@
 
-console.log("we are on %s mode",process.env.NODE_ENV || "development");
+console.log("we are on %s mode", process.env.NODE_ENV || "development");
 
 require("./main.css");
 
@@ -27,9 +27,9 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  if(to.path == "/login" || to.path == "/cadastro")
+  if (to.path == "/login" || to.path == "/cadastro")
     next();
-  else if(globalstore.usuario)
+  else if (globalstore.usuario)
     next();
   else
     next("/login");
