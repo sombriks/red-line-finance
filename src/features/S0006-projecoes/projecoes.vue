@@ -20,6 +20,7 @@
           <mu-list-item v-show="globalstore.usuario && globalstore.usuario.projecao"
                         v-for="proj in globalstore.usuario.projecao"
                         :title="proj.categoria.nome"
+                        :key="proj.nome"
                         :describeText="'$ ' + proj.montante">
             <mu-icon value="monetization_on"
                      slot="left"

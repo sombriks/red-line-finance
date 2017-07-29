@@ -9,3 +9,6 @@ build: clean
 	NODE_ENV=production browserify src/main.js -o docs/build.js
 	cp index.html docs/index.html
 	cp -R assets/* docs/assets/
+
+dev: 
+	budo src/main.js:build.js -o -l -H 127.0.0.1

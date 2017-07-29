@@ -6,12 +6,11 @@
         <p>Coisinhas coloridas pra você se animar... ou se preocupar. Olha as contas!</p>
       </div>
     </div>
-
-    <div class="row top-xs">
+    <!-- <div class="row top-xs">
       <div class="col-xs-8 col-xs-offset-2">
         <line-chart :chart-data="datacollection"></line-chart>
       </div>
-    </div>
+    </div> -->
     <div class="row top-xs"
          v-show="globalstore.usuario && globalstore.usuario && globalstore.usuario.lancamentos && globalstore.usuario.lancamentos.length > 0">
       <div class="col-xs-8 col-xs-offset-2">
@@ -61,7 +60,6 @@
 </template>
 
 <script>
-const LineChart = require("../../components/linechart");
 const globalstore = require("../../components/globalstore");
 module.exports = {
   name: "Relatorio",
@@ -69,9 +67,6 @@ module.exports = {
     return {
       globalstore
     };
-  },
-  components:{
-    LineChart
   },
   computed: {
     parcial() {
