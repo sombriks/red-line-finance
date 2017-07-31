@@ -76,5 +76,7 @@ module.exports = {
   position: fixed;
   right: 0.5em;
   top: 0px;
+  font-weight: bolder;
+  color:red;
 }
 </style>

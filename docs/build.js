@@ -14874,7 +14874,7 @@ __vue__options__.render = function render () {var _vm=this;var _h=_vm.$createEle
 __vue__options__.staticRenderFns = []
 
 },{"../../components/globalstore":15}],18:[function(require,module,exports){
-var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert(".basemenu{position:fixed;right:.5em;top:0}")
+var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert(".basemenu{position:fixed;right:.5em;top:0;font-weight:bolder;color:red}")
 ;(function(){
 "use strict";
 
@@ -14957,29 +14957,53 @@ module.exports = {
       });
       return p;
     }
+  },
+  methods: {
+    removelancamento: function removelancamento(lan) {
+      var _this = this;
+
+      confirm("Deseja realmente remover este lançamento?", function (yn) {
+        if (yn == "yes") {
+          var idx = _this.globalstore.usuario.lancamentos.indexOf(lan);
+          if (idx > -1) {
+            _this.globalstore.usuario.lancamentos.splice(idx, 1);
+            _this.globalstore.savecontext();
+          }
+        }
+      });
+    }
   }
 };
 })()
 if (module.exports.__esModule) module.exports = module.exports.default
 var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
-__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_vm._m(0),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.globalstore.usuario && _vm.globalstore.usuario && _vm.globalstore.usuario.lancamentos && _vm.globalstore.usuario.lancamentos.length > 0),expression:"globalstore.usuario && globalstore.usuario && globalstore.usuario.lancamentos && globalstore.usuario.lancamentos.length > 0"}],staticClass:"row top-xs"},[_c('div',{staticClass:"col-xs-8 col-xs-offset-2"},[_c('mu-list',[_c('mu-sub-header',[_vm._v("Saldo parcial")]),_vm._v(" "),_c('mu-list-item',{attrs:{"describeText":'Lançamentos computados',"title":'$ ' + _vm.parcial}},[(_vm.parcial <= 0)?_c('mu-icon',{staticClass:"r",attrs:{"value":"monetization_on"},slot:"left"}):_vm._e(),_vm._v(" "),(_vm.parcial > 0)?_c('mu-icon',{staticClass:"g",attrs:{"value":"monetization_on"},slot:"left"}):_vm._e()],1)],1)],1)]),_vm._v(" "),_c('div',{staticClass:"row top-xs"},[_c('div',{staticClass:"col-xs-8 col-xs-offset-2"},[_c('mu-list',[_c('mu-sub-header',[_vm._v("Últimos lançamentos")]),_vm._v(" "),_c('mu-list-item',{directives:[{name:"show",rawName:"v-show",value:(_vm.globalstore.usuario && _vm.globalstore.usuario && (!_vm.globalstore.usuario.lancamentos || _vm.globalstore.usuario.lancamentos.length == 0)),expression:"globalstore.usuario && globalstore.usuario && (!globalstore.usuario.lancamentos || globalstore.usuario.lancamentos.length == 0)"}],attrs:{"title":"Parece que você não tem lançamentos ainda!"}}),_vm._v(" "),_vm._l((_vm.globalstore.usuario.lancamentos),function(lan){return _c('mu-list-item',{key:lan,attrs:{"title":lan.categoria.nome,"describeText":'$ ' + lan.valor}},[(lan.categoria.tipo == 'Saída')?_c('mu-icon',{staticClass:"r",attrs:{"value":"monetization_on"},slot:"left"}):_vm._e(),_vm._v(" "),(lan.categoria.tipo == 'Entrada')?_c('mu-icon',{staticClass:"g",attrs:{"value":"monetization_on"},slot:"left"}):_vm._e(),_vm._v(" "),_c('mu-icon',{attrs:{"value":"indeterminate_check_box"},on:{"click":function($event){_vm.removelancamento(_vm.proj)}},slot:"right"})],1)})],2)],1)])])}
+__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_vm._m(0),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.globalstore.usuario && _vm.globalstore.usuario && _vm.globalstore.usuario.lancamentos && _vm.globalstore.usuario.lancamentos.length > 0),expression:"globalstore.usuario && globalstore.usuario && globalstore.usuario.lancamentos && globalstore.usuario.lancamentos.length > 0"}],staticClass:"row top-xs"},[_c('div',{staticClass:"col-xs-8 col-xs-offset-2"},[_c('mu-list',[_c('mu-sub-header',[_vm._v("Saldo parcial")]),_vm._v(" "),_c('mu-list-item',{attrs:{"describeText":'Lançamentos computados',"title":'$ ' + _vm.parcial}},[(_vm.parcial <= 0)?_c('mu-icon',{staticClass:"r",attrs:{"value":"monetization_on"},slot:"left"}):_vm._e(),_vm._v(" "),(_vm.parcial > 0)?_c('mu-icon',{staticClass:"g",attrs:{"value":"monetization_on"},slot:"left"}):_vm._e()],1)],1)],1)]),_vm._v(" "),_c('div',{staticClass:"row top-xs"},[_c('div',{staticClass:"col-xs-8 col-xs-offset-2"},[_c('mu-list',[_c('mu-sub-header',[_vm._v("Últimos lançamentos")]),_vm._v(" "),_c('mu-list-item',{directives:[{name:"show",rawName:"v-show",value:(_vm.globalstore.usuario && _vm.globalstore.usuario && (!_vm.globalstore.usuario.lancamentos || _vm.globalstore.usuario.lancamentos.length == 0)),expression:"globalstore.usuario && globalstore.usuario && (!globalstore.usuario.lancamentos || globalstore.usuario.lancamentos.length == 0)"}],attrs:{"title":"Parece que você não tem lançamentos ainda!"}}),_vm._v(" "),_vm._l((_vm.globalstore.usuario.lancamentos),function(lan){return _c('mu-list-item',{key:lan,attrs:{"title":lan.categoria.nome,"describeText":'$ ' + lan.valor}},[(lan.categoria.tipo == 'Saída')?_c('mu-icon',{staticClass:"r",attrs:{"value":"monetization_on"},slot:"left"}):_vm._e(),_vm._v(" "),(lan.categoria.tipo == 'Entrada')?_c('mu-icon',{staticClass:"g",attrs:{"value":"monetization_on"},slot:"left"}):_vm._e(),_vm._v(" "),_c('mu-icon',{attrs:{"value":"indeterminate_check_box"},on:{"click":function($event){_vm.removelancamento(lan)}},slot:"right"})],1)})],2)],1)])])}
 __vue__options__.staticRenderFns = [function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"row center-xs top-xs"},[_c('div',{staticClass:"col-xs-8 col-xs-offset-2"},[_c('h1',{staticClass:"r"},[_vm._v("Relatórios")]),_vm._v(" "),_c('p',[_vm._v("Coisinhas coloridas pra você se animar... ou se preocupar. Olha as contas!")])])])}]
 
 },{"../../components/globalstore":15}],20:[function(require,module,exports){
 ;(function(){
 "use strict";
 
+var globalstore = require("../../components/globalstore");
 module.exports = {
-  name: "Categoria"
+  name: "Categoria",
+  data: function data() {
+    return {
+      globalstore: globalstore
+    };
+  },
 
+  methods: {
+    removecategoria: function removecategoria(cat) {}
+  }
 };
 })()
 if (module.exports.__esModule) module.exports = module.exports.default
 var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
-__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _vm._m(0)}
-__vue__options__.staticRenderFns = [function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_c('div',{staticClass:"row center-xs top-xs"},[_c('div',{staticClass:"col-xs-8 col-xs-offset-2"},[_c('h1',{staticClass:"r"},[_vm._v("Categorias")]),_vm._v(" "),_c('p',[_vm._v("Dinheiro vai, dinheiro vem. Cabe a você explicar como é esse vai e vem.")])])])])}]
+__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_vm._m(0),_vm._v(" "),_c('div',{staticClass:"row top-xs"},[_c('div',{staticClass:"col-xs-8 col-xs-offset-2"},[_c('mu-list',[_c('mu-sub-header',[_vm._v("Categorias para compor projeções")]),_vm._v(" "),_vm._l((_vm.globalstore.categorias),function(cat){return _c('mu-list-item',{key:cat.nome,attrs:{"title":cat.nome}},[(cat.tipo == 'Saída')?_c('mu-icon',{staticClass:"r",attrs:{"value":"monetization_on"},slot:"left"}):_vm._e(),_vm._v(" "),(cat.tipo == 'Entrada')?_c('mu-icon',{staticClass:"g",attrs:{"value":"monetization_on"},slot:"left"}):_vm._e(),_vm._v(" "),_c('mu-icon',{attrs:{"value":"indeterminate_check_box"},on:{"click":function($event){_vm.removecategoria(cat)}},slot:"right"})],1)})],2)],1)])])}
+__vue__options__.staticRenderFns = [function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"row center-xs top-xs"},[_c('div',{staticClass:"col-xs-8 col-xs-offset-2"},[_c('h1',{staticClass:"r"},[_vm._v("Categorias")]),_vm._v(" "),_c('p',[_vm._v("Dinheiro vai, dinheiro vem. Cabe a você explicar como é esse vai e vem.")])])])}]
 
-},{}],21:[function(require,module,exports){
+},{"../../components/globalstore":15}],21:[function(require,module,exports){
 ;(function(){
 "use strict";
 

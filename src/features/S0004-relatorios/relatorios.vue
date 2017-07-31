@@ -7,10 +7,10 @@
       </div>
     </div>
     <!-- <div class="row top-xs">
-      <div class="col-xs-8 col-xs-offset-2">
-        <line-chart :chart-data="datacollection"></line-chart>
-      </div>
-    </div> -->
+          <div class="col-xs-8 col-xs-offset-2">
+            <line-chart :chart-data="datacollection"></line-chart>
+          </div>
+        </div> -->
     <div class="row top-xs"
          v-show="globalstore.usuario && globalstore.usuario && globalstore.usuario.lancamentos && globalstore.usuario.lancamentos.length > 0">
       <div class="col-xs-8 col-xs-offset-2">
@@ -51,7 +51,7 @@
                      v-if="lan.categoria.tipo == 'Entrada'"></mu-icon>
             <mu-icon value="indeterminate_check_box"
                      slot="right"
-                     @click="removelancamento(proj)"></mu-icon>
+                     @click="removelancamento(lan)"></mu-icon>
           </mu-list-item>
         </mu-list>
       </div>
@@ -79,6 +79,19 @@ module.exports = {
           p -= parseInt(e.valor);
       });
       return p;
+    }
+  },
+  methods: {
+    removelancamento(lan) {
+      confirm("Deseja realmente remover este lançamento?", yn => {
+        if (yn == "yes") {
+          const idx = this.globalstore.usuario.lancamentos.indexOf(lan);
+          if (idx > -1) {
+            this.globalstore.usuario.lancamentos.splice(idx, 1);
+            this.globalstore.savecontext();
+          }
+        }
+      });
     }
   }
 }
