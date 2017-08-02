@@ -14,20 +14,9 @@
     <div class="row top-xs"
          v-show="globalstore.usuario && globalstore.usuario && globalstore.usuario.lancamentos && globalstore.usuario.lancamentos.length > 0">
       <div class="col-xs-8 col-xs-offset-2">
-        <mu-list>
-          <mu-sub-header>Saldo parcial</mu-sub-header>
-          <mu-list-item :describeText="'Lançamentos computados'"
-                        :title="'$ ' + parcial">
-            <mu-icon value="monetization_on"
-                     slot="left"
-                     class="r"
-                     v-if="parcial <= 0"></mu-icon>
-            <mu-icon value="monetization_on"
-                     slot="left"
-                     class="g"
-                     v-if="parcial > 0"></mu-icon>
-          </mu-list-item>
-        </mu-list>
+        <!-- 
+        -->
+          <saldo-parcial></saldo-parcial>
       </div>
     </div>
     <div class="row top-xs">
@@ -67,19 +56,6 @@ module.exports = {
     return {
       globalstore
     };
-  },
-  computed: {
-    parcial() {
-      let p = 0;
-      const u = this.globalstore.usuario;
-      u.lancamentos.map(e => {
-        if (e.categoria.tipo == "Entrada")
-          p += parseInt(e.valor);
-        else
-          p -= parseInt(e.valor);
-      });
-      return p;
-    }
   },
   methods: {
     removelancamento(lan) {

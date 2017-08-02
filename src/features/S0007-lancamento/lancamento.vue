@@ -6,38 +6,55 @@
         <p>Papo rápido. Quanto foi, quando foi e, opcionalmente, uma descrição.</p>
       </div>
     </div>
-    <form @submit.prevent="addlancamento"
-          class="row center-xs top-xs">
+    <div class="row top-xs">
       <div class="col-xs-8 col-xs-offset-2">
-        <mu-date-picker hintText="Data lançamento"
-                        v-model="lancamento.dtlancamento"
-                        okLabel="OK"
-                        cancelLabel="Cancelar"
-                        :dateTimeFormat="dformat"
-                        autoOk
-                        fullWidth />
-  
-        <mu-select-field label="Categoria"
-                         v-model="lancamento.categoria"
-                         fullWidth>
-          <mu-menu-item v-for="cat in globalstore.categorias"
-                        :key="cat.nome"
-                        :value="cat"
-                        :title="'[' + cat.tipo + '] ' + cat.nome" />
-        </mu-select-field>
-  
-        <mu-text-field label="Valor"
-                       type="number"
-                       v-model="lancamento.valor"
-                       labelFloat
-                       fullWidth/>
-        <mu-raised-button label="Adicionar lançamento"
-                          icon="monetization_on"
-                          type="submit"
-                          primary
-                          fullWidth />
+        <saldo-parcial></saldo-parcial>
       </div>
-    </form>
+    </div>
+    <form
+      @submit.prevent="addlancamento"
+      class="row center-xs top-xs"
+    >
+      <div class="col-xs-8 col-xs-offset-2">
+        <mu-date-picker
+          hintText="Data lançamento"
+          v-model="lancamento.dtlancamento"
+          okLabel="OK"
+          cancelLabel="Cancelar"
+          :dateTimeFormat="dformat"
+          autoOk
+          fullWidth
+        />
+  
+        <mu-select-field
+          label="Categoria"
+          v-model="lancamento.categoria"
+          fullWidth
+        >
+          <mu-menu-item
+            v-for="cat in globalstore.categorias"
+            :key="cat.nome"
+            :value="cat"
+            :title="'[' + cat.tipo + '] ' + cat.nome"
+          />
+          </mu-select-field>
+  
+          <mu-text-field
+            label="Valor"
+            type="number"
+            v-model="lancamento.valor"
+            labelFloat
+            fullWidth
+          />
+          <mu-raised-button
+            label="Adicionar lançamento"
+            icon="monetization_on"
+            type="submit"
+            primary
+            fullWidth
+          />
+      </div>
+      </form>
   </div>
 </template>
 

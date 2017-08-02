@@ -14,6 +14,8 @@ globalstore.loadcontext();
 Vue.use(VueRouter);
 Vue.use(MuseUI);
 
+Vue.component("saldo-parcial", require("./components/saldo-parcial.vue"));
+
 const router = new VueRouter({
   routes: [
     { path: '/', redirect: '/login' },

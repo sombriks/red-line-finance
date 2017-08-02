@@ -87,11 +87,11 @@ module.exports = {
         categoria: this.catsel,
         montante: this.montante
       });
-      this.globalstore.savecontext();
+      this.globalstore.savecontext()
     },
     removecategoria(c) {
-      this.globalstore.usuario.projecao = this.globalstore.usuario.projecao.filter(e => e != c);
-      this.globalstore.savecontext();
+      this.globalstore.usuario.projecao = this.globalstore.usuario.projecao.filter(e => e != c)
+      this.globalstore.savecontext()
     }
   }
 }
