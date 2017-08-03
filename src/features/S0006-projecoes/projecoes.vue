@@ -15,7 +15,6 @@
         <mu-list>
           <mu-sub-header>Projeção atual</mu-sub-header>
           <mu-list-item v-show="globalstore.usuario && globalstore.usuario && (!globalstore.usuario.projecao || globalstore.usuario.projecao.length == 0)"
-        
                         title="Parece que você não tem uma projeção ainda!"></mu-list-item>
           <mu-list-item v-show="globalstore.usuario && globalstore.usuario.projecao"
                         v-for="proj in globalstore.usuario.projecao"
