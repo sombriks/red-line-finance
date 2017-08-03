@@ -11,50 +11,43 @@
         <saldo-parcial></saldo-parcial>
       </div>
     </div>
-    <form
-      @submit.prevent="addlancamento"
-      class="row center-xs top-xs"
-    >
+    <form @submit.prevent="addlancamento"
+          class="row center-xs top-xs">
       <div class="col-xs-8 col-xs-offset-2">
-        <mu-date-picker
-          hintText="Data lançamento"
-          v-model="lancamento.dtlancamento"
-          okLabel="OK"
-          cancelLabel="Cancelar"
-          :dateTimeFormat="dformat"
-          autoOk
-          fullWidth
-        />
+        <mu-date-picker hintText="Data lançamento"
+                        v-model="lancamento.dtlancamento"
+                        okLabel="OK"
+                        cancelLabel="Cancelar"
+                        :dateTimeFormat="dformat"
+                        autoOk
+                        fullWidth />
   
-        <mu-select-field
-          label="Categoria"
-          v-model="lancamento.categoria"
-          fullWidth
-        >
-          <mu-menu-item
-            v-for="cat in globalstore.categorias"
-            :key="cat.nome"
-            :value="cat"
-            :title="'[' + cat.tipo + '] ' + cat.nome"
-          />
-          </mu-select-field>
+        <mu-select-field label="Categoria"
+                         v-model="lancamento.categoria"
+                         fullWidth>
+          <mu-menu-item v-for="cat in globalstore.categorias"
+                        :key="cat.nome"
+                        :value="cat"
+                        :title="'[' + cat.tipo + '] ' + cat.nome" />
+        </mu-select-field>
   
-          <mu-text-field
-            label="Valor"
-            type="number"
-            v-model="lancamento.valor"
-            labelFloat
-            fullWidth
-          />
-          <mu-raised-button
-            label="Adicionar lançamento"
-            icon="monetization_on"
-            type="submit"
-            primary
-            fullWidth
-          />
+        <mu-text-field label="Valor"
+                       type="number"
+                       v-model="lancamento.valor"
+                       labelFloat
+                       fullWidth
+                       required />
+        <mu-text-field label="Descrição (opcional)"
+                       v-model="lancamento.descricao"
+                       labelFloat
+                       fullWidth />
+        <mu-raised-button label="Adicionar lançamento"
+                          icon="monetization_on"
+                          type="submit"
+                          primary
+                          fullWidth />
       </div>
-      </form>
+    </form>
   </div>
 </template>
 
@@ -67,25 +60,8 @@ module.exports = {
   data() {
     return {
       globalstore,
-      lancamento: {
-        dtlancamento: moment().format("YYYY-MM-DD"),
-        categoria: globalstore.categorias[0],
-        valor: 100
-      },
-      dformat: {
-        formatDisplay(d) {
-          // return d;
-          // console.log(d)
-          return moment(d).format("DD [de] MMMM")
-        },
-        formatMonth(d) {
-          return moment(d).format("MMMM")
-          // return moment(d).toString()
-        },
-        getWeekDayArray() {
-          return ["S", "T", "Q", "Q", "S", "S", "D"];
-        }
-      },
+      lancamento: this.newlancamento(),
+      dformat: require("../../components/dformat")(),
     };
   },
   methods: {
@@ -93,11 +69,18 @@ module.exports = {
       if (!this.globalstore.usuario.lancamentos)
         Vue.set(this.globalstore.usuario, "lancamentos", []);
       this.globalstore.usuario.lancamentos.push(JSON.parse(JSON.stringify(this.lancamento)));
+      // this.globalstore.usuario.lancamentos = this.globalstore.usuario.lancamentos.sort((a, b) => {
+      // return a.dtlancamento - b.dtlancamento
+      // });  
       this.globalstore.savecontext();
       alert("Lançamento Salvo!");
-      this.lancamento = {
+      this.lancamento = this.newlancamento();
+    },
+    newlancamento() {
+      return {
         dtlancamento: moment().format("YYYY-MM-DD"),
         categoria: globalstore.categorias[0],
+        descricao: "",
         valor: 100
       };
     }
