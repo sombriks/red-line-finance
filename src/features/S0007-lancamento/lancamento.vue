@@ -1,53 +1,21 @@
 <template>
   <div>
     <div class="row center-xs top-xs">
-      <div class="col-xs-8 col-xs-offset-2">
+      <div class="col-xs-10 col-xs-offset-1">
         <h1 class="r">Lançamentos</h1>
         <p>Papo rápido. Quanto foi, quando foi e, opcionalmente, uma descrição.</p>
       </div>
     </div>
     <div class="row top-xs">
-      <div class="col-xs-8 col-xs-offset-2">
+      <div class="col-xs-10 col-xs-offset-1">
         <saldo-parcial></saldo-parcial>
       </div>
-    </div>
-    <form @submit.prevent="addlancamento"
-          class="row center-xs top-xs">
-      <div class="col-xs-8 col-xs-offset-2">
-        <mu-date-picker hintText="Data lançamento"
-                        v-model="lancamento.dtlancamento"
-                        okLabel="OK"
-                        cancelLabel="Cancelar"
-                        :dateTimeFormat="dformat"
-                        autoOk
-                        fullWidth />
-  
-        <mu-select-field label="Categoria"
-                         v-model="lancamento.categoria"
-                         fullWidth>
-          <mu-menu-item v-for="cat in globalstore.categorias"
-                        :key="cat.nome"
-                        :value="cat"
-                        :title="'[' + cat.tipo + '] ' + cat.nome" />
-        </mu-select-field>
-  
-        <mu-text-field label="Valor"
-                       type="number"
-                       v-model="lancamento.valor"
-                       labelFloat
-                       fullWidth
-                       required />
-        <mu-text-field label="Descrição (opcional)"
-                       v-model="lancamento.descricao"
-                       labelFloat
-                       fullWidth />
-        <mu-raised-button label="Adicionar lançamento"
-                          icon="monetization_on"
-                          type="submit"
-                          primary
-                          fullWidth />
+      <!-- sobre pensamento orientado a componente... --> 
+      <div class="col-xs-10 col-xs-offset-1">
+        <novo-lancamento></novo-lancamento>
       </div>
-    </form>
+    </div>
+    
   </div>
 </template>
 
@@ -57,37 +25,5 @@ const moment = require("moment");
 const Vue = require("vue");
 module.exports = {
   name: "Lancamento",
-  data() {
-    return {
-      globalstore,
-      lancamento: this.newlancamento(),
-      dformat: require("../../components/dformat")(),
-    };
-  },
-  methods: {
-    addlancamento() {
-      if (!this.globalstore.usuario.lancamentos)
-        Vue.set(this.globalstore.usuario, "lancamentos", []);
-      this.globalstore.usuario.lancamentos.push(JSON.parse(JSON.stringify(this.lancamento)));
-      // this.globalstore.usuario.lancamentos = this.globalstore.usuario.lancamentos.sort((a, b) => {
-      // return a.dtlancamento - b.dtlancamento
-      // });  
-      this.globalstore.savecontext();
-      alert("Lançamento Salvo!");
-      this.lancamento = this.newlancamento();
-    },
-    newlancamento() {
-      return {
-        dtlancamento: moment().format("YYYY-MM-DD"),
-        categoria: globalstore.categorias[0],
-        descricao: "",
-        valor: 100
-      };
-    }
-  }
 }
 </script>
-
-<style>
-
-</style>

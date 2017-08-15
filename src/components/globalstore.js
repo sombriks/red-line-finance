@@ -1,5 +1,10 @@
+
+// imports
+
 const md5 = require("md5");
 const Vue = require("vue");
+
+// models / functions
 
 const glob = {
   loadcontext() {
@@ -100,5 +105,7 @@ const glob = {
     });
   }
 };
+
+// exports
 
 module.exports = glob;

@@ -15,6 +15,7 @@ Vue.use(VueRouter);
 Vue.use(MuseUI);
 
 Vue.component("saldo-parcial", require("./components/saldo-parcial.vue"));
+Vue.component("novo-lancamento", require("./components/novo-lancamento.vue"));
 
 const router = new VueRouter({
   routes: [
