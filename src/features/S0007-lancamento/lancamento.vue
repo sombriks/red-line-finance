@@ -15,7 +15,6 @@
         <novo-lancamento></novo-lancamento>
       </div>
     </div>
-    
   </div>
 </template>
 

@@ -1,39 +1,27 @@
 <template>
   <div>
     <div class="row center-xs top-xs">
-      <div class="col-xs-8 col-xs-offset-2">
+      <div class="col-xs-10 col-xs-offset-1">
         <h1 class="r">Relatórios</h1>
         <p>Coisinhas coloridas pra você se animar... ou se preocupar. Olha as contas!</p>
       </div>
     </div>
     <div class="row top-xs"
-         v-show="globalstore.usuario && globalstore.usuario && globalstore.usuario.lancamentos && globalstore.usuario.lancamentos.length > 0">
-      <div class="col-xs-8 col-xs-offset-2">
+         v-show="temlancamentos">
+      <div class="col-xs-10 col-xs-offset-1">
         <saldo-parcial></saldo-parcial>
       </div>
     </div>
     <div class="row top-xs">
-      <div class="col-xs-8 col-xs-offset-2">
+      <div class="col-xs-10 col-xs-offset-1">
         <mu-list>
           <mu-sub-header>Últimos lançamentos</mu-sub-header>
-          <mu-list-item v-show="semlancamentos"
+          <mu-list-item v-show="!temlancamentos"
                         title="Parece que você não tem lançamentos ainda!"></mu-list-item>
-  
-          <mu-list-item v-for="lan in globalstore.usuario.lancamentos"
-                        :title="`${lan.categoria.nome} (${lan.descricao})`"
-                        :key="lan"
-                        :describeText="`${lan.dtlancamento} $ ${lan.valor}`">
-            <mu-icon value="monetization_on"
-                     slot="left"
-                     class="r"
-                     v-if="lan.categoria.tipo == 'Saída'"></mu-icon>
-            <mu-icon value="monetization_on"
-                     slot="left"
-                     class="g"
-                     v-if="lan.categoria.tipo == 'Entrada'"></mu-icon>
-            <mu-icon value="indeterminate_check_box"
-                     slot="right"
-                     @click="removelancamento(lan)"></mu-icon>
+          <item-lancamento v-for="lan in lancamentosordenados"
+                           :lancamento="lan"
+                           :key="lan.dtlancamento"
+                           @removelancamento="removelancamento(lan)"></item-lancamento>
           </mu-list-item>
         </mu-list>
       </div>
@@ -54,18 +42,27 @@ module.exports = {
     removelancamento(lan) {
       confirm("Deseja realmente remover este lançamento?", yn => {
         if (yn == "yes") {
-          const idx = this.globalstore.usuario.lancamentos.indexOf(lan);
+          const idx = this.globalstore.usuario.lancamentos.indexOf(lan)
           if (idx > -1) {
-            this.globalstore.usuario.lancamentos.splice(idx, 1);
-            this.globalstore.savecontext();
+            this.globalstore.usuario.lancamentos.splice(idx, 1)
+            this.globalstore.savecontext()
           }
         }
       });
     }
   },
   computed: {
-    semlancamentos() {
-      return globalstore.usuario && globalstore.usuario && (!globalstore.usuario.lancamentos || globalstore.usuario.lancamentos.length == 0);
+    temlancamentos() {
+      return globalstore.usuario && globalstore.usuario.lancamentos && globalstore.usuario.lancamentos.length > 0
+    },
+    lancamentosordenados() {
+      let grupolancamentos = [];
+      if (globalstore.usuario && globalstore.usuario.lancamentos) {
+        grupolancamentos = globalstore.usuario.lancamentos.sort((a, b) => {
+          return b.dtlancamento.localeCompare(a.dtlancamento)
+        });
+      }
+      return grupolancamentos
     }
   }
 }
