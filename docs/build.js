@@ -1,6 +1,6 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 module.exports = { "default": require("core-js/library/fn/json/stringify"), __esModule: true };
-},{"core-js/library/fn/json/stringify":4}],2:[function(require,module,exports){
+},{"core-js/library/fn/json/stringify":52}],2:[function(require,module,exports){
 'use strict';
 // For more information about browser field, check out the browser field at https://github.com/substack/browserify-handbook#browser-field.
 
@@ -113,15 +113,12759 @@ var charenc = {
 module.exports = charenc;
 
 },{}],4:[function(require,module,exports){
+/**
+ * @namespace Chart
+ */
+var Chart = require('./core/core.js')();
+
+require('./core/core.helpers')(Chart);
+require('./platforms/platform.js')(Chart);
+require('./core/core.canvasHelpers')(Chart);
+require('./core/core.element')(Chart);
+require('./core/core.plugin.js')(Chart);
+require('./core/core.animation')(Chart);
+require('./core/core.controller')(Chart);
+require('./core/core.datasetController')(Chart);
+require('./core/core.layoutService')(Chart);
+require('./core/core.scaleService')(Chart);
+require('./core/core.ticks.js')(Chart);
+require('./core/core.scale')(Chart);
+require('./core/core.interaction')(Chart);
+require('./core/core.tooltip')(Chart);
+
+require('./elements/element.arc')(Chart);
+require('./elements/element.line')(Chart);
+require('./elements/element.point')(Chart);
+require('./elements/element.rectangle')(Chart);
+
+require('./scales/scale.linearbase.js')(Chart);
+require('./scales/scale.category')(Chart);
+require('./scales/scale.linear')(Chart);
+require('./scales/scale.logarithmic')(Chart);
+require('./scales/scale.radialLinear')(Chart);
+require('./scales/scale.time')(Chart);
+
+// Controllers must be loaded after elements
+// See Chart.core.datasetController.dataElementType
+require('./controllers/controller.bar')(Chart);
+require('./controllers/controller.bubble')(Chart);
+require('./controllers/controller.doughnut')(Chart);
+require('./controllers/controller.line')(Chart);
+require('./controllers/controller.polarArea')(Chart);
+require('./controllers/controller.radar')(Chart);
+
+require('./charts/Chart.Bar')(Chart);
+require('./charts/Chart.Bubble')(Chart);
+require('./charts/Chart.Doughnut')(Chart);
+require('./charts/Chart.Line')(Chart);
+require('./charts/Chart.PolarArea')(Chart);
+require('./charts/Chart.Radar')(Chart);
+require('./charts/Chart.Scatter')(Chart);
+
+// Loading built-it plugins
+var plugins = [];
+
+plugins.push(
+    require('./plugins/plugin.filler.js')(Chart),
+    require('./plugins/plugin.legend.js')(Chart),
+    require('./plugins/plugin.title.js')(Chart)
+);
+
+Chart.plugins.register(plugins);
+
+module.exports = Chart;
+if (typeof window !== 'undefined') {
+	window.Chart = Chart;
+}
+
+},{"./charts/Chart.Bar":5,"./charts/Chart.Bubble":6,"./charts/Chart.Doughnut":7,"./charts/Chart.Line":8,"./charts/Chart.PolarArea":9,"./charts/Chart.Radar":10,"./charts/Chart.Scatter":11,"./controllers/controller.bar":12,"./controllers/controller.bubble":13,"./controllers/controller.doughnut":14,"./controllers/controller.line":15,"./controllers/controller.polarArea":16,"./controllers/controller.radar":17,"./core/core.animation":18,"./core/core.canvasHelpers":19,"./core/core.controller":20,"./core/core.datasetController":21,"./core/core.element":22,"./core/core.helpers":23,"./core/core.interaction":24,"./core/core.js":25,"./core/core.layoutService":26,"./core/core.plugin.js":27,"./core/core.scale":28,"./core/core.scaleService":29,"./core/core.ticks.js":30,"./core/core.tooltip":31,"./elements/element.arc":32,"./elements/element.line":33,"./elements/element.point":34,"./elements/element.rectangle":35,"./platforms/platform.js":37,"./plugins/plugin.filler.js":38,"./plugins/plugin.legend.js":39,"./plugins/plugin.title.js":40,"./scales/scale.category":41,"./scales/scale.linear":42,"./scales/scale.linearbase.js":43,"./scales/scale.logarithmic":44,"./scales/scale.radialLinear":45,"./scales/scale.time":46}],5:[function(require,module,exports){
+'use strict';
+
+module.exports = function(Chart) {
+
+	Chart.Bar = function(context, config) {
+		config.type = 'bar';
+
+		return new Chart(context, config);
+	};
+
+};
+
+},{}],6:[function(require,module,exports){
+'use strict';
+
+module.exports = function(Chart) {
+
+	Chart.Bubble = function(context, config) {
+		config.type = 'bubble';
+		return new Chart(context, config);
+	};
+
+};
+
+},{}],7:[function(require,module,exports){
+'use strict';
+
+module.exports = function(Chart) {
+
+	Chart.Doughnut = function(context, config) {
+		config.type = 'doughnut';
+
+		return new Chart(context, config);
+	};
+
+};
+
+},{}],8:[function(require,module,exports){
+'use strict';
+
+module.exports = function(Chart) {
+
+	Chart.Line = function(context, config) {
+		config.type = 'line';
+
+		return new Chart(context, config);
+	};
+
+};
+
+},{}],9:[function(require,module,exports){
+'use strict';
+
+module.exports = function(Chart) {
+
+	Chart.PolarArea = function(context, config) {
+		config.type = 'polarArea';
+
+		return new Chart(context, config);
+	};
+
+};
+
+},{}],10:[function(require,module,exports){
+'use strict';
+
+module.exports = function(Chart) {
+
+	Chart.Radar = function(context, config) {
+		config.type = 'radar';
+
+		return new Chart(context, config);
+	};
+
+};
+
+},{}],11:[function(require,module,exports){
+'use strict';
+
+module.exports = function(Chart) {
+
+	var defaultConfig = {
+		hover: {
+			mode: 'single'
+		},
+
+		scales: {
+			xAxes: [{
+				type: 'linear', // scatter should not use a category axis
+				position: 'bottom',
+				id: 'x-axis-1' // need an ID so datasets can reference the scale
+			}],
+			yAxes: [{
+				type: 'linear',
+				position: 'left',
+				id: 'y-axis-1'
+			}]
+		},
+
+		tooltips: {
+			callbacks: {
+				title: function() {
+					// Title doesn't make sense for scatter since we format the data as a point
+					return '';
+				},
+				label: function(tooltipItem) {
+					return '(' + tooltipItem.xLabel + ', ' + tooltipItem.yLabel + ')';
+				}
+			}
+		}
+	};
+
+	// Register the default config for this type
+	Chart.defaults.scatter = defaultConfig;
+
+	// Scatter charts use line controllers
+	Chart.controllers.scatter = Chart.controllers.line;
+
+	Chart.Scatter = function(context, config) {
+		config.type = 'scatter';
+		return new Chart(context, config);
+	};
+
+};
+
+},{}],12:[function(require,module,exports){
+'use strict';
+
+module.exports = function(Chart) {
+
+	var helpers = Chart.helpers;
+
+	Chart.defaults.bar = {
+		hover: {
+			mode: 'label'
+		},
+
+		scales: {
+			xAxes: [{
+				type: 'category',
+
+				// Specific to Bar Controller
+				categoryPercentage: 0.8,
+				barPercentage: 0.9,
+
+				// grid line settings
+				gridLines: {
+					offsetGridLines: true
+				}
+			}],
+			yAxes: [{
+				type: 'linear'
+			}]
+		}
+	};
+
+	Chart.controllers.bar = Chart.DatasetController.extend({
+
+		dataElementType: Chart.elements.Rectangle,
+
+		initialize: function() {
+			var me = this;
+			var meta;
+
+			Chart.DatasetController.prototype.initialize.apply(me, arguments);
+
+			meta = me.getMeta();
+			meta.stack = me.getDataset().stack;
+			meta.bar = true;
+		},
+
+		update: function(reset) {
+			var me = this;
+			var elements = me.getMeta().data;
+			var i, ilen;
+
+			me._ruler = me.getRuler();
+
+			for (i = 0, ilen = elements.length; i < ilen; ++i) {
+				me.updateElement(elements[i], i, reset);
+			}
+		},
+
+		updateElement: function(rectangle, index, reset) {
+			var me = this;
+			var chart = me.chart;
+			var meta = me.getMeta();
+			var dataset = me.getDataset();
+			var custom = rectangle.custom || {};
+			var rectangleOptions = chart.options.elements.rectangle;
+
+			rectangle._xScale = me.getScaleForId(meta.xAxisID);
+			rectangle._yScale = me.getScaleForId(meta.yAxisID);
+			rectangle._datasetIndex = me.index;
+			rectangle._index = index;
+
+			rectangle._model = {
+				datasetLabel: dataset.label,
+				label: chart.data.labels[index],
+				borderSkipped: custom.borderSkipped ? custom.borderSkipped : rectangleOptions.borderSkipped,
+				backgroundColor: custom.backgroundColor ? custom.backgroundColor : helpers.getValueAtIndexOrDefault(dataset.backgroundColor, index, rectangleOptions.backgroundColor),
+				borderColor: custom.borderColor ? custom.borderColor : helpers.getValueAtIndexOrDefault(dataset.borderColor, index, rectangleOptions.borderColor),
+				borderWidth: custom.borderWidth ? custom.borderWidth : helpers.getValueAtIndexOrDefault(dataset.borderWidth, index, rectangleOptions.borderWidth)
+			};
+
+			me.updateElementGeometry(rectangle, index, reset);
+
+			rectangle.pivot();
+		},
+
+		/**
+		 * @private
+		 */
+		updateElementGeometry: function(rectangle, index, reset) {
+			var me = this;
+			var model = rectangle._model;
+			var vscale = me.getValueScale();
+			var base = vscale.getBasePixel();
+			var horizontal = vscale.isHorizontal();
+			var ruler = me._ruler || me.getRuler();
+			var vpixels = me.calculateBarValuePixels(me.index, index);
+			var ipixels = me.calculateBarIndexPixels(me.index, index, ruler);
+
+			model.horizontal = horizontal;
+			model.base = reset? base : vpixels.base;
+			model.x = horizontal? reset? base : vpixels.head : ipixels.center;
+			model.y = horizontal? ipixels.center : reset? base : vpixels.head;
+			model.height = horizontal? ipixels.size : undefined;
+			model.width = horizontal? undefined : ipixels.size;
+		},
+
+		/**
+		 * @private
+		 */
+		getValueScaleId: function() {
+			return this.getMeta().yAxisID;
+		},
+
+		/**
+		 * @private
+		 */
+		getIndexScaleId: function() {
+			return this.getMeta().xAxisID;
+		},
+
+		/**
+		 * @private
+		 */
+		getValueScale: function() {
+			return this.getScaleForId(this.getValueScaleId());
+		},
+
+		/**
+		 * @private
+		 */
+		getIndexScale: function() {
+			return this.getScaleForId(this.getIndexScaleId());
+		},
+
+		/**
+		 * Returns the effective number of stacks based on groups and bar visibility.
+		 * @private
+		 */
+		getStackCount: function(last) {
+			var me = this;
+			var chart = me.chart;
+			var scale = me.getIndexScale();
+			var stacked = scale.options.stacked;
+			var ilen = last === undefined? chart.data.datasets.length : last + 1;
+			var stacks = [];
+			var i, meta;
+
+			for (i = 0; i < ilen; ++i) {
+				meta = chart.getDatasetMeta(i);
+				if (meta.bar && chart.isDatasetVisible(i) &&
+					(stacked === false ||
+					(stacked === true && stacks.indexOf(meta.stack) === -1) ||
+					(stacked === undefined && (meta.stack === undefined || stacks.indexOf(meta.stack) === -1)))) {
+					stacks.push(meta.stack);
+				}
+			}
+
+			return stacks.length;
+		},
+
+		/**
+		 * Returns the stack index for the given dataset based on groups and bar visibility.
+		 * @private
+		 */
+		getStackIndex: function(datasetIndex) {
+			return this.getStackCount(datasetIndex) - 1;
+		},
+
+		/**
+		 * @private
+		 */
+		getRuler: function() {
+			var me = this;
+			var scale = me.getIndexScale();
+			var options = scale.options;
+			var stackCount = me.getStackCount();
+			var fullSize = scale.isHorizontal()? scale.width : scale.height;
+			var tickSize = fullSize / scale.ticks.length;
+			var categorySize = tickSize * options.categoryPercentage;
+			var fullBarSize = categorySize / stackCount;
+			var barSize = fullBarSize * options.barPercentage;
+
+			barSize = Math.min(
+				helpers.getValueOrDefault(options.barThickness, barSize),
+				helpers.getValueOrDefault(options.maxBarThickness, Infinity));
+
+			return {
+				stackCount: stackCount,
+				tickSize: tickSize,
+				categorySize: categorySize,
+				categorySpacing: tickSize - categorySize,
+				fullBarSize: fullBarSize,
+				barSize: barSize,
+				barSpacing: fullBarSize - barSize,
+				scale: scale
+			};
+		},
+
+		/**
+		 * Note: pixel values are not clamped to the scale area.
+		 * @private
+		 */
+		calculateBarValuePixels: function(datasetIndex, index) {
+			var me = this;
+			var chart = me.chart;
+			var meta = me.getMeta();
+			var scale = me.getValueScale();
+			var datasets = chart.data.datasets;
+			var value = Number(datasets[datasetIndex].data[index]);
+			var stacked = scale.options.stacked;
+			var stack = meta.stack;
+			var start = 0;
+			var i, imeta, ivalue, base, head, size;
+
+			if (stacked || (stacked === undefined && stack !== undefined)) {
+				for (i = 0; i < datasetIndex; ++i) {
+					imeta = chart.getDatasetMeta(i);
+
+					if (imeta.bar &&
+						imeta.stack === stack &&
+						imeta.controller.getValueScaleId() === scale.id &&
+						chart.isDatasetVisible(i)) {
+
+						ivalue = Number(datasets[i].data[index]);
+						if ((value < 0 && ivalue < 0) || (value >= 0 && ivalue > 0)) {
+							start += ivalue;
+						}
+					}
+				}
+			}
+
+			base = scale.getPixelForValue(start);
+			head = scale.getPixelForValue(start + value);
+			size = (head - base) / 2;
+
+			return {
+				size: size,
+				base: base,
+				head: head,
+				center: head + size / 2
+			};
+		},
+
+		/**
+		 * @private
+		 */
+		calculateBarIndexPixels: function(datasetIndex, index, ruler) {
+			var me = this;
+			var scale = ruler.scale;
+			var isCombo = me.chart.isCombo;
+			var stackIndex = me.getStackIndex(datasetIndex);
+			var base = scale.getPixelForValue(null, index, datasetIndex, isCombo);
+			var size = ruler.barSize;
+
+			base -= isCombo? ruler.tickSize / 2 : 0;
+			base += ruler.fullBarSize * stackIndex;
+			base += ruler.categorySpacing / 2;
+			base += ruler.barSpacing / 2;
+
+			return {
+				size: size,
+				base: base,
+				head: base + size,
+				center: base + size / 2
+			};
+		},
+
+		draw: function() {
+			var me = this;
+			var chart = me.chart;
+			var elements = me.getMeta().data;
+			var dataset = me.getDataset();
+			var ilen = elements.length;
+			var i = 0;
+			var d;
+
+			helpers.canvas.clipArea(chart.ctx, chart.chartArea);
+
+			for (; i<ilen; ++i) {
+				d = dataset.data[i];
+				if (d !== null && d !== undefined && !isNaN(d)) {
+					elements[i].draw();
+				}
+			}
+
+			helpers.canvas.unclipArea(chart.ctx);
+		},
+
+		setHoverStyle: function(rectangle) {
+			var dataset = this.chart.data.datasets[rectangle._datasetIndex];
+			var index = rectangle._index;
+			var custom = rectangle.custom || {};
+			var model = rectangle._model;
+
+			model.backgroundColor = custom.hoverBackgroundColor ? custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.hoverBackgroundColor, index, helpers.getHoverColor(model.backgroundColor));
+			model.borderColor = custom.hoverBorderColor ? custom.hoverBorderColor : helpers.getValueAtIndexOrDefault(dataset.hoverBorderColor, index, helpers.getHoverColor(model.borderColor));
+			model.borderWidth = custom.hoverBorderWidth ? custom.hoverBorderWidth : helpers.getValueAtIndexOrDefault(dataset.hoverBorderWidth, index, model.borderWidth);
+		},
+
+		removeHoverStyle: function(rectangle) {
+			var dataset = this.chart.data.datasets[rectangle._datasetIndex];
+			var index = rectangle._index;
+			var custom = rectangle.custom || {};
+			var model = rectangle._model;
+			var rectangleElementOptions = this.chart.options.elements.rectangle;
+
+			model.backgroundColor = custom.backgroundColor ? custom.backgroundColor : helpers.getValueAtIndexOrDefault(dataset.backgroundColor, index, rectangleElementOptions.backgroundColor);
+			model.borderColor = custom.borderColor ? custom.borderColor : helpers.getValueAtIndexOrDefault(dataset.borderColor, index, rectangleElementOptions.borderColor);
+			model.borderWidth = custom.borderWidth ? custom.borderWidth : helpers.getValueAtIndexOrDefault(dataset.borderWidth, index, rectangleElementOptions.borderWidth);
+		}
+	});
+
+
+	// including horizontalBar in the bar file, instead of a file of its own
+	// it extends bar (like pie extends doughnut)
+	Chart.defaults.horizontalBar = {
+		hover: {
+			mode: 'label'
+		},
+
+		scales: {
+			xAxes: [{
+				type: 'linear',
+				position: 'bottom'
+			}],
+			yAxes: [{
+				position: 'left',
+				type: 'category',
+
+				// Specific to Horizontal Bar Controller
+				categoryPercentage: 0.8,
+				barPercentage: 0.9,
+
+				// grid line settings
+				gridLines: {
+					offsetGridLines: true
+				}
+			}]
+		},
+		elements: {
+			rectangle: {
+				borderSkipped: 'left'
+			}
+		},
+		tooltips: {
+			callbacks: {
+				title: function(tooltipItems, data) {
+					// Pick first xLabel for now
+					var title = '';
+
+					if (tooltipItems.length > 0) {
+						if (tooltipItems[0].yLabel) {
+							title = tooltipItems[0].yLabel;
+						} else if (data.labels.length > 0 && tooltipItems[0].index < data.labels.length) {
+							title = data.labels[tooltipItems[0].index];
+						}
+					}
+
+					return title;
+				},
+				label: function(tooltipItem, data) {
+					var datasetLabel = data.datasets[tooltipItem.datasetIndex].label || '';
+					return datasetLabel + ': ' + tooltipItem.xLabel;
+				}
+			}
+		}
+	};
+
+	Chart.controllers.horizontalBar = Chart.controllers.bar.extend({
+		/**
+		 * @private
+		 */
+		getValueScaleId: function() {
+			return this.getMeta().xAxisID;
+		},
+
+		/**
+		 * @private
+		 */
+		getIndexScaleId: function() {
+			return this.getMeta().yAxisID;
+		}
+	});
+};
+
+},{}],13:[function(require,module,exports){
+'use strict';
+
+module.exports = function(Chart) {
+
+	var helpers = Chart.helpers;
+
+	Chart.defaults.bubble = {
+		hover: {
+			mode: 'single'
+		},
+
+		scales: {
+			xAxes: [{
+				type: 'linear', // bubble should probably use a linear scale by default
+				position: 'bottom',
+				id: 'x-axis-0' // need an ID so datasets can reference the scale
+			}],
+			yAxes: [{
+				type: 'linear',
+				position: 'left',
+				id: 'y-axis-0'
+			}]
+		},
+
+		tooltips: {
+			callbacks: {
+				title: function() {
+					// Title doesn't make sense for scatter since we format the data as a point
+					return '';
+				},
+				label: function(tooltipItem, data) {
+					var datasetLabel = data.datasets[tooltipItem.datasetIndex].label || '';
+					var dataPoint = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+					return datasetLabel + ': (' + tooltipItem.xLabel + ', ' + tooltipItem.yLabel + ', ' + dataPoint.r + ')';
+				}
+			}
+		}
+	};
+
+	Chart.controllers.bubble = Chart.DatasetController.extend({
+
+		dataElementType: Chart.elements.Point,
+
+		update: function(reset) {
+			var me = this;
+			var meta = me.getMeta();
+			var points = meta.data;
+
+			// Update Points
+			helpers.each(points, function(point, index) {
+				me.updateElement(point, index, reset);
+			});
+		},
+
+		updateElement: function(point, index, reset) {
+			var me = this;
+			var meta = me.getMeta();
+			var xScale = me.getScaleForId(meta.xAxisID);
+			var yScale = me.getScaleForId(meta.yAxisID);
+
+			var custom = point.custom || {};
+			var dataset = me.getDataset();
+			var data = dataset.data[index];
+			var pointElementOptions = me.chart.options.elements.point;
+			var dsIndex = me.index;
+
+			helpers.extend(point, {
+				// Utility
+				_xScale: xScale,
+				_yScale: yScale,
+				_datasetIndex: dsIndex,
+				_index: index,
+
+				// Desired view properties
+				_model: {
+					x: reset ? xScale.getPixelForDecimal(0.5) : xScale.getPixelForValue(typeof data === 'object' ? data : NaN, index, dsIndex, me.chart.isCombo),
+					y: reset ? yScale.getBasePixel() : yScale.getPixelForValue(data, index, dsIndex),
+					// Appearance
+					radius: reset ? 0 : custom.radius ? custom.radius : me.getRadius(data),
+
+					// Tooltip
+					hitRadius: custom.hitRadius ? custom.hitRadius : helpers.getValueAtIndexOrDefault(dataset.hitRadius, index, pointElementOptions.hitRadius)
+				}
+			});
+
+			// Trick to reset the styles of the point
+			Chart.DatasetController.prototype.removeHoverStyle.call(me, point, pointElementOptions);
+
+			var model = point._model;
+			model.skip = custom.skip ? custom.skip : (isNaN(model.x) || isNaN(model.y));
+
+			point.pivot();
+		},
+
+		getRadius: function(value) {
+			return value.r || this.chart.options.elements.point.radius;
+		},
+
+		setHoverStyle: function(point) {
+			var me = this;
+			Chart.DatasetController.prototype.setHoverStyle.call(me, point);
+
+			// Radius
+			var dataset = me.chart.data.datasets[point._datasetIndex];
+			var index = point._index;
+			var custom = point.custom || {};
+			var model = point._model;
+			model.radius = custom.hoverRadius ? custom.hoverRadius : (helpers.getValueAtIndexOrDefault(dataset.hoverRadius, index, me.chart.options.elements.point.hoverRadius)) + me.getRadius(dataset.data[index]);
+		},
+
+		removeHoverStyle: function(point) {
+			var me = this;
+			Chart.DatasetController.prototype.removeHoverStyle.call(me, point, me.chart.options.elements.point);
+
+			var dataVal = me.chart.data.datasets[point._datasetIndex].data[point._index];
+			var custom = point.custom || {};
+			var model = point._model;
+
+			model.radius = custom.radius ? custom.radius : me.getRadius(dataVal);
+		}
+	});
+};
+
+},{}],14:[function(require,module,exports){
+'use strict';
+
+module.exports = function(Chart) {
+
+	var helpers = Chart.helpers,
+		defaults = Chart.defaults;
+
+	defaults.doughnut = {
+		animation: {
+			// Boolean - Whether we animate the rotation of the Doughnut
+			animateRotate: true,
+			// Boolean - Whether we animate scaling the Doughnut from the centre
+			animateScale: false
+		},
+		aspectRatio: 1,
+		hover: {
+			mode: 'single'
+		},
+		legendCallback: function(chart) {
+			var text = [];
+			text.push('<ul class="' + chart.id + '-legend">');
+
+			var data = chart.data;
+			var datasets = data.datasets;
+			var labels = data.labels;
+
+			if (datasets.length) {
+				for (var i = 0; i < datasets[0].data.length; ++i) {
+					text.push('<li><span style="background-color:' + datasets[0].backgroundColor[i] + '"></span>');
+					if (labels[i]) {
+						text.push(labels[i]);
+					}
+					text.push('</li>');
+				}
+			}
+
+			text.push('</ul>');
+			return text.join('');
+		},
+		legend: {
+			labels: {
+				generateLabels: function(chart) {
+					var data = chart.data;
+					if (data.labels.length && data.datasets.length) {
+						return data.labels.map(function(label, i) {
+							var meta = chart.getDatasetMeta(0);
+							var ds = data.datasets[0];
+							var arc = meta.data[i];
+							var custom = arc && arc.custom || {};
+							var getValueAtIndexOrDefault = helpers.getValueAtIndexOrDefault;
+							var arcOpts = chart.options.elements.arc;
+							var fill = custom.backgroundColor ? custom.backgroundColor : getValueAtIndexOrDefault(ds.backgroundColor, i, arcOpts.backgroundColor);
+							var stroke = custom.borderColor ? custom.borderColor : getValueAtIndexOrDefault(ds.borderColor, i, arcOpts.borderColor);
+							var bw = custom.borderWidth ? custom.borderWidth : getValueAtIndexOrDefault(ds.borderWidth, i, arcOpts.borderWidth);
+
+							return {
+								text: label,
+								fillStyle: fill,
+								strokeStyle: stroke,
+								lineWidth: bw,
+								hidden: isNaN(ds.data[i]) || meta.data[i].hidden,
+
+								// Extra data used for toggling the correct item
+								index: i
+							};
+						});
+					}
+					return [];
+				}
+			},
+
+			onClick: function(e, legendItem) {
+				var index = legendItem.index;
+				var chart = this.chart;
+				var i, ilen, meta;
+
+				for (i = 0, ilen = (chart.data.datasets || []).length; i < ilen; ++i) {
+					meta = chart.getDatasetMeta(i);
+					// toggle visibility of index if exists
+					if (meta.data[index]) {
+						meta.data[index].hidden = !meta.data[index].hidden;
+					}
+				}
+
+				chart.update();
+			}
+		},
+
+		// The percentage of the chart that we cut out of the middle.
+		cutoutPercentage: 50,
+
+		// The rotation of the chart, where the first data arc begins.
+		rotation: Math.PI * -0.5,
+
+		// The total circumference of the chart.
+		circumference: Math.PI * 2.0,
+
+		// Need to override these to give a nice default
+		tooltips: {
+			callbacks: {
+				title: function() {
+					return '';
+				},
+				label: function(tooltipItem, data) {
+					var dataLabel = data.labels[tooltipItem.index];
+					var value = ': ' + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+
+					if (helpers.isArray(dataLabel)) {
+						// show value on first line of multiline label
+						// need to clone because we are changing the value
+						dataLabel = dataLabel.slice();
+						dataLabel[0] += value;
+					} else {
+						dataLabel += value;
+					}
+
+					return dataLabel;
+				}
+			}
+		}
+	};
+
+	defaults.pie = helpers.clone(defaults.doughnut);
+	helpers.extend(defaults.pie, {
+		cutoutPercentage: 0
+	});
+
+
+	Chart.controllers.doughnut = Chart.controllers.pie = Chart.DatasetController.extend({
+
+		dataElementType: Chart.elements.Arc,
+
+		linkScales: helpers.noop,
+
+		// Get index of the dataset in relation to the visible datasets. This allows determining the inner and outer radius correctly
+		getRingIndex: function(datasetIndex) {
+			var ringIndex = 0;
+
+			for (var j = 0; j < datasetIndex; ++j) {
+				if (this.chart.isDatasetVisible(j)) {
+					++ringIndex;
+				}
+			}
+
+			return ringIndex;
+		},
+
+		update: function(reset) {
+			var me = this;
+			var chart = me.chart,
+				chartArea = chart.chartArea,
+				opts = chart.options,
+				arcOpts = opts.elements.arc,
+				availableWidth = chartArea.right - chartArea.left - arcOpts.borderWidth,
+				availableHeight = chartArea.bottom - chartArea.top - arcOpts.borderWidth,
+				minSize = Math.min(availableWidth, availableHeight),
+				offset = {
+					x: 0,
+					y: 0
+				},
+				meta = me.getMeta(),
+				cutoutPercentage = opts.cutoutPercentage,
+				circumference = opts.circumference;
+
+			// If the chart's circumference isn't a full circle, calculate minSize as a ratio of the width/height of the arc
+			if (circumference < Math.PI * 2.0) {
+				var startAngle = opts.rotation % (Math.PI * 2.0);
+				startAngle += Math.PI * 2.0 * (startAngle >= Math.PI ? -1 : startAngle < -Math.PI ? 1 : 0);
+				var endAngle = startAngle + circumference;
+				var start = {x: Math.cos(startAngle), y: Math.sin(startAngle)};
+				var end = {x: Math.cos(endAngle), y: Math.sin(endAngle)};
+				var contains0 = (startAngle <= 0 && 0 <= endAngle) || (startAngle <= Math.PI * 2.0 && Math.PI * 2.0 <= endAngle);
+				var contains90 = (startAngle <= Math.PI * 0.5 && Math.PI * 0.5 <= endAngle) || (startAngle <= Math.PI * 2.5 && Math.PI * 2.5 <= endAngle);
+				var contains180 = (startAngle <= -Math.PI && -Math.PI <= endAngle) || (startAngle <= Math.PI && Math.PI <= endAngle);
+				var contains270 = (startAngle <= -Math.PI * 0.5 && -Math.PI * 0.5 <= endAngle) || (startAngle <= Math.PI * 1.5 && Math.PI * 1.5 <= endAngle);
+				var cutout = cutoutPercentage / 100.0;
+				var min = {x: contains180 ? -1 : Math.min(start.x * (start.x < 0 ? 1 : cutout), end.x * (end.x < 0 ? 1 : cutout)), y: contains270 ? -1 : Math.min(start.y * (start.y < 0 ? 1 : cutout), end.y * (end.y < 0 ? 1 : cutout))};
+				var max = {x: contains0 ? 1 : Math.max(start.x * (start.x > 0 ? 1 : cutout), end.x * (end.x > 0 ? 1 : cutout)), y: contains90 ? 1 : Math.max(start.y * (start.y > 0 ? 1 : cutout), end.y * (end.y > 0 ? 1 : cutout))};
+				var size = {width: (max.x - min.x) * 0.5, height: (max.y - min.y) * 0.5};
+				minSize = Math.min(availableWidth / size.width, availableHeight / size.height);
+				offset = {x: (max.x + min.x) * -0.5, y: (max.y + min.y) * -0.5};
+			}
+
+			chart.borderWidth = me.getMaxBorderWidth(meta.data);
+			chart.outerRadius = Math.max((minSize - chart.borderWidth) / 2, 0);
+			chart.innerRadius = Math.max(cutoutPercentage ? (chart.outerRadius / 100) * (cutoutPercentage) : 0, 0);
+			chart.radiusLength = (chart.outerRadius - chart.innerRadius) / chart.getVisibleDatasetCount();
+			chart.offsetX = offset.x * chart.outerRadius;
+			chart.offsetY = offset.y * chart.outerRadius;
+
+			meta.total = me.calculateTotal();
+
+			me.outerRadius = chart.outerRadius - (chart.radiusLength * me.getRingIndex(me.index));
+			me.innerRadius = Math.max(me.outerRadius - chart.radiusLength, 0);
+
+			helpers.each(meta.data, function(arc, index) {
+				me.updateElement(arc, index, reset);
+			});
+		},
+
+		updateElement: function(arc, index, reset) {
+			var me = this;
+			var chart = me.chart,
+				chartArea = chart.chartArea,
+				opts = chart.options,
+				animationOpts = opts.animation,
+				centerX = (chartArea.left + chartArea.right) / 2,
+				centerY = (chartArea.top + chartArea.bottom) / 2,
+				startAngle = opts.rotation, // non reset case handled later
+				endAngle = opts.rotation, // non reset case handled later
+				dataset = me.getDataset(),
+				circumference = reset && animationOpts.animateRotate ? 0 : arc.hidden ? 0 : me.calculateCircumference(dataset.data[index]) * (opts.circumference / (2.0 * Math.PI)),
+				innerRadius = reset && animationOpts.animateScale ? 0 : me.innerRadius,
+				outerRadius = reset && animationOpts.animateScale ? 0 : me.outerRadius,
+				valueAtIndexOrDefault = helpers.getValueAtIndexOrDefault;
+
+			helpers.extend(arc, {
+				// Utility
+				_datasetIndex: me.index,
+				_index: index,
+
+				// Desired view properties
+				_model: {
+					x: centerX + chart.offsetX,
+					y: centerY + chart.offsetY,
+					startAngle: startAngle,
+					endAngle: endAngle,
+					circumference: circumference,
+					outerRadius: outerRadius,
+					innerRadius: innerRadius,
+					label: valueAtIndexOrDefault(dataset.label, index, chart.data.labels[index])
+				}
+			});
+
+			var model = arc._model;
+			// Resets the visual styles
+			this.removeHoverStyle(arc);
+
+			// Set correct angles if not resetting
+			if (!reset || !animationOpts.animateRotate) {
+				if (index === 0) {
+					model.startAngle = opts.rotation;
+				} else {
+					model.startAngle = me.getMeta().data[index - 1]._model.endAngle;
+				}
+
+				model.endAngle = model.startAngle + model.circumference;
+			}
+
+			arc.pivot();
+		},
+
+		removeHoverStyle: function(arc) {
+			Chart.DatasetController.prototype.removeHoverStyle.call(this, arc, this.chart.options.elements.arc);
+		},
+
+		calculateTotal: function() {
+			var dataset = this.getDataset();
+			var meta = this.getMeta();
+			var total = 0;
+			var value;
+
+			helpers.each(meta.data, function(element, index) {
+				value = dataset.data[index];
+				if (!isNaN(value) && !element.hidden) {
+					total += Math.abs(value);
+				}
+			});
+
+			/* if (total === 0) {
+				total = NaN;
+			}*/
+
+			return total;
+		},
+
+		calculateCircumference: function(value) {
+			var total = this.getMeta().total;
+			if (total > 0 && !isNaN(value)) {
+				return (Math.PI * 2.0) * (value / total);
+			}
+			return 0;
+		},
+
+		// gets the max border or hover width to properly scale pie charts
+		getMaxBorderWidth: function(elements) {
+			var max = 0,
+				index = this.index,
+				length = elements.length,
+				borderWidth,
+				hoverWidth;
+
+			for (var i = 0; i < length; i++) {
+				borderWidth = elements[i]._model ? elements[i]._model.borderWidth : 0;
+				hoverWidth = elements[i]._chart ? elements[i]._chart.config.data.datasets[index].hoverBorderWidth : 0;
+
+				max = borderWidth > max ? borderWidth : max;
+				max = hoverWidth > max ? hoverWidth : max;
+			}
+			return max;
+		}
+	});
+};
+
+},{}],15:[function(require,module,exports){
+'use strict';
+
+module.exports = function(Chart) {
+
+	var helpers = Chart.helpers;
+
+	Chart.defaults.line = {
+		showLines: true,
+		spanGaps: false,
+
+		hover: {
+			mode: 'label'
+		},
+
+		scales: {
+			xAxes: [{
+				type: 'category',
+				id: 'x-axis-0'
+			}],
+			yAxes: [{
+				type: 'linear',
+				id: 'y-axis-0'
+			}]
+		}
+	};
+
+	function lineEnabled(dataset, options) {
+		return helpers.getValueOrDefault(dataset.showLine, options.showLines);
+	}
+
+	Chart.controllers.line = Chart.DatasetController.extend({
+
+		datasetElementType: Chart.elements.Line,
+
+		dataElementType: Chart.elements.Point,
+
+		update: function(reset) {
+			var me = this;
+			var meta = me.getMeta();
+			var line = meta.dataset;
+			var points = meta.data || [];
+			var options = me.chart.options;
+			var lineElementOptions = options.elements.line;
+			var scale = me.getScaleForId(meta.yAxisID);
+			var i, ilen, custom;
+			var dataset = me.getDataset();
+			var showLine = lineEnabled(dataset, options);
+
+			// Update Line
+			if (showLine) {
+				custom = line.custom || {};
+
+				// Compatibility: If the properties are defined with only the old name, use those values
+				if ((dataset.tension !== undefined) && (dataset.lineTension === undefined)) {
+					dataset.lineTension = dataset.tension;
+				}
+
+				// Utility
+				line._scale = scale;
+				line._datasetIndex = me.index;
+				// Data
+				line._children = points;
+				// Model
+				line._model = {
+					// Appearance
+					// The default behavior of lines is to break at null values, according
+					// to https://github.com/chartjs/Chart.js/issues/2435#issuecomment-216718158
+					// This option gives lines the ability to span gaps
+					spanGaps: dataset.spanGaps ? dataset.spanGaps : options.spanGaps,
+					tension: custom.tension ? custom.tension : helpers.getValueOrDefault(dataset.lineTension, lineElementOptions.tension),
+					backgroundColor: custom.backgroundColor ? custom.backgroundColor : (dataset.backgroundColor || lineElementOptions.backgroundColor),
+					borderWidth: custom.borderWidth ? custom.borderWidth : (dataset.borderWidth || lineElementOptions.borderWidth),
+					borderColor: custom.borderColor ? custom.borderColor : (dataset.borderColor || lineElementOptions.borderColor),
+					borderCapStyle: custom.borderCapStyle ? custom.borderCapStyle : (dataset.borderCapStyle || lineElementOptions.borderCapStyle),
+					borderDash: custom.borderDash ? custom.borderDash : (dataset.borderDash || lineElementOptions.borderDash),
+					borderDashOffset: custom.borderDashOffset ? custom.borderDashOffset : (dataset.borderDashOffset || lineElementOptions.borderDashOffset),
+					borderJoinStyle: custom.borderJoinStyle ? custom.borderJoinStyle : (dataset.borderJoinStyle || lineElementOptions.borderJoinStyle),
+					fill: custom.fill ? custom.fill : (dataset.fill !== undefined ? dataset.fill : lineElementOptions.fill),
+					steppedLine: custom.steppedLine ? custom.steppedLine : helpers.getValueOrDefault(dataset.steppedLine, lineElementOptions.stepped),
+					cubicInterpolationMode: custom.cubicInterpolationMode ? custom.cubicInterpolationMode : helpers.getValueOrDefault(dataset.cubicInterpolationMode, lineElementOptions.cubicInterpolationMode),
+				};
+
+				line.pivot();
+			}
+
+			// Update Points
+			for (i=0, ilen=points.length; i<ilen; ++i) {
+				me.updateElement(points[i], i, reset);
+			}
+
+			if (showLine && line._model.tension !== 0) {
+				me.updateBezierControlPoints();
+			}
+
+			// Now pivot the point for animation
+			for (i=0, ilen=points.length; i<ilen; ++i) {
+				points[i].pivot();
+			}
+		},
+
+		getPointBackgroundColor: function(point, index) {
+			var backgroundColor = this.chart.options.elements.point.backgroundColor;
+			var dataset = this.getDataset();
+			var custom = point.custom || {};
+
+			if (custom.backgroundColor) {
+				backgroundColor = custom.backgroundColor;
+			} else if (dataset.pointBackgroundColor) {
+				backgroundColor = helpers.getValueAtIndexOrDefault(dataset.pointBackgroundColor, index, backgroundColor);
+			} else if (dataset.backgroundColor) {
+				backgroundColor = dataset.backgroundColor;
+			}
+
+			return backgroundColor;
+		},
+
+		getPointBorderColor: function(point, index) {
+			var borderColor = this.chart.options.elements.point.borderColor;
+			var dataset = this.getDataset();
+			var custom = point.custom || {};
+
+			if (custom.borderColor) {
+				borderColor = custom.borderColor;
+			} else if (dataset.pointBorderColor) {
+				borderColor = helpers.getValueAtIndexOrDefault(dataset.pointBorderColor, index, borderColor);
+			} else if (dataset.borderColor) {
+				borderColor = dataset.borderColor;
+			}
+
+			return borderColor;
+		},
+
+		getPointBorderWidth: function(point, index) {
+			var borderWidth = this.chart.options.elements.point.borderWidth;
+			var dataset = this.getDataset();
+			var custom = point.custom || {};
+
+			if (!isNaN(custom.borderWidth)) {
+				borderWidth = custom.borderWidth;
+			} else if (!isNaN(dataset.pointBorderWidth)) {
+				borderWidth = helpers.getValueAtIndexOrDefault(dataset.pointBorderWidth, index, borderWidth);
+			} else if (!isNaN(dataset.borderWidth)) {
+				borderWidth = dataset.borderWidth;
+			}
+
+			return borderWidth;
+		},
+
+		updateElement: function(point, index, reset) {
+			var me = this;
+			var meta = me.getMeta();
+			var custom = point.custom || {};
+			var dataset = me.getDataset();
+			var datasetIndex = me.index;
+			var value = dataset.data[index];
+			var yScale = me.getScaleForId(meta.yAxisID);
+			var xScale = me.getScaleForId(meta.xAxisID);
+			var pointOptions = me.chart.options.elements.point;
+			var x, y;
+			var labels = me.chart.data.labels || [];
+			var includeOffset = (labels.length === 1 || dataset.data.length === 1) || me.chart.isCombo;
+
+			// Compatibility: If the properties are defined with only the old name, use those values
+			if ((dataset.radius !== undefined) && (dataset.pointRadius === undefined)) {
+				dataset.pointRadius = dataset.radius;
+			}
+			if ((dataset.hitRadius !== undefined) && (dataset.pointHitRadius === undefined)) {
+				dataset.pointHitRadius = dataset.hitRadius;
+			}
+
+			x = xScale.getPixelForValue(typeof value === 'object' ? value : NaN, index, datasetIndex, includeOffset);
+			y = reset ? yScale.getBasePixel() : me.calculatePointY(value, index, datasetIndex);
+
+			// Utility
+			point._xScale = xScale;
+			point._yScale = yScale;
+			point._datasetIndex = datasetIndex;
+			point._index = index;
+
+			// Desired view properties
+			point._model = {
+				x: x,
+				y: y,
+				skip: custom.skip || isNaN(x) || isNaN(y),
+				// Appearance
+				radius: custom.radius || helpers.getValueAtIndexOrDefault(dataset.pointRadius, index, pointOptions.radius),
+				pointStyle: custom.pointStyle || helpers.getValueAtIndexOrDefault(dataset.pointStyle, index, pointOptions.pointStyle),
+				backgroundColor: me.getPointBackgroundColor(point, index),
+				borderColor: me.getPointBorderColor(point, index),
+				borderWidth: me.getPointBorderWidth(point, index),
+				tension: meta.dataset._model ? meta.dataset._model.tension : 0,
+				steppedLine: meta.dataset._model ? meta.dataset._model.steppedLine : false,
+				// Tooltip
+				hitRadius: custom.hitRadius || helpers.getValueAtIndexOrDefault(dataset.pointHitRadius, index, pointOptions.hitRadius)
+			};
+		},
+
+		calculatePointY: function(value, index, datasetIndex) {
+			var me = this;
+			var chart = me.chart;
+			var meta = me.getMeta();
+			var yScale = me.getScaleForId(meta.yAxisID);
+			var sumPos = 0;
+			var sumNeg = 0;
+			var i, ds, dsMeta;
+
+			if (yScale.options.stacked) {
+				for (i = 0; i < datasetIndex; i++) {
+					ds = chart.data.datasets[i];
+					dsMeta = chart.getDatasetMeta(i);
+					if (dsMeta.type === 'line' && dsMeta.yAxisID === yScale.id && chart.isDatasetVisible(i)) {
+						var stackedRightValue = Number(yScale.getRightValue(ds.data[index]));
+						if (stackedRightValue < 0) {
+							sumNeg += stackedRightValue || 0;
+						} else {
+							sumPos += stackedRightValue || 0;
+						}
+					}
+				}
+
+				var rightValue = Number(yScale.getRightValue(value));
+				if (rightValue < 0) {
+					return yScale.getPixelForValue(sumNeg + rightValue);
+				}
+				return yScale.getPixelForValue(sumPos + rightValue);
+			}
+
+			return yScale.getPixelForValue(value);
+		},
+
+		updateBezierControlPoints: function() {
+			var me = this;
+			var meta = me.getMeta();
+			var area = me.chart.chartArea;
+			var points = (meta.data || []);
+			var i, ilen, point, model, controlPoints;
+
+			// Only consider points that are drawn in case the spanGaps option is used
+			if (meta.dataset._model.spanGaps) {
+				points = points.filter(function(pt) {
+					return !pt._model.skip;
+				});
+			}
+
+			function capControlPoint(pt, min, max) {
+				return Math.max(Math.min(pt, max), min);
+			}
+
+			if (meta.dataset._model.cubicInterpolationMode === 'monotone') {
+				helpers.splineCurveMonotone(points);
+			} else {
+				for (i = 0, ilen = points.length; i < ilen; ++i) {
+					point = points[i];
+					model = point._model;
+					controlPoints = helpers.splineCurve(
+						helpers.previousItem(points, i)._model,
+						model,
+						helpers.nextItem(points, i)._model,
+						meta.dataset._model.tension
+					);
+					model.controlPointPreviousX = controlPoints.previous.x;
+					model.controlPointPreviousY = controlPoints.previous.y;
+					model.controlPointNextX = controlPoints.next.x;
+					model.controlPointNextY = controlPoints.next.y;
+				}
+			}
+
+			if (me.chart.options.elements.line.capBezierPoints) {
+				for (i = 0, ilen = points.length; i < ilen; ++i) {
+					model = points[i]._model;
+					model.controlPointPreviousX = capControlPoint(model.controlPointPreviousX, area.left, area.right);
+					model.controlPointPreviousY = capControlPoint(model.controlPointPreviousY, area.top, area.bottom);
+					model.controlPointNextX = capControlPoint(model.controlPointNextX, area.left, area.right);
+					model.controlPointNextY = capControlPoint(model.controlPointNextY, area.top, area.bottom);
+				}
+			}
+		},
+
+		draw: function() {
+			var me = this;
+			var chart = me.chart;
+			var meta = me.getMeta();
+			var points = meta.data || [];
+			var area = chart.chartArea;
+			var ilen = points.length;
+			var i = 0;
+
+			Chart.canvasHelpers.clipArea(chart.ctx, area);
+
+			if (lineEnabled(me.getDataset(), chart.options)) {
+				meta.dataset.draw();
+			}
+
+			Chart.canvasHelpers.unclipArea(chart.ctx);
+
+			// Draw the points
+			for (; i<ilen; ++i) {
+				points[i].draw(area);
+			}
+		},
+
+		setHoverStyle: function(point) {
+			// Point
+			var dataset = this.chart.data.datasets[point._datasetIndex];
+			var index = point._index;
+			var custom = point.custom || {};
+			var model = point._model;
+
+			model.radius = custom.hoverRadius || helpers.getValueAtIndexOrDefault(dataset.pointHoverRadius, index, this.chart.options.elements.point.hoverRadius);
+			model.backgroundColor = custom.hoverBackgroundColor || helpers.getValueAtIndexOrDefault(dataset.pointHoverBackgroundColor, index, helpers.getHoverColor(model.backgroundColor));
+			model.borderColor = custom.hoverBorderColor || helpers.getValueAtIndexOrDefault(dataset.pointHoverBorderColor, index, helpers.getHoverColor(model.borderColor));
+			model.borderWidth = custom.hoverBorderWidth || helpers.getValueAtIndexOrDefault(dataset.pointHoverBorderWidth, index, model.borderWidth);
+		},
+
+		removeHoverStyle: function(point) {
+			var me = this;
+			var dataset = me.chart.data.datasets[point._datasetIndex];
+			var index = point._index;
+			var custom = point.custom || {};
+			var model = point._model;
+
+			// Compatibility: If the properties are defined with only the old name, use those values
+			if ((dataset.radius !== undefined) && (dataset.pointRadius === undefined)) {
+				dataset.pointRadius = dataset.radius;
+			}
+
+			model.radius = custom.radius || helpers.getValueAtIndexOrDefault(dataset.pointRadius, index, me.chart.options.elements.point.radius);
+			model.backgroundColor = me.getPointBackgroundColor(point, index);
+			model.borderColor = me.getPointBorderColor(point, index);
+			model.borderWidth = me.getPointBorderWidth(point, index);
+		}
+	});
+};
+
+},{}],16:[function(require,module,exports){
+'use strict';
+
+module.exports = function(Chart) {
+
+	var helpers = Chart.helpers;
+
+	Chart.defaults.polarArea = {
+
+		scale: {
+			type: 'radialLinear',
+			angleLines: {
+				display: false
+			},
+			gridLines: {
+				circular: true
+			},
+			pointLabels: {
+				display: false
+			},
+			ticks: {
+				beginAtZero: true
+			}
+		},
+
+		// Boolean - Whether to animate the rotation of the chart
+		animation: {
+			animateRotate: true,
+			animateScale: true
+		},
+
+		startAngle: -0.5 * Math.PI,
+		aspectRatio: 1,
+		legendCallback: function(chart) {
+			var text = [];
+			text.push('<ul class="' + chart.id + '-legend">');
+
+			var data = chart.data;
+			var datasets = data.datasets;
+			var labels = data.labels;
+
+			if (datasets.length) {
+				for (var i = 0; i < datasets[0].data.length; ++i) {
+					text.push('<li><span style="background-color:' + datasets[0].backgroundColor[i] + '"></span>');
+					if (labels[i]) {
+						text.push(labels[i]);
+					}
+					text.push('</li>');
+				}
+			}
+
+			text.push('</ul>');
+			return text.join('');
+		},
+		legend: {
+			labels: {
+				generateLabels: function(chart) {
+					var data = chart.data;
+					if (data.labels.length && data.datasets.length) {
+						return data.labels.map(function(label, i) {
+							var meta = chart.getDatasetMeta(0);
+							var ds = data.datasets[0];
+							var arc = meta.data[i];
+							var custom = arc.custom || {};
+							var getValueAtIndexOrDefault = helpers.getValueAtIndexOrDefault;
+							var arcOpts = chart.options.elements.arc;
+							var fill = custom.backgroundColor ? custom.backgroundColor : getValueAtIndexOrDefault(ds.backgroundColor, i, arcOpts.backgroundColor);
+							var stroke = custom.borderColor ? custom.borderColor : getValueAtIndexOrDefault(ds.borderColor, i, arcOpts.borderColor);
+							var bw = custom.borderWidth ? custom.borderWidth : getValueAtIndexOrDefault(ds.borderWidth, i, arcOpts.borderWidth);
+
+							return {
+								text: label,
+								fillStyle: fill,
+								strokeStyle: stroke,
+								lineWidth: bw,
+								hidden: isNaN(ds.data[i]) || meta.data[i].hidden,
+
+								// Extra data used for toggling the correct item
+								index: i
+							};
+						});
+					}
+					return [];
+				}
+			},
+
+			onClick: function(e, legendItem) {
+				var index = legendItem.index;
+				var chart = this.chart;
+				var i, ilen, meta;
+
+				for (i = 0, ilen = (chart.data.datasets || []).length; i < ilen; ++i) {
+					meta = chart.getDatasetMeta(i);
+					meta.data[index].hidden = !meta.data[index].hidden;
+				}
+
+				chart.update();
+			}
+		},
+
+		// Need to override these to give a nice default
+		tooltips: {
+			callbacks: {
+				title: function() {
+					return '';
+				},
+				label: function(tooltipItem, data) {
+					return data.labels[tooltipItem.index] + ': ' + tooltipItem.yLabel;
+				}
+			}
+		}
+	};
+
+	Chart.controllers.polarArea = Chart.DatasetController.extend({
+
+		dataElementType: Chart.elements.Arc,
+
+		linkScales: helpers.noop,
+
+		update: function(reset) {
+			var me = this;
+			var chart = me.chart;
+			var chartArea = chart.chartArea;
+			var meta = me.getMeta();
+			var opts = chart.options;
+			var arcOpts = opts.elements.arc;
+			var minSize = Math.min(chartArea.right - chartArea.left, chartArea.bottom - chartArea.top);
+			chart.outerRadius = Math.max((minSize - arcOpts.borderWidth / 2) / 2, 0);
+			chart.innerRadius = Math.max(opts.cutoutPercentage ? (chart.outerRadius / 100) * (opts.cutoutPercentage) : 1, 0);
+			chart.radiusLength = (chart.outerRadius - chart.innerRadius) / chart.getVisibleDatasetCount();
+
+			me.outerRadius = chart.outerRadius - (chart.radiusLength * me.index);
+			me.innerRadius = me.outerRadius - chart.radiusLength;
+
+			meta.count = me.countVisibleElements();
+
+			helpers.each(meta.data, function(arc, index) {
+				me.updateElement(arc, index, reset);
+			});
+		},
+
+		updateElement: function(arc, index, reset) {
+			var me = this;
+			var chart = me.chart;
+			var dataset = me.getDataset();
+			var opts = chart.options;
+			var animationOpts = opts.animation;
+			var scale = chart.scale;
+			var getValueAtIndexOrDefault = helpers.getValueAtIndexOrDefault;
+			var labels = chart.data.labels;
+
+			var circumference = me.calculateCircumference(dataset.data[index]);
+			var centerX = scale.xCenter;
+			var centerY = scale.yCenter;
+
+			// If there is NaN data before us, we need to calculate the starting angle correctly.
+			// We could be way more efficient here, but its unlikely that the polar area chart will have a lot of data
+			var visibleCount = 0;
+			var meta = me.getMeta();
+			for (var i = 0; i < index; ++i) {
+				if (!isNaN(dataset.data[i]) && !meta.data[i].hidden) {
+					++visibleCount;
+				}
+			}
+
+			// var negHalfPI = -0.5 * Math.PI;
+			var datasetStartAngle = opts.startAngle;
+			var distance = arc.hidden ? 0 : scale.getDistanceFromCenterForValue(dataset.data[index]);
+			var startAngle = datasetStartAngle + (circumference * visibleCount);
+			var endAngle = startAngle + (arc.hidden ? 0 : circumference);
+
+			var resetRadius = animationOpts.animateScale ? 0 : scale.getDistanceFromCenterForValue(dataset.data[index]);
+
+			helpers.extend(arc, {
+				// Utility
+				_datasetIndex: me.index,
+				_index: index,
+				_scale: scale,
+
+				// Desired view properties
+				_model: {
+					x: centerX,
+					y: centerY,
+					innerRadius: 0,
+					outerRadius: reset ? resetRadius : distance,
+					startAngle: reset && animationOpts.animateRotate ? datasetStartAngle : startAngle,
+					endAngle: reset && animationOpts.animateRotate ? datasetStartAngle : endAngle,
+					label: getValueAtIndexOrDefault(labels, index, labels[index])
+				}
+			});
+
+			// Apply border and fill style
+			me.removeHoverStyle(arc);
+
+			arc.pivot();
+		},
+
+		removeHoverStyle: function(arc) {
+			Chart.DatasetController.prototype.removeHoverStyle.call(this, arc, this.chart.options.elements.arc);
+		},
+
+		countVisibleElements: function() {
+			var dataset = this.getDataset();
+			var meta = this.getMeta();
+			var count = 0;
+
+			helpers.each(meta.data, function(element, index) {
+				if (!isNaN(dataset.data[index]) && !element.hidden) {
+					count++;
+				}
+			});
+
+			return count;
+		},
+
+		calculateCircumference: function(value) {
+			var count = this.getMeta().count;
+			if (count > 0 && !isNaN(value)) {
+				return (2 * Math.PI) / count;
+			}
+			return 0;
+		}
+	});
+};
+
+},{}],17:[function(require,module,exports){
+'use strict';
+
+module.exports = function(Chart) {
+
+	var helpers = Chart.helpers;
+
+	Chart.defaults.radar = {
+		aspectRatio: 1,
+		scale: {
+			type: 'radialLinear'
+		},
+		elements: {
+			line: {
+				tension: 0 // no bezier in radar
+			}
+		}
+	};
+
+	Chart.controllers.radar = Chart.DatasetController.extend({
+
+		datasetElementType: Chart.elements.Line,
+
+		dataElementType: Chart.elements.Point,
+
+		linkScales: helpers.noop,
+
+		update: function(reset) {
+			var me = this;
+			var meta = me.getMeta();
+			var line = meta.dataset;
+			var points = meta.data;
+			var custom = line.custom || {};
+			var dataset = me.getDataset();
+			var lineElementOptions = me.chart.options.elements.line;
+			var scale = me.chart.scale;
+
+			// Compatibility: If the properties are defined with only the old name, use those values
+			if ((dataset.tension !== undefined) && (dataset.lineTension === undefined)) {
+				dataset.lineTension = dataset.tension;
+			}
+
+			helpers.extend(meta.dataset, {
+				// Utility
+				_datasetIndex: me.index,
+				_scale: scale,
+				// Data
+				_children: points,
+				_loop: true,
+				// Model
+				_model: {
+					// Appearance
+					tension: custom.tension ? custom.tension : helpers.getValueOrDefault(dataset.lineTension, lineElementOptions.tension),
+					backgroundColor: custom.backgroundColor ? custom.backgroundColor : (dataset.backgroundColor || lineElementOptions.backgroundColor),
+					borderWidth: custom.borderWidth ? custom.borderWidth : (dataset.borderWidth || lineElementOptions.borderWidth),
+					borderColor: custom.borderColor ? custom.borderColor : (dataset.borderColor || lineElementOptions.borderColor),
+					fill: custom.fill ? custom.fill : (dataset.fill !== undefined ? dataset.fill : lineElementOptions.fill),
+					borderCapStyle: custom.borderCapStyle ? custom.borderCapStyle : (dataset.borderCapStyle || lineElementOptions.borderCapStyle),
+					borderDash: custom.borderDash ? custom.borderDash : (dataset.borderDash || lineElementOptions.borderDash),
+					borderDashOffset: custom.borderDashOffset ? custom.borderDashOffset : (dataset.borderDashOffset || lineElementOptions.borderDashOffset),
+					borderJoinStyle: custom.borderJoinStyle ? custom.borderJoinStyle : (dataset.borderJoinStyle || lineElementOptions.borderJoinStyle),
+				}
+			});
+
+			meta.dataset.pivot();
+
+			// Update Points
+			helpers.each(points, function(point, index) {
+				me.updateElement(point, index, reset);
+			}, me);
+
+			// Update bezier control points
+			me.updateBezierControlPoints();
+		},
+		updateElement: function(point, index, reset) {
+			var me = this;
+			var custom = point.custom || {};
+			var dataset = me.getDataset();
+			var scale = me.chart.scale;
+			var pointElementOptions = me.chart.options.elements.point;
+			var pointPosition = scale.getPointPositionForValue(index, dataset.data[index]);
+
+			// Compatibility: If the properties are defined with only the old name, use those values
+			if ((dataset.radius !== undefined) && (dataset.pointRadius === undefined)) {
+				dataset.pointRadius = dataset.radius;
+			}
+			if ((dataset.hitRadius !== undefined) && (dataset.pointHitRadius === undefined)) {
+				dataset.pointHitRadius = dataset.hitRadius;
+			}
+
+			helpers.extend(point, {
+				// Utility
+				_datasetIndex: me.index,
+				_index: index,
+				_scale: scale,
+
+				// Desired view properties
+				_model: {
+					x: reset ? scale.xCenter : pointPosition.x, // value not used in dataset scale, but we want a consistent API between scales
+					y: reset ? scale.yCenter : pointPosition.y,
+
+					// Appearance
+					tension: custom.tension ? custom.tension : helpers.getValueOrDefault(dataset.lineTension, me.chart.options.elements.line.tension),
+					radius: custom.radius ? custom.radius : helpers.getValueAtIndexOrDefault(dataset.pointRadius, index, pointElementOptions.radius),
+					backgroundColor: custom.backgroundColor ? custom.backgroundColor : helpers.getValueAtIndexOrDefault(dataset.pointBackgroundColor, index, pointElementOptions.backgroundColor),
+					borderColor: custom.borderColor ? custom.borderColor : helpers.getValueAtIndexOrDefault(dataset.pointBorderColor, index, pointElementOptions.borderColor),
+					borderWidth: custom.borderWidth ? custom.borderWidth : helpers.getValueAtIndexOrDefault(dataset.pointBorderWidth, index, pointElementOptions.borderWidth),
+					pointStyle: custom.pointStyle ? custom.pointStyle : helpers.getValueAtIndexOrDefault(dataset.pointStyle, index, pointElementOptions.pointStyle),
+
+					// Tooltip
+					hitRadius: custom.hitRadius ? custom.hitRadius : helpers.getValueAtIndexOrDefault(dataset.pointHitRadius, index, pointElementOptions.hitRadius)
+				}
+			});
+
+			point._model.skip = custom.skip ? custom.skip : (isNaN(point._model.x) || isNaN(point._model.y));
+		},
+		updateBezierControlPoints: function() {
+			var chartArea = this.chart.chartArea;
+			var meta = this.getMeta();
+
+			helpers.each(meta.data, function(point, index) {
+				var model = point._model;
+				var controlPoints = helpers.splineCurve(
+					helpers.previousItem(meta.data, index, true)._model,
+					model,
+					helpers.nextItem(meta.data, index, true)._model,
+					model.tension
+				);
+
+				// Prevent the bezier going outside of the bounds of the graph
+				model.controlPointPreviousX = Math.max(Math.min(controlPoints.previous.x, chartArea.right), chartArea.left);
+				model.controlPointPreviousY = Math.max(Math.min(controlPoints.previous.y, chartArea.bottom), chartArea.top);
+
+				model.controlPointNextX = Math.max(Math.min(controlPoints.next.x, chartArea.right), chartArea.left);
+				model.controlPointNextY = Math.max(Math.min(controlPoints.next.y, chartArea.bottom), chartArea.top);
+
+				// Now pivot the point for animation
+				point.pivot();
+			});
+		},
+
+		setHoverStyle: function(point) {
+			// Point
+			var dataset = this.chart.data.datasets[point._datasetIndex];
+			var custom = point.custom || {};
+			var index = point._index;
+			var model = point._model;
+
+			model.radius = custom.hoverRadius ? custom.hoverRadius : helpers.getValueAtIndexOrDefault(dataset.pointHoverRadius, index, this.chart.options.elements.point.hoverRadius);
+			model.backgroundColor = custom.hoverBackgroundColor ? custom.hoverBackgroundColor : helpers.getValueAtIndexOrDefault(dataset.pointHoverBackgroundColor, index, helpers.getHoverColor(model.backgroundColor));
+			model.borderColor = custom.hoverBorderColor ? custom.hoverBorderColor : helpers.getValueAtIndexOrDefault(dataset.pointHoverBorderColor, index, helpers.getHoverColor(model.borderColor));
+			model.borderWidth = custom.hoverBorderWidth ? custom.hoverBorderWidth : helpers.getValueAtIndexOrDefault(dataset.pointHoverBorderWidth, index, model.borderWidth);
+		},
+
+		removeHoverStyle: function(point) {
+			var dataset = this.chart.data.datasets[point._datasetIndex];
+			var custom = point.custom || {};
+			var index = point._index;
+			var model = point._model;
+			var pointElementOptions = this.chart.options.elements.point;
+
+			model.radius = custom.radius ? custom.radius : helpers.getValueAtIndexOrDefault(dataset.pointRadius, index, pointElementOptions.radius);
+			model.backgroundColor = custom.backgroundColor ? custom.backgroundColor : helpers.getValueAtIndexOrDefault(dataset.pointBackgroundColor, index, pointElementOptions.backgroundColor);
+			model.borderColor = custom.borderColor ? custom.borderColor : helpers.getValueAtIndexOrDefault(dataset.pointBorderColor, index, pointElementOptions.borderColor);
+			model.borderWidth = custom.borderWidth ? custom.borderWidth : helpers.getValueAtIndexOrDefault(dataset.pointBorderWidth, index, pointElementOptions.borderWidth);
+		}
+	});
+};
+
+},{}],18:[function(require,module,exports){
+/* global window: false */
+'use strict';
+
+module.exports = function(Chart) {
+
+	var helpers = Chart.helpers;
+
+	Chart.defaults.global.animation = {
+		duration: 1000,
+		easing: 'easeOutQuart',
+		onProgress: helpers.noop,
+		onComplete: helpers.noop
+	};
+
+	Chart.Animation = Chart.Element.extend({
+		chart: null, // the animation associated chart instance
+		currentStep: 0, // the current animation step
+		numSteps: 60, // default number of steps
+		easing: '', // the easing to use for this animation
+		render: null, // render function used by the animation service
+
+		onAnimationProgress: null, // user specified callback to fire on each step of the animation
+		onAnimationComplete: null, // user specified callback to fire when the animation finishes
+	});
+
+	Chart.animationService = {
+		frameDuration: 17,
+		animations: [],
+		dropFrames: 0,
+		request: null,
+
+		/**
+		 * @param {Chart} chart - The chart to animate.
+		 * @param {Chart.Animation} animation - The animation that we will animate.
+		 * @param {Number} duration - The animation duration in ms.
+		 * @param {Boolean} lazy - if true, the chart is not marked as animating to enable more responsive interactions
+		 */
+		addAnimation: function(chart, animation, duration, lazy) {
+			var animations = this.animations;
+			var i, ilen;
+
+			animation.chart = chart;
+
+			if (!lazy) {
+				chart.animating = true;
+			}
+
+			for (i=0, ilen=animations.length; i < ilen; ++i) {
+				if (animations[i].chart === chart) {
+					animations[i] = animation;
+					return;
+				}
+			}
+
+			animations.push(animation);
+
+			// If there are no animations queued, manually kickstart a digest, for lack of a better word
+			if (animations.length === 1) {
+				this.requestAnimationFrame();
+			}
+		},
+
+		cancelAnimation: function(chart) {
+			var index = helpers.findIndex(this.animations, function(animation) {
+				return animation.chart === chart;
+			});
+
+			if (index !== -1) {
+				this.animations.splice(index, 1);
+				chart.animating = false;
+			}
+		},
+
+		requestAnimationFrame: function() {
+			var me = this;
+			if (me.request === null) {
+				// Skip animation frame requests until the active one is executed.
+				// This can happen when processing mouse events, e.g. 'mousemove'
+				// and 'mouseout' events will trigger multiple renders.
+				me.request = helpers.requestAnimFrame.call(window, function() {
+					me.request = null;
+					me.startDigest();
+				});
+			}
+		},
+
+		/**
+		 * @private
+		 */
+		startDigest: function() {
+			var me = this;
+			var startTime = Date.now();
+			var framesToDrop = 0;
+
+			if (me.dropFrames > 1) {
+				framesToDrop = Math.floor(me.dropFrames);
+				me.dropFrames = me.dropFrames % 1;
+			}
+
+			me.advance(1 + framesToDrop);
+
+			var endTime = Date.now();
+
+			me.dropFrames += (endTime - startTime) / me.frameDuration;
+
+			// Do we have more stuff to animate?
+			if (me.animations.length > 0) {
+				me.requestAnimationFrame();
+			}
+		},
+
+		/**
+		 * @private
+		 */
+		advance: function(count) {
+			var animations = this.animations;
+			var animation, chart;
+			var i = 0;
+
+			while (i < animations.length) {
+				animation = animations[i];
+				chart = animation.chart;
+
+				animation.currentStep = (animation.currentStep || 0) + count;
+				animation.currentStep = Math.min(animation.currentStep, animation.numSteps);
+
+				helpers.callback(animation.render, [chart, animation], chart);
+				helpers.callback(animation.onAnimationProgress, [animation], chart);
+
+				if (animation.currentStep >= animation.numSteps) {
+					helpers.callback(animation.onAnimationComplete, [animation], chart);
+					chart.animating = false;
+					animations.splice(i, 1);
+				} else {
+					++i;
+				}
+			}
+		}
+	};
+
+	/**
+	 * Provided for backward compatibility, use Chart.Animation instead
+	 * @prop Chart.Animation#animationObject
+	 * @deprecated since version 2.6.0
+	 * @todo remove at version 3
+	 */
+	Object.defineProperty(Chart.Animation.prototype, 'animationObject', {
+		get: function() {
+			return this;
+		}
+	});
+
+	/**
+	 * Provided for backward compatibility, use Chart.Animation#chart instead
+	 * @prop Chart.Animation#chartInstance
+	 * @deprecated since version 2.6.0
+	 * @todo remove at version 3
+	 */
+	Object.defineProperty(Chart.Animation.prototype, 'chartInstance', {
+		get: function() {
+			return this.chart;
+		},
+		set: function(value) {
+			this.chart = value;
+		}
+	});
+
+};
+
+},{}],19:[function(require,module,exports){
+'use strict';
+
+module.exports = function(Chart) {
+	// Global Chart canvas helpers object for drawing items to canvas
+	var helpers = Chart.canvasHelpers = {};
+
+	helpers.drawPoint = function(ctx, pointStyle, radius, x, y) {
+		var type, edgeLength, xOffset, yOffset, height, size;
+
+		if (typeof pointStyle === 'object') {
+			type = pointStyle.toString();
+			if (type === '[object HTMLImageElement]' || type === '[object HTMLCanvasElement]') {
+				ctx.drawImage(pointStyle, x - pointStyle.width / 2, y - pointStyle.height / 2, pointStyle.width, pointStyle.height);
+				return;
+			}
+		}
+
+		if (isNaN(radius) || radius <= 0) {
+			return;
+		}
+
+		switch (pointStyle) {
+		// Default includes circle
+		default:
+			ctx.beginPath();
+			ctx.arc(x, y, radius, 0, Math.PI * 2);
+			ctx.closePath();
+			ctx.fill();
+			break;
+		case 'triangle':
+			ctx.beginPath();
+			edgeLength = 3 * radius / Math.sqrt(3);
+			height = edgeLength * Math.sqrt(3) / 2;
+			ctx.moveTo(x - edgeLength / 2, y + height / 3);
+			ctx.lineTo(x + edgeLength / 2, y + height / 3);
+			ctx.lineTo(x, y - 2 * height / 3);
+			ctx.closePath();
+			ctx.fill();
+			break;
+		case 'rect':
+			size = 1 / Math.SQRT2 * radius;
+			ctx.beginPath();
+			ctx.fillRect(x - size, y - size, 2 * size, 2 * size);
+			ctx.strokeRect(x - size, y - size, 2 * size, 2 * size);
+			break;
+		case 'rectRounded':
+			var offset = radius / Math.SQRT2;
+			var leftX = x - offset;
+			var topY = y - offset;
+			var sideSize = Math.SQRT2 * radius;
+			Chart.helpers.drawRoundedRectangle(ctx, leftX, topY, sideSize, sideSize, radius / 2);
+			ctx.fill();
+			break;
+		case 'rectRot':
+			size = 1 / Math.SQRT2 * radius;
+			ctx.beginPath();
+			ctx.moveTo(x - size, y);
+			ctx.lineTo(x, y + size);
+			ctx.lineTo(x + size, y);
+			ctx.lineTo(x, y - size);
+			ctx.closePath();
+			ctx.fill();
+			break;
+		case 'cross':
+			ctx.beginPath();
+			ctx.moveTo(x, y + radius);
+			ctx.lineTo(x, y - radius);
+			ctx.moveTo(x - radius, y);
+			ctx.lineTo(x + radius, y);
+			ctx.closePath();
+			break;
+		case 'crossRot':
+			ctx.beginPath();
+			xOffset = Math.cos(Math.PI / 4) * radius;
+			yOffset = Math.sin(Math.PI / 4) * radius;
+			ctx.moveTo(x - xOffset, y - yOffset);
+			ctx.lineTo(x + xOffset, y + yOffset);
+			ctx.moveTo(x - xOffset, y + yOffset);
+			ctx.lineTo(x + xOffset, y - yOffset);
+			ctx.closePath();
+			break;
+		case 'star':
+			ctx.beginPath();
+			ctx.moveTo(x, y + radius);
+			ctx.lineTo(x, y - radius);
+			ctx.moveTo(x - radius, y);
+			ctx.lineTo(x + radius, y);
+			xOffset = Math.cos(Math.PI / 4) * radius;
+			yOffset = Math.sin(Math.PI / 4) * radius;
+			ctx.moveTo(x - xOffset, y - yOffset);
+			ctx.lineTo(x + xOffset, y + yOffset);
+			ctx.moveTo(x - xOffset, y + yOffset);
+			ctx.lineTo(x + xOffset, y - yOffset);
+			ctx.closePath();
+			break;
+		case 'line':
+			ctx.beginPath();
+			ctx.moveTo(x - radius, y);
+			ctx.lineTo(x + radius, y);
+			ctx.closePath();
+			break;
+		case 'dash':
+			ctx.beginPath();
+			ctx.moveTo(x, y);
+			ctx.lineTo(x + radius, y);
+			ctx.closePath();
+			break;
+		}
+
+		ctx.stroke();
+	};
+
+	helpers.clipArea = function(ctx, clipArea) {
+		ctx.save();
+		ctx.beginPath();
+		ctx.rect(clipArea.left, clipArea.top, clipArea.right - clipArea.left, clipArea.bottom - clipArea.top);
+		ctx.clip();
+	};
+
+	helpers.unclipArea = function(ctx) {
+		ctx.restore();
+	};
+
+	helpers.lineTo = function(ctx, previous, target, flip) {
+		if (target.steppedLine) {
+			if (target.steppedLine === 'after') {
+				ctx.lineTo(previous.x, target.y);
+			} else {
+				ctx.lineTo(target.x, previous.y);
+			}
+			ctx.lineTo(target.x, target.y);
+			return;
+		}
+
+		if (!target.tension) {
+			ctx.lineTo(target.x, target.y);
+			return;
+		}
+
+		ctx.bezierCurveTo(
+			flip? previous.controlPointPreviousX : previous.controlPointNextX,
+			flip? previous.controlPointPreviousY : previous.controlPointNextY,
+			flip? target.controlPointNextX : target.controlPointPreviousX,
+			flip? target.controlPointNextY : target.controlPointPreviousY,
+			target.x,
+			target.y);
+	};
+
+	Chart.helpers.canvas = helpers;
+};
+
+},{}],20:[function(require,module,exports){
+'use strict';
+
+module.exports = function(Chart) {
+
+	var helpers = Chart.helpers;
+	var plugins = Chart.plugins;
+	var platform = Chart.platform;
+
+	// Create a dictionary of chart types, to allow for extension of existing types
+	Chart.types = {};
+
+	// Store a reference to each instance - allowing us to globally resize chart instances on window resize.
+	// Destroy method on the chart will remove the instance of the chart from this reference.
+	Chart.instances = {};
+
+	// Controllers available for dataset visualization eg. bar, line, slice, etc.
+	Chart.controllers = {};
+
+	/**
+	 * Initializes the given config with global and chart default values.
+	 */
+	function initConfig(config) {
+		config = config || {};
+
+		// Do NOT use configMerge() for the data object because this method merges arrays
+		// and so would change references to labels and datasets, preventing data updates.
+		var data = config.data = config.data || {};
+		data.datasets = data.datasets || [];
+		data.labels = data.labels || [];
+
+		config.options = helpers.configMerge(
+			Chart.defaults.global,
+			Chart.defaults[config.type],
+			config.options || {});
+
+		return config;
+	}
+
+	/**
+	 * Updates the config of the chart
+	 * @param chart {Chart} chart to update the options for
+	 */
+	function updateConfig(chart) {
+		var newOptions = chart.options;
+
+		// Update Scale(s) with options
+		if (newOptions.scale) {
+			chart.scale.options = newOptions.scale;
+		} else if (newOptions.scales) {
+			newOptions.scales.xAxes.concat(newOptions.scales.yAxes).forEach(function(scaleOptions) {
+				chart.scales[scaleOptions.id].options = scaleOptions;
+			});
+		}
+
+		// Tooltip
+		chart.tooltip._options = newOptions.tooltips;
+	}
+
+	function positionIsHorizontal(position) {
+		return position === 'top' || position === 'bottom';
+	}
+
+	helpers.extend(Chart.prototype, /** @lends Chart */ {
+		/**
+		 * @private
+		 */
+		construct: function(item, config) {
+			var me = this;
+
+			config = initConfig(config);
+
+			var context = platform.acquireContext(item, config);
+			var canvas = context && context.canvas;
+			var height = canvas && canvas.height;
+			var width = canvas && canvas.width;
+
+			me.id = helpers.uid();
+			me.ctx = context;
+			me.canvas = canvas;
+			me.config = config;
+			me.width = width;
+			me.height = height;
+			me.aspectRatio = height? width / height : null;
+			me.options = config.options;
+			me._bufferedRender = false;
+
+			/**
+			 * Provided for backward compatibility, Chart and Chart.Controller have been merged,
+			 * the "instance" still need to be defined since it might be called from plugins.
+			 * @prop Chart#chart
+			 * @deprecated since version 2.6.0
+			 * @todo remove at version 3
+			 * @private
+			 */
+			me.chart = me;
+			me.controller = me;  // chart.chart.controller #inception
+
+			// Add the chart instance to the global namespace
+			Chart.instances[me.id] = me;
+
+			// Define alias to the config data: `chart.data === chart.config.data`
+			Object.defineProperty(me, 'data', {
+				get: function() {
+					return me.config.data;
+				},
+				set: function(value) {
+					me.config.data = value;
+				}
+			});
+
+			if (!context || !canvas) {
+				// The given item is not a compatible context2d element, let's return before finalizing
+				// the chart initialization but after setting basic chart / controller properties that
+				// can help to figure out that the chart is not valid (e.g chart.canvas !== null);
+				// https://github.com/chartjs/Chart.js/issues/2807
+				console.error("Failed to create chart: can't acquire context from the given item");
+				return;
+			}
+
+			me.initialize();
+			me.update();
+		},
+
+		/**
+		 * @private
+		 */
+		initialize: function() {
+			var me = this;
+
+			// Before init plugin notification
+			plugins.notify(me, 'beforeInit');
+
+			helpers.retinaScale(me);
+
+			me.bindEvents();
+
+			if (me.options.responsive) {
+				// Initial resize before chart draws (must be silent to preserve initial animations).
+				me.resize(true);
+			}
+
+			// Make sure scales have IDs and are built before we build any controllers.
+			me.ensureScalesHaveIDs();
+			me.buildScales();
+			me.initToolTip();
+
+			// After init plugin notification
+			plugins.notify(me, 'afterInit');
+
+			return me;
+		},
+
+		clear: function() {
+			helpers.clear(this);
+			return this;
+		},
+
+		stop: function() {
+			// Stops any current animation loop occurring
+			Chart.animationService.cancelAnimation(this);
+			return this;
+		},
+
+		resize: function(silent) {
+			var me = this;
+			var options = me.options;
+			var canvas = me.canvas;
+			var aspectRatio = (options.maintainAspectRatio && me.aspectRatio) || null;
+
+			// the canvas render width and height will be casted to integers so make sure that
+			// the canvas display style uses the same integer values to avoid blurring effect.
+			var newWidth = Math.floor(helpers.getMaximumWidth(canvas));
+			var newHeight = Math.floor(aspectRatio? newWidth / aspectRatio : helpers.getMaximumHeight(canvas));
+
+			if (me.width === newWidth && me.height === newHeight) {
+				return;
+			}
+
+			canvas.width = me.width = newWidth;
+			canvas.height = me.height = newHeight;
+			canvas.style.width = newWidth + 'px';
+			canvas.style.height = newHeight + 'px';
+
+			helpers.retinaScale(me);
+
+			if (!silent) {
+				// Notify any plugins about the resize
+				var newSize = {width: newWidth, height: newHeight};
+				plugins.notify(me, 'resize', [newSize]);
+
+				// Notify of resize
+				if (me.options.onResize) {
+					me.options.onResize(me, newSize);
+				}
+
+				me.stop();
+				me.update(me.options.responsiveAnimationDuration);
+			}
+		},
+
+		ensureScalesHaveIDs: function() {
+			var options = this.options;
+			var scalesOptions = options.scales || {};
+			var scaleOptions = options.scale;
+
+			helpers.each(scalesOptions.xAxes, function(xAxisOptions, index) {
+				xAxisOptions.id = xAxisOptions.id || ('x-axis-' + index);
+			});
+
+			helpers.each(scalesOptions.yAxes, function(yAxisOptions, index) {
+				yAxisOptions.id = yAxisOptions.id || ('y-axis-' + index);
+			});
+
+			if (scaleOptions) {
+				scaleOptions.id = scaleOptions.id || 'scale';
+			}
+		},
+
+		/**
+		 * Builds a map of scale ID to scale object for future lookup.
+		 */
+		buildScales: function() {
+			var me = this;
+			var options = me.options;
+			var scales = me.scales = {};
+			var items = [];
+
+			if (options.scales) {
+				items = items.concat(
+					(options.scales.xAxes || []).map(function(xAxisOptions) {
+						return {options: xAxisOptions, dtype: 'category', dposition: 'bottom'};
+					}),
+					(options.scales.yAxes || []).map(function(yAxisOptions) {
+						return {options: yAxisOptions, dtype: 'linear', dposition: 'left'};
+					})
+				);
+			}
+
+			if (options.scale) {
+				items.push({
+					options: options.scale,
+					dtype: 'radialLinear',
+					isDefault: true,
+					dposition: 'chartArea'
+				});
+			}
+
+			helpers.each(items, function(item) {
+				var scaleOptions = item.options;
+				var scaleType = helpers.getValueOrDefault(scaleOptions.type, item.dtype);
+				var scaleClass = Chart.scaleService.getScaleConstructor(scaleType);
+				if (!scaleClass) {
+					return;
+				}
+
+				if (positionIsHorizontal(scaleOptions.position) !== positionIsHorizontal(item.dposition)) {
+					scaleOptions.position = item.dposition;
+				}
+
+				var scale = new scaleClass({
+					id: scaleOptions.id,
+					options: scaleOptions,
+					ctx: me.ctx,
+					chart: me
+				});
+
+				scales[scale.id] = scale;
+
+				// TODO(SB): I think we should be able to remove this custom case (options.scale)
+				// and consider it as a regular scale part of the "scales"" map only! This would
+				// make the logic easier and remove some useless? custom code.
+				if (item.isDefault) {
+					me.scale = scale;
+				}
+			});
+
+			Chart.scaleService.addScalesToLayout(this);
+		},
+
+		buildOrUpdateControllers: function() {
+			var me = this;
+			var types = [];
+			var newControllers = [];
+
+			helpers.each(me.data.datasets, function(dataset, datasetIndex) {
+				var meta = me.getDatasetMeta(datasetIndex);
+				if (!meta.type) {
+					meta.type = dataset.type || me.config.type;
+				}
+
+				types.push(meta.type);
+
+				if (meta.controller) {
+					meta.controller.updateIndex(datasetIndex);
+				} else {
+					var ControllerClass = Chart.controllers[meta.type];
+					if (ControllerClass === undefined) {
+						throw new Error('"' + meta.type + '" is not a chart type.');
+					}
+
+					meta.controller = new ControllerClass(me, datasetIndex);
+					newControllers.push(meta.controller);
+				}
+			}, me);
+
+			if (types.length > 1) {
+				for (var i = 1; i < types.length; i++) {
+					if (types[i] !== types[i - 1]) {
+						me.isCombo = true;
+						break;
+					}
+				}
+			}
+
+			return newControllers;
+		},
+
+		/**
+		 * Reset the elements of all datasets
+		 * @private
+		 */
+		resetElements: function() {
+			var me = this;
+			helpers.each(me.data.datasets, function(dataset, datasetIndex) {
+				me.getDatasetMeta(datasetIndex).controller.reset();
+			}, me);
+		},
+
+		/**
+		* Resets the chart back to it's state before the initial animation
+		*/
+		reset: function() {
+			this.resetElements();
+			this.tooltip.initialize();
+		},
+
+		update: function(animationDuration, lazy) {
+			var me = this;
+
+			updateConfig(me);
+
+			if (plugins.notify(me, 'beforeUpdate') === false) {
+				return;
+			}
+
+			// In case the entire data object changed
+			me.tooltip._data = me.data;
+
+			// Make sure dataset controllers are updated and new controllers are reset
+			var newControllers = me.buildOrUpdateControllers();
+
+			// Make sure all dataset controllers have correct meta data counts
+			helpers.each(me.data.datasets, function(dataset, datasetIndex) {
+				me.getDatasetMeta(datasetIndex).controller.buildOrUpdateElements();
+			}, me);
+
+			me.updateLayout();
+
+			// Can only reset the new controllers after the scales have been updated
+			helpers.each(newControllers, function(controller) {
+				controller.reset();
+			});
+
+			me.updateDatasets();
+
+			// Do this before render so that any plugins that need final scale updates can use it
+			plugins.notify(me, 'afterUpdate');
+
+			if (me._bufferedRender) {
+				me._bufferedRequest = {
+					lazy: lazy,
+					duration: animationDuration
+				};
+			} else {
+				me.render(animationDuration, lazy);
+			}
+		},
+
+		/**
+		 * Updates the chart layout unless a plugin returns `false` to the `beforeLayout`
+		 * hook, in which case, plugins will not be called on `afterLayout`.
+		 * @private
+		 */
+		updateLayout: function() {
+			var me = this;
+
+			if (plugins.notify(me, 'beforeLayout') === false) {
+				return;
+			}
+
+			Chart.layoutService.update(this, this.width, this.height);
+
+			/**
+			 * Provided for backward compatibility, use `afterLayout` instead.
+			 * @method IPlugin#afterScaleUpdate
+			 * @deprecated since version 2.5.0
+			 * @todo remove at version 3
+			 * @private
+			 */
+			plugins.notify(me, 'afterScaleUpdate');
+			plugins.notify(me, 'afterLayout');
+		},
+
+		/**
+		 * Updates all datasets unless a plugin returns `false` to the `beforeDatasetsUpdate`
+		 * hook, in which case, plugins will not be called on `afterDatasetsUpdate`.
+		 * @private
+		 */
+		updateDatasets: function() {
+			var me = this;
+
+			if (plugins.notify(me, 'beforeDatasetsUpdate') === false) {
+				return;
+			}
+
+			for (var i = 0, ilen = me.data.datasets.length; i < ilen; ++i) {
+				me.updateDataset(i);
+			}
+
+			plugins.notify(me, 'afterDatasetsUpdate');
+		},
+
+		/**
+		 * Updates dataset at index unless a plugin returns `false` to the `beforeDatasetUpdate`
+		 * hook, in which case, plugins will not be called on `afterDatasetUpdate`.
+		 * @private
+		 */
+		updateDataset: function(index) {
+			var me = this;
+			var meta = me.getDatasetMeta(index);
+			var args = {
+				meta: meta,
+				index: index
+			};
+
+			if (plugins.notify(me, 'beforeDatasetUpdate', [args]) === false) {
+				return;
+			}
+
+			meta.controller.update();
+
+			plugins.notify(me, 'afterDatasetUpdate', [args]);
+		},
+
+		render: function(duration, lazy) {
+			var me = this;
+
+			if (plugins.notify(me, 'beforeRender') === false) {
+				return;
+			}
+
+			var animationOptions = me.options.animation;
+			var onComplete = function(animation) {
+				plugins.notify(me, 'afterRender');
+				helpers.callback(animationOptions && animationOptions.onComplete, [animation], me);
+			};
+
+			if (animationOptions && ((typeof duration !== 'undefined' && duration !== 0) || (typeof duration === 'undefined' && animationOptions.duration !== 0))) {
+				var animation = new Chart.Animation({
+					numSteps: (duration || animationOptions.duration) / 16.66, // 60 fps
+					easing: animationOptions.easing,
+
+					render: function(chart, animationObject) {
+						var easingFunction = helpers.easingEffects[animationObject.easing];
+						var currentStep = animationObject.currentStep;
+						var stepDecimal = currentStep / animationObject.numSteps;
+
+						chart.draw(easingFunction(stepDecimal), stepDecimal, currentStep);
+					},
+
+					onAnimationProgress: animationOptions.onProgress,
+					onAnimationComplete: onComplete
+				});
+
+				Chart.animationService.addAnimation(me, animation, duration, lazy);
+			} else {
+				me.draw();
+
+				// See https://github.com/chartjs/Chart.js/issues/3781
+				onComplete(new Chart.Animation({numSteps: 0, chart: me}));
+			}
+
+			return me;
+		},
+
+		draw: function(easingValue) {
+			var me = this;
+
+			me.clear();
+
+			if (easingValue === undefined || easingValue === null) {
+				easingValue = 1;
+			}
+
+			me.transition(easingValue);
+
+			if (plugins.notify(me, 'beforeDraw', [easingValue]) === false) {
+				return;
+			}
+
+			// Draw all the scales
+			helpers.each(me.boxes, function(box) {
+				box.draw(me.chartArea);
+			}, me);
+
+			if (me.scale) {
+				me.scale.draw();
+			}
+
+			me.drawDatasets(easingValue);
+
+			// Finally draw the tooltip
+			me.tooltip.draw();
+
+			plugins.notify(me, 'afterDraw', [easingValue]);
+		},
+
+		/**
+		 * @private
+		 */
+		transition: function(easingValue) {
+			var me = this;
+
+			for (var i=0, ilen=(me.data.datasets || []).length; i<ilen; ++i) {
+				if (me.isDatasetVisible(i)) {
+					me.getDatasetMeta(i).controller.transition(easingValue);
+				}
+			}
+
+			me.tooltip.transition(easingValue);
+		},
+
+		/**
+		 * Draws all datasets unless a plugin returns `false` to the `beforeDatasetsDraw`
+		 * hook, in which case, plugins will not be called on `afterDatasetsDraw`.
+		 * @private
+		 */
+		drawDatasets: function(easingValue) {
+			var me = this;
+
+			if (plugins.notify(me, 'beforeDatasetsDraw', [easingValue]) === false) {
+				return;
+			}
+
+			// Draw datasets reversed to support proper line stacking
+			for (var i=(me.data.datasets || []).length - 1; i >= 0; --i) {
+				if (me.isDatasetVisible(i)) {
+					me.drawDataset(i, easingValue);
+				}
+			}
+
+			plugins.notify(me, 'afterDatasetsDraw', [easingValue]);
+		},
+
+		/**
+		 * Draws dataset at index unless a plugin returns `false` to the `beforeDatasetDraw`
+		 * hook, in which case, plugins will not be called on `afterDatasetDraw`.
+		 * @private
+		 */
+		drawDataset: function(index, easingValue) {
+			var me = this;
+			var meta = me.getDatasetMeta(index);
+			var args = {
+				meta: meta,
+				index: index,
+				easingValue: easingValue
+			};
+
+			if (plugins.notify(me, 'beforeDatasetDraw', [args]) === false) {
+				return;
+			}
+
+			meta.controller.draw(easingValue);
+
+			plugins.notify(me, 'afterDatasetDraw', [args]);
+		},
+
+		// Get the single element that was clicked on
+		// @return : An object containing the dataset index and element index of the matching element. Also contains the rectangle that was draw
+		getElementAtEvent: function(e) {
+			return Chart.Interaction.modes.single(this, e);
+		},
+
+		getElementsAtEvent: function(e) {
+			return Chart.Interaction.modes.label(this, e, {intersect: true});
+		},
+
+		getElementsAtXAxis: function(e) {
+			return Chart.Interaction.modes['x-axis'](this, e, {intersect: true});
+		},
+
+		getElementsAtEventForMode: function(e, mode, options) {
+			var method = Chart.Interaction.modes[mode];
+			if (typeof method === 'function') {
+				return method(this, e, options);
+			}
+
+			return [];
+		},
+
+		getDatasetAtEvent: function(e) {
+			return Chart.Interaction.modes.dataset(this, e, {intersect: true});
+		},
+
+		getDatasetMeta: function(datasetIndex) {
+			var me = this;
+			var dataset = me.data.datasets[datasetIndex];
+			if (!dataset._meta) {
+				dataset._meta = {};
+			}
+
+			var meta = dataset._meta[me.id];
+			if (!meta) {
+				meta = dataset._meta[me.id] = {
+					type: null,
+					data: [],
+					dataset: null,
+					controller: null,
+					hidden: null,			// See isDatasetVisible() comment
+					xAxisID: null,
+					yAxisID: null
+				};
+			}
+
+			return meta;
+		},
+
+		getVisibleDatasetCount: function() {
+			var count = 0;
+			for (var i = 0, ilen = this.data.datasets.length; i<ilen; ++i) {
+				if (this.isDatasetVisible(i)) {
+					count++;
+				}
+			}
+			return count;
+		},
+
+		isDatasetVisible: function(datasetIndex) {
+			var meta = this.getDatasetMeta(datasetIndex);
+
+			// meta.hidden is a per chart dataset hidden flag override with 3 states: if true or false,
+			// the dataset.hidden value is ignored, else if null, the dataset hidden state is returned.
+			return typeof meta.hidden === 'boolean'? !meta.hidden : !this.data.datasets[datasetIndex].hidden;
+		},
+
+		generateLegend: function() {
+			return this.options.legendCallback(this);
+		},
+
+		destroy: function() {
+			var me = this;
+			var canvas = me.canvas;
+			var meta, i, ilen;
+
+			me.stop();
+
+			// dataset controllers need to cleanup associated data
+			for (i = 0, ilen = me.data.datasets.length; i < ilen; ++i) {
+				meta = me.getDatasetMeta(i);
+				if (meta.controller) {
+					meta.controller.destroy();
+					meta.controller = null;
+				}
+			}
+
+			if (canvas) {
+				me.unbindEvents();
+				helpers.clear(me);
+				platform.releaseContext(me.ctx);
+				me.canvas = null;
+				me.ctx = null;
+			}
+
+			plugins.notify(me, 'destroy');
+
+			delete Chart.instances[me.id];
+		},
+
+		toBase64Image: function() {
+			return this.canvas.toDataURL.apply(this.canvas, arguments);
+		},
+
+		initToolTip: function() {
+			var me = this;
+			me.tooltip = new Chart.Tooltip({
+				_chart: me,
+				_chartInstance: me,            // deprecated, backward compatibility
+				_data: me.data,
+				_options: me.options.tooltips
+			}, me);
+			me.tooltip.initialize();
+		},
+
+		/**
+		 * @private
+		 */
+		bindEvents: function() {
+			var me = this;
+			var listeners = me._listeners = {};
+			var listener = function() {
+				me.eventHandler.apply(me, arguments);
+			};
+
+			helpers.each(me.options.events, function(type) {
+				platform.addEventListener(me, type, listener);
+				listeners[type] = listener;
+			});
+
+			// Responsiveness is currently based on the use of an iframe, however this method causes
+			// performance issues and could be troublesome when used with ad blockers. So make sure
+			// that the user is still able to create a chart without iframe when responsive is false.
+			// See https://github.com/chartjs/Chart.js/issues/2210
+			if (me.options.responsive) {
+				listener = function() {
+					me.resize();
+				};
+
+				platform.addEventListener(me, 'resize', listener);
+				listeners.resize = listener;
+			}
+		},
+
+		/**
+		 * @private
+		 */
+		unbindEvents: function() {
+			var me = this;
+			var listeners = me._listeners;
+			if (!listeners) {
+				return;
+			}
+
+			delete me._listeners;
+			helpers.each(listeners, function(listener, type) {
+				platform.removeEventListener(me, type, listener);
+			});
+		},
+
+		updateHoverStyle: function(elements, mode, enabled) {
+			var method = enabled? 'setHoverStyle' : 'removeHoverStyle';
+			var element, i, ilen;
+
+			for (i=0, ilen=elements.length; i<ilen; ++i) {
+				element = elements[i];
+				if (element) {
+					this.getDatasetMeta(element._datasetIndex).controller[method](element);
+				}
+			}
+		},
+
+		/**
+		 * @private
+		 */
+		eventHandler: function(e) {
+			var me = this;
+			var tooltip = me.tooltip;
+
+			if (plugins.notify(me, 'beforeEvent', [e]) === false) {
+				return;
+			}
+
+			// Buffer any update calls so that renders do not occur
+			me._bufferedRender = true;
+			me._bufferedRequest = null;
+
+			var changed = me.handleEvent(e);
+			changed |= tooltip && tooltip.handleEvent(e);
+
+			plugins.notify(me, 'afterEvent', [e]);
+
+			var bufferedRequest = me._bufferedRequest;
+			if (bufferedRequest) {
+				// If we have an update that was triggered, we need to do a normal render
+				me.render(bufferedRequest.duration, bufferedRequest.lazy);
+			} else if (changed && !me.animating) {
+				// If entering, leaving, or changing elements, animate the change via pivot
+				me.stop();
+
+				// We only need to render at this point. Updating will cause scales to be
+				// recomputed generating flicker & using more memory than necessary.
+				me.render(me.options.hover.animationDuration, true);
+			}
+
+			me._bufferedRender = false;
+			me._bufferedRequest = null;
+
+			return me;
+		},
+
+		/**
+		 * Handle an event
+		 * @private
+		 * @param {IEvent} event the event to handle
+		 * @return {Boolean} true if the chart needs to re-render
+		 */
+		handleEvent: function(e) {
+			var me = this;
+			var options = me.options || {};
+			var hoverOptions = options.hover;
+			var changed = false;
+
+			me.lastActive = me.lastActive || [];
+
+			// Find Active Elements for hover and tooltips
+			if (e.type === 'mouseout') {
+				me.active = [];
+			} else {
+				me.active = me.getElementsAtEventForMode(e, hoverOptions.mode, hoverOptions);
+			}
+
+			// On Hover hook
+			if (hoverOptions.onHover) {
+				// Need to call with native event here to not break backwards compatibility
+				hoverOptions.onHover.call(me, e.native, me.active);
+			}
+
+			if (e.type === 'mouseup' || e.type === 'click') {
+				if (options.onClick) {
+					// Use e.native here for backwards compatibility
+					options.onClick.call(me, e.native, me.active);
+				}
+			}
+
+			// Remove styling for last active (even if it may still be active)
+			if (me.lastActive.length) {
+				me.updateHoverStyle(me.lastActive, hoverOptions.mode, false);
+			}
+
+			// Built in hover styling
+			if (me.active.length && hoverOptions.mode) {
+				me.updateHoverStyle(me.active, hoverOptions.mode, true);
+			}
+
+			changed = !helpers.arrayEquals(me.active, me.lastActive);
+
+			// Remember Last Actives
+			me.lastActive = me.active;
+
+			return changed;
+		}
+	});
+
+	/**
+	 * Provided for backward compatibility, use Chart instead.
+	 * @class Chart.Controller
+	 * @deprecated since version 2.6.0
+	 * @todo remove at version 3
+	 * @private
+	 */
+	Chart.Controller = Chart;
+};
+
+},{}],21:[function(require,module,exports){
+'use strict';
+
+module.exports = function(Chart) {
+
+	var helpers = Chart.helpers;
+
+	var arrayEvents = ['push', 'pop', 'shift', 'splice', 'unshift'];
+
+	/**
+	 * Hooks the array methods that add or remove values ('push', pop', 'shift', 'splice',
+	 * 'unshift') and notify the listener AFTER the array has been altered. Listeners are
+	 * called on the 'onData*' callbacks (e.g. onDataPush, etc.) with same arguments.
+	 */
+	function listenArrayEvents(array, listener) {
+		if (array._chartjs) {
+			array._chartjs.listeners.push(listener);
+			return;
+		}
+
+		Object.defineProperty(array, '_chartjs', {
+			configurable: true,
+			enumerable: false,
+			value: {
+				listeners: [listener]
+			}
+		});
+
+		arrayEvents.forEach(function(key) {
+			var method = 'onData' + key.charAt(0).toUpperCase() + key.slice(1);
+			var base = array[key];
+
+			Object.defineProperty(array, key, {
+				configurable: true,
+				enumerable: false,
+				value: function() {
+					var args = Array.prototype.slice.call(arguments);
+					var res = base.apply(this, args);
+
+					helpers.each(array._chartjs.listeners, function(object) {
+						if (typeof object[method] === 'function') {
+							object[method].apply(object, args);
+						}
+					});
+
+					return res;
+				}
+			});
+		});
+	}
+
+	/**
+	 * Removes the given array event listener and cleanup extra attached properties (such as
+	 * the _chartjs stub and overridden methods) if array doesn't have any more listeners.
+	 */
+	function unlistenArrayEvents(array, listener) {
+		var stub = array._chartjs;
+		if (!stub) {
+			return;
+		}
+
+		var listeners = stub.listeners;
+		var index = listeners.indexOf(listener);
+		if (index !== -1) {
+			listeners.splice(index, 1);
+		}
+
+		if (listeners.length > 0) {
+			return;
+		}
+
+		arrayEvents.forEach(function(key) {
+			delete array[key];
+		});
+
+		delete array._chartjs;
+	}
+
+	// Base class for all dataset controllers (line, bar, etc)
+	Chart.DatasetController = function(chart, datasetIndex) {
+		this.initialize(chart, datasetIndex);
+	};
+
+	helpers.extend(Chart.DatasetController.prototype, {
+
+		/**
+		 * Element type used to generate a meta dataset (e.g. Chart.element.Line).
+		 * @type {Chart.core.element}
+		 */
+		datasetElementType: null,
+
+		/**
+		 * Element type used to generate a meta data (e.g. Chart.element.Point).
+		 * @type {Chart.core.element}
+		 */
+		dataElementType: null,
+
+		initialize: function(chart, datasetIndex) {
+			var me = this;
+			me.chart = chart;
+			me.index = datasetIndex;
+			me.linkScales();
+			me.addElements();
+		},
+
+		updateIndex: function(datasetIndex) {
+			this.index = datasetIndex;
+		},
+
+		linkScales: function() {
+			var me = this;
+			var meta = me.getMeta();
+			var dataset = me.getDataset();
+
+			if (meta.xAxisID === null) {
+				meta.xAxisID = dataset.xAxisID || me.chart.options.scales.xAxes[0].id;
+			}
+			if (meta.yAxisID === null) {
+				meta.yAxisID = dataset.yAxisID || me.chart.options.scales.yAxes[0].id;
+			}
+		},
+
+		getDataset: function() {
+			return this.chart.data.datasets[this.index];
+		},
+
+		getMeta: function() {
+			return this.chart.getDatasetMeta(this.index);
+		},
+
+		getScaleForId: function(scaleID) {
+			return this.chart.scales[scaleID];
+		},
+
+		reset: function() {
+			this.update(true);
+		},
+
+		/**
+		 * @private
+		 */
+		destroy: function() {
+			if (this._data) {
+				unlistenArrayEvents(this._data, this);
+			}
+		},
+
+		createMetaDataset: function() {
+			var me = this;
+			var type = me.datasetElementType;
+			return type && new type({
+				_chart: me.chart,
+				_datasetIndex: me.index
+			});
+		},
+
+		createMetaData: function(index) {
+			var me = this;
+			var type = me.dataElementType;
+			return type && new type({
+				_chart: me.chart,
+				_datasetIndex: me.index,
+				_index: index
+			});
+		},
+
+		addElements: function() {
+			var me = this;
+			var meta = me.getMeta();
+			var data = me.getDataset().data || [];
+			var metaData = meta.data;
+			var i, ilen;
+
+			for (i=0, ilen=data.length; i<ilen; ++i) {
+				metaData[i] = metaData[i] || me.createMetaData(i);
+			}
+
+			meta.dataset = meta.dataset || me.createMetaDataset();
+		},
+
+		addElementAndReset: function(index) {
+			var element = this.createMetaData(index);
+			this.getMeta().data.splice(index, 0, element);
+			this.updateElement(element, index, true);
+		},
+
+		buildOrUpdateElements: function() {
+			var me = this;
+			var dataset = me.getDataset();
+			var data = dataset.data || (dataset.data = []);
+
+			// In order to correctly handle data addition/deletion animation (an thus simulate
+			// real-time charts), we need to monitor these data modifications and synchronize
+			// the internal meta data accordingly.
+			if (me._data !== data) {
+				if (me._data) {
+					// This case happens when the user replaced the data array instance.
+					unlistenArrayEvents(me._data, me);
+				}
+
+				listenArrayEvents(data, me);
+				me._data = data;
+			}
+
+			// Re-sync meta data in case the user replaced the data array or if we missed
+			// any updates and so make sure that we handle number of datapoints changing.
+			me.resyncElements();
+		},
+
+		update: helpers.noop,
+
+		transition: function(easingValue) {
+			var meta = this.getMeta();
+			var elements = meta.data || [];
+			var ilen = elements.length;
+			var i = 0;
+
+			for (; i<ilen; ++i) {
+				elements[i].transition(easingValue);
+			}
+
+			if (meta.dataset) {
+				meta.dataset.transition(easingValue);
+			}
+		},
+
+		draw: function() {
+			var meta = this.getMeta();
+			var elements = meta.data || [];
+			var ilen = elements.length;
+			var i = 0;
+
+			if (meta.dataset) {
+				meta.dataset.draw();
+			}
+
+			for (; i<ilen; ++i) {
+				elements[i].draw();
+			}
+		},
+
+		removeHoverStyle: function(element, elementOpts) {
+			var dataset = this.chart.data.datasets[element._datasetIndex],
+				index = element._index,
+				custom = element.custom || {},
+				valueOrDefault = helpers.getValueAtIndexOrDefault,
+				model = element._model;
+
+			model.backgroundColor = custom.backgroundColor ? custom.backgroundColor : valueOrDefault(dataset.backgroundColor, index, elementOpts.backgroundColor);
+			model.borderColor = custom.borderColor ? custom.borderColor : valueOrDefault(dataset.borderColor, index, elementOpts.borderColor);
+			model.borderWidth = custom.borderWidth ? custom.borderWidth : valueOrDefault(dataset.borderWidth, index, elementOpts.borderWidth);
+		},
+
+		setHoverStyle: function(element) {
+			var dataset = this.chart.data.datasets[element._datasetIndex],
+				index = element._index,
+				custom = element.custom || {},
+				valueOrDefault = helpers.getValueAtIndexOrDefault,
+				getHoverColor = helpers.getHoverColor,
+				model = element._model;
+
+			model.backgroundColor = custom.hoverBackgroundColor ? custom.hoverBackgroundColor : valueOrDefault(dataset.hoverBackgroundColor, index, getHoverColor(model.backgroundColor));
+			model.borderColor = custom.hoverBorderColor ? custom.hoverBorderColor : valueOrDefault(dataset.hoverBorderColor, index, getHoverColor(model.borderColor));
+			model.borderWidth = custom.hoverBorderWidth ? custom.hoverBorderWidth : valueOrDefault(dataset.hoverBorderWidth, index, model.borderWidth);
+		},
+
+		/**
+		 * @private
+		 */
+		resyncElements: function() {
+			var me = this;
+			var meta = me.getMeta();
+			var data = me.getDataset().data;
+			var numMeta = meta.data.length;
+			var numData = data.length;
+
+			if (numData < numMeta) {
+				meta.data.splice(numData, numMeta - numData);
+			} else if (numData > numMeta) {
+				me.insertElements(numMeta, numData - numMeta);
+			}
+		},
+
+		/**
+		 * @private
+		 */
+		insertElements: function(start, count) {
+			for (var i=0; i<count; ++i) {
+				this.addElementAndReset(start + i);
+			}
+		},
+
+		/**
+		 * @private
+		 */
+		onDataPush: function() {
+			this.insertElements(this.getDataset().data.length-1, arguments.length);
+		},
+
+		/**
+		 * @private
+		 */
+		onDataPop: function() {
+			this.getMeta().data.pop();
+		},
+
+		/**
+		 * @private
+		 */
+		onDataShift: function() {
+			this.getMeta().data.shift();
+		},
+
+		/**
+		 * @private
+		 */
+		onDataSplice: function(start, count) {
+			this.getMeta().data.splice(start, count);
+			this.insertElements(start, arguments.length - 2);
+		},
+
+		/**
+		 * @private
+		 */
+		onDataUnshift: function() {
+			this.insertElements(0, arguments.length);
+		}
+	});
+
+	Chart.DatasetController.extend = helpers.inherits;
+};
+
+},{}],22:[function(require,module,exports){
+'use strict';
+
+var color = require('chartjs-color');
+
+module.exports = function(Chart) {
+
+	var helpers = Chart.helpers;
+
+	function interpolate(start, view, model, ease) {
+		var keys = Object.keys(model);
+		var i, ilen, key, actual, origin, target, type, c0, c1;
+
+		for (i=0, ilen=keys.length; i<ilen; ++i) {
+			key = keys[i];
+
+			target = model[key];
+
+			// if a value is added to the model after pivot() has been called, the view
+			// doesn't contain it, so let's initialize the view to the target value.
+			if (!view.hasOwnProperty(key)) {
+				view[key] = target;
+			}
+
+			actual = view[key];
+
+			if (actual === target || key[0] === '_') {
+				continue;
+			}
+
+			if (!start.hasOwnProperty(key)) {
+				start[key] = actual;
+			}
+
+			origin = start[key];
+
+			type = typeof(target);
+
+			if (type === typeof(origin)) {
+				if (type === 'string') {
+					c0 = color(origin);
+					if (c0.valid) {
+						c1 = color(target);
+						if (c1.valid) {
+							view[key] = c1.mix(c0, ease).rgbString();
+							continue;
+						}
+					}
+				} else if (type === 'number' && isFinite(origin) && isFinite(target)) {
+					view[key] = origin + (target - origin) * ease;
+					continue;
+				}
+			}
+
+			view[key] = target;
+		}
+	}
+
+	Chart.elements = {};
+
+	Chart.Element = function(configuration) {
+		helpers.extend(this, configuration);
+		this.initialize.apply(this, arguments);
+	};
+
+	helpers.extend(Chart.Element.prototype, {
+
+		initialize: function() {
+			this.hidden = false;
+		},
+
+		pivot: function() {
+			var me = this;
+			if (!me._view) {
+				me._view = helpers.clone(me._model);
+			}
+			me._start = {};
+			return me;
+		},
+
+		transition: function(ease) {
+			var me = this;
+			var model = me._model;
+			var start = me._start;
+			var view = me._view;
+
+			// No animation -> No Transition
+			if (!model || ease === 1) {
+				me._view = model;
+				me._start = null;
+				return me;
+			}
+
+			if (!view) {
+				view = me._view = {};
+			}
+
+			if (!start) {
+				start = me._start = {};
+			}
+
+			interpolate(start, view, model, ease);
+
+			return me;
+		},
+
+		tooltipPosition: function() {
+			return {
+				x: this._model.x,
+				y: this._model.y
+			};
+		},
+
+		hasValue: function() {
+			return helpers.isNumber(this._model.x) && helpers.isNumber(this._model.y);
+		}
+	});
+
+	Chart.Element.extend = helpers.inherits;
+};
+
+},{"chartjs-color":48}],23:[function(require,module,exports){
+/* global window: false */
+/* global document: false */
+'use strict';
+
+var color = require('chartjs-color');
+
+module.exports = function(Chart) {
+	// Global Chart helpers object for utility methods and classes
+	var helpers = Chart.helpers = {};
+
+	// -- Basic js utility methods
+	helpers.each = function(loopable, callback, self, reverse) {
+		// Check to see if null or undefined firstly.
+		var i, len;
+		if (helpers.isArray(loopable)) {
+			len = loopable.length;
+			if (reverse) {
+				for (i = len - 1; i >= 0; i--) {
+					callback.call(self, loopable[i], i);
+				}
+			} else {
+				for (i = 0; i < len; i++) {
+					callback.call(self, loopable[i], i);
+				}
+			}
+		} else if (typeof loopable === 'object') {
+			var keys = Object.keys(loopable);
+			len = keys.length;
+			for (i = 0; i < len; i++) {
+				callback.call(self, loopable[keys[i]], keys[i]);
+			}
+		}
+	};
+	helpers.clone = function(obj) {
+		var objClone = {};
+		helpers.each(obj, function(value, key) {
+			if (helpers.isArray(value)) {
+				objClone[key] = value.slice(0);
+			} else if (typeof value === 'object' && value !== null) {
+				objClone[key] = helpers.clone(value);
+			} else {
+				objClone[key] = value;
+			}
+		});
+		return objClone;
+	};
+	helpers.extend = function(base) {
+		var setFn = function(value, key) {
+			base[key] = value;
+		};
+		for (var i = 1, ilen = arguments.length; i < ilen; i++) {
+			helpers.each(arguments[i], setFn);
+		}
+		return base;
+	};
+	// Need a special merge function to chart configs since they are now grouped
+	helpers.configMerge = function(_base) {
+		var base = helpers.clone(_base);
+		helpers.each(Array.prototype.slice.call(arguments, 1), function(extension) {
+			helpers.each(extension, function(value, key) {
+				var baseHasProperty = base.hasOwnProperty(key);
+				var baseVal = baseHasProperty ? base[key] : {};
+
+				if (key === 'scales') {
+					// Scale config merging is complex. Add our own function here for that
+					base[key] = helpers.scaleMerge(baseVal, value);
+				} else if (key === 'scale') {
+					// Used in polar area & radar charts since there is only one scale
+					base[key] = helpers.configMerge(baseVal, Chart.scaleService.getScaleDefaults(value.type), value);
+				} else if (baseHasProperty
+						&& typeof baseVal === 'object'
+						&& !helpers.isArray(baseVal)
+						&& baseVal !== null
+						&& typeof value === 'object'
+						&& !helpers.isArray(value)) {
+					// If we are overwriting an object with an object, do a merge of the properties.
+					base[key] = helpers.configMerge(baseVal, value);
+				} else {
+					// can just overwrite the value in this case
+					base[key] = value;
+				}
+			});
+		});
+
+		return base;
+	};
+	helpers.scaleMerge = function(_base, extension) {
+		var base = helpers.clone(_base);
+
+		helpers.each(extension, function(value, key) {
+			if (key === 'xAxes' || key === 'yAxes') {
+				// These properties are arrays of items
+				if (base.hasOwnProperty(key)) {
+					helpers.each(value, function(valueObj, index) {
+						var axisType = helpers.getValueOrDefault(valueObj.type, key === 'xAxes' ? 'category' : 'linear');
+						var axisDefaults = Chart.scaleService.getScaleDefaults(axisType);
+						if (index >= base[key].length || !base[key][index].type) {
+							base[key].push(helpers.configMerge(axisDefaults, valueObj));
+						} else if (valueObj.type && valueObj.type !== base[key][index].type) {
+							// Type changed. Bring in the new defaults before we bring in valueObj so that valueObj can override the correct scale defaults
+							base[key][index] = helpers.configMerge(base[key][index], axisDefaults, valueObj);
+						} else {
+							// Type is the same
+							base[key][index] = helpers.configMerge(base[key][index], valueObj);
+						}
+					});
+				} else {
+					base[key] = [];
+					helpers.each(value, function(valueObj) {
+						var axisType = helpers.getValueOrDefault(valueObj.type, key === 'xAxes' ? 'category' : 'linear');
+						base[key].push(helpers.configMerge(Chart.scaleService.getScaleDefaults(axisType), valueObj));
+					});
+				}
+			} else if (base.hasOwnProperty(key) && typeof base[key] === 'object' && base[key] !== null && typeof value === 'object') {
+				// If we are overwriting an object with an object, do a merge of the properties.
+				base[key] = helpers.configMerge(base[key], value);
+
+			} else {
+				// can just overwrite the value in this case
+				base[key] = value;
+			}
+		});
+
+		return base;
+	};
+	helpers.getValueAtIndexOrDefault = function(value, index, defaultValue) {
+		if (value === undefined || value === null) {
+			return defaultValue;
+		}
+
+		if (helpers.isArray(value)) {
+			return index < value.length ? value[index] : defaultValue;
+		}
+
+		return value;
+	};
+	helpers.getValueOrDefault = function(value, defaultValue) {
+		return value === undefined ? defaultValue : value;
+	};
+	helpers.indexOf = Array.prototype.indexOf?
+		function(array, item) {
+			return array.indexOf(item);
+		}:
+		function(array, item) {
+			for (var i = 0, ilen = array.length; i < ilen; ++i) {
+				if (array[i] === item) {
+					return i;
+				}
+			}
+			return -1;
+		};
+	helpers.where = function(collection, filterCallback) {
+		if (helpers.isArray(collection) && Array.prototype.filter) {
+			return collection.filter(filterCallback);
+		}
+		var filtered = [];
+
+		helpers.each(collection, function(item) {
+			if (filterCallback(item)) {
+				filtered.push(item);
+			}
+		});
+
+		return filtered;
+	};
+	helpers.findIndex = Array.prototype.findIndex?
+		function(array, callback, scope) {
+			return array.findIndex(callback, scope);
+		} :
+		function(array, callback, scope) {
+			scope = scope === undefined? array : scope;
+			for (var i = 0, ilen = array.length; i < ilen; ++i) {
+				if (callback.call(scope, array[i], i, array)) {
+					return i;
+				}
+			}
+			return -1;
+		};
+	helpers.findNextWhere = function(arrayToSearch, filterCallback, startIndex) {
+		// Default to start of the array
+		if (startIndex === undefined || startIndex === null) {
+			startIndex = -1;
+		}
+		for (var i = startIndex + 1; i < arrayToSearch.length; i++) {
+			var currentItem = arrayToSearch[i];
+			if (filterCallback(currentItem)) {
+				return currentItem;
+			}
+		}
+	};
+	helpers.findPreviousWhere = function(arrayToSearch, filterCallback, startIndex) {
+		// Default to end of the array
+		if (startIndex === undefined || startIndex === null) {
+			startIndex = arrayToSearch.length;
+		}
+		for (var i = startIndex - 1; i >= 0; i--) {
+			var currentItem = arrayToSearch[i];
+			if (filterCallback(currentItem)) {
+				return currentItem;
+			}
+		}
+	};
+	helpers.inherits = function(extensions) {
+		// Basic javascript inheritance based on the model created in Backbone.js
+		var me = this;
+		var ChartElement = (extensions && extensions.hasOwnProperty('constructor')) ? extensions.constructor : function() {
+			return me.apply(this, arguments);
+		};
+
+		var Surrogate = function() {
+			this.constructor = ChartElement;
+		};
+		Surrogate.prototype = me.prototype;
+		ChartElement.prototype = new Surrogate();
+
+		ChartElement.extend = helpers.inherits;
+
+		if (extensions) {
+			helpers.extend(ChartElement.prototype, extensions);
+		}
+
+		ChartElement.__super__ = me.prototype;
+
+		return ChartElement;
+	};
+	helpers.noop = function() {};
+	helpers.uid = (function() {
+		var id = 0;
+		return function() {
+			return id++;
+		};
+	}());
+	// -- Math methods
+	helpers.isNumber = function(n) {
+		return !isNaN(parseFloat(n)) && isFinite(n);
+	};
+	helpers.almostEquals = function(x, y, epsilon) {
+		return Math.abs(x - y) < epsilon;
+	};
+	helpers.almostWhole = function(x, epsilon) {
+		var rounded = Math.round(x);
+		return (((rounded - epsilon) < x) && ((rounded + epsilon) > x));
+	};
+	helpers.max = function(array) {
+		return array.reduce(function(max, value) {
+			if (!isNaN(value)) {
+				return Math.max(max, value);
+			}
+			return max;
+		}, Number.NEGATIVE_INFINITY);
+	};
+	helpers.min = function(array) {
+		return array.reduce(function(min, value) {
+			if (!isNaN(value)) {
+				return Math.min(min, value);
+			}
+			return min;
+		}, Number.POSITIVE_INFINITY);
+	};
+	helpers.sign = Math.sign?
+		function(x) {
+			return Math.sign(x);
+		} :
+		function(x) {
+			x = +x; // convert to a number
+			if (x === 0 || isNaN(x)) {
+				return x;
+			}
+			return x > 0 ? 1 : -1;
+		};
+	helpers.log10 = Math.log10?
+		function(x) {
+			return Math.log10(x);
+		} :
+		function(x) {
+			return Math.log(x) / Math.LN10;
+		};
+	helpers.toRadians = function(degrees) {
+		return degrees * (Math.PI / 180);
+	};
+	helpers.toDegrees = function(radians) {
+		return radians * (180 / Math.PI);
+	};
+	// Gets the angle from vertical upright to the point about a centre.
+	helpers.getAngleFromPoint = function(centrePoint, anglePoint) {
+		var distanceFromXCenter = anglePoint.x - centrePoint.x,
+			distanceFromYCenter = anglePoint.y - centrePoint.y,
+			radialDistanceFromCenter = Math.sqrt(distanceFromXCenter * distanceFromXCenter + distanceFromYCenter * distanceFromYCenter);
+
+		var angle = Math.atan2(distanceFromYCenter, distanceFromXCenter);
+
+		if (angle < (-0.5 * Math.PI)) {
+			angle += 2.0 * Math.PI; // make sure the returned angle is in the range of (-PI/2, 3PI/2]
+		}
+
+		return {
+			angle: angle,
+			distance: radialDistanceFromCenter
+		};
+	};
+	helpers.distanceBetweenPoints = function(pt1, pt2) {
+		return Math.sqrt(Math.pow(pt2.x - pt1.x, 2) + Math.pow(pt2.y - pt1.y, 2));
+	};
+	helpers.aliasPixel = function(pixelWidth) {
+		return (pixelWidth % 2 === 0) ? 0 : 0.5;
+	};
+	helpers.splineCurve = function(firstPoint, middlePoint, afterPoint, t) {
+		// Props to Rob Spencer at scaled innovation for his post on splining between points
+		// http://scaledinnovation.com/analytics/splines/aboutSplines.html
+
+		// This function must also respect "skipped" points
+
+		var previous = firstPoint.skip ? middlePoint : firstPoint,
+			current = middlePoint,
+			next = afterPoint.skip ? middlePoint : afterPoint;
+
+		var d01 = Math.sqrt(Math.pow(current.x - previous.x, 2) + Math.pow(current.y - previous.y, 2));
+		var d12 = Math.sqrt(Math.pow(next.x - current.x, 2) + Math.pow(next.y - current.y, 2));
+
+		var s01 = d01 / (d01 + d12);
+		var s12 = d12 / (d01 + d12);
+
+		// If all points are the same, s01 & s02 will be inf
+		s01 = isNaN(s01) ? 0 : s01;
+		s12 = isNaN(s12) ? 0 : s12;
+
+		var fa = t * s01; // scaling factor for triangle Ta
+		var fb = t * s12;
+
+		return {
+			previous: {
+				x: current.x - fa * (next.x - previous.x),
+				y: current.y - fa * (next.y - previous.y)
+			},
+			next: {
+				x: current.x + fb * (next.x - previous.x),
+				y: current.y + fb * (next.y - previous.y)
+			}
+		};
+	};
+	helpers.EPSILON = Number.EPSILON || 1e-14;
+	helpers.splineCurveMonotone = function(points) {
+		// This function calculates Bézier control points in a similar way than |splineCurve|,
+		// but preserves monotonicity of the provided data and ensures no local extremums are added
+		// between the dataset discrete points due to the interpolation.
+		// See : https://en.wikipedia.org/wiki/Monotone_cubic_interpolation
+
+		var pointsWithTangents = (points || []).map(function(point) {
+			return {
+				model: point._model,
+				deltaK: 0,
+				mK: 0
+			};
+		});
+
+		// Calculate slopes (deltaK) and initialize tangents (mK)
+		var pointsLen = pointsWithTangents.length;
+		var i, pointBefore, pointCurrent, pointAfter;
+		for (i = 0; i < pointsLen; ++i) {
+			pointCurrent = pointsWithTangents[i];
+			if (pointCurrent.model.skip) {
+				continue;
+			}
+
+			pointBefore = i > 0 ? pointsWithTangents[i - 1] : null;
+			pointAfter = i < pointsLen - 1 ? pointsWithTangents[i + 1] : null;
+			if (pointAfter && !pointAfter.model.skip) {
+				var slopeDeltaX = (pointAfter.model.x - pointCurrent.model.x);
+
+				// In the case of two points that appear at the same x pixel, slopeDeltaX is 0
+				pointCurrent.deltaK = slopeDeltaX !== 0 ? (pointAfter.model.y - pointCurrent.model.y) / slopeDeltaX : 0;
+			}
+
+			if (!pointBefore || pointBefore.model.skip) {
+				pointCurrent.mK = pointCurrent.deltaK;
+			} else if (!pointAfter || pointAfter.model.skip) {
+				pointCurrent.mK = pointBefore.deltaK;
+			} else if (this.sign(pointBefore.deltaK) !== this.sign(pointCurrent.deltaK)) {
+				pointCurrent.mK = 0;
+			} else {
+				pointCurrent.mK = (pointBefore.deltaK + pointCurrent.deltaK) / 2;
+			}
+		}
+
+		// Adjust tangents to ensure monotonic properties
+		var alphaK, betaK, tauK, squaredMagnitude;
+		for (i = 0; i < pointsLen - 1; ++i) {
+			pointCurrent = pointsWithTangents[i];
+			pointAfter = pointsWithTangents[i + 1];
+			if (pointCurrent.model.skip || pointAfter.model.skip) {
+				continue;
+			}
+
+			if (helpers.almostEquals(pointCurrent.deltaK, 0, this.EPSILON)) {
+				pointCurrent.mK = pointAfter.mK = 0;
+				continue;
+			}
+
+			alphaK = pointCurrent.mK / pointCurrent.deltaK;
+			betaK = pointAfter.mK / pointCurrent.deltaK;
+			squaredMagnitude = Math.pow(alphaK, 2) + Math.pow(betaK, 2);
+			if (squaredMagnitude <= 9) {
+				continue;
+			}
+
+			tauK = 3 / Math.sqrt(squaredMagnitude);
+			pointCurrent.mK = alphaK * tauK * pointCurrent.deltaK;
+			pointAfter.mK = betaK * tauK * pointCurrent.deltaK;
+		}
+
+		// Compute control points
+		var deltaX;
+		for (i = 0; i < pointsLen; ++i) {
+			pointCurrent = pointsWithTangents[i];
+			if (pointCurrent.model.skip) {
+				continue;
+			}
+
+			pointBefore = i > 0 ? pointsWithTangents[i - 1] : null;
+			pointAfter = i < pointsLen - 1 ? pointsWithTangents[i + 1] : null;
+			if (pointBefore && !pointBefore.model.skip) {
+				deltaX = (pointCurrent.model.x - pointBefore.model.x) / 3;
+				pointCurrent.model.controlPointPreviousX = pointCurrent.model.x - deltaX;
+				pointCurrent.model.controlPointPreviousY = pointCurrent.model.y - deltaX * pointCurrent.mK;
+			}
+			if (pointAfter && !pointAfter.model.skip) {
+				deltaX = (pointAfter.model.x - pointCurrent.model.x) / 3;
+				pointCurrent.model.controlPointNextX = pointCurrent.model.x + deltaX;
+				pointCurrent.model.controlPointNextY = pointCurrent.model.y + deltaX * pointCurrent.mK;
+			}
+		}
+	};
+	helpers.nextItem = function(collection, index, loop) {
+		if (loop) {
+			return index >= collection.length - 1 ? collection[0] : collection[index + 1];
+		}
+		return index >= collection.length - 1 ? collection[collection.length - 1] : collection[index + 1];
+	};
+	helpers.previousItem = function(collection, index, loop) {
+		if (loop) {
+			return index <= 0 ? collection[collection.length - 1] : collection[index - 1];
+		}
+		return index <= 0 ? collection[0] : collection[index - 1];
+	};
+	// Implementation of the nice number algorithm used in determining where axis labels will go
+	helpers.niceNum = function(range, round) {
+		var exponent = Math.floor(helpers.log10(range));
+		var fraction = range / Math.pow(10, exponent);
+		var niceFraction;
+
+		if (round) {
+			if (fraction < 1.5) {
+				niceFraction = 1;
+			} else if (fraction < 3) {
+				niceFraction = 2;
+			} else if (fraction < 7) {
+				niceFraction = 5;
+			} else {
+				niceFraction = 10;
+			}
+		} else if (fraction <= 1.0) {
+			niceFraction = 1;
+		} else if (fraction <= 2) {
+			niceFraction = 2;
+		} else if (fraction <= 5) {
+			niceFraction = 5;
+		} else {
+			niceFraction = 10;
+		}
+
+		return niceFraction * Math.pow(10, exponent);
+	};
+	// Easing functions adapted from Robert Penner's easing equations
+	// http://www.robertpenner.com/easing/
+	var easingEffects = helpers.easingEffects = {
+		linear: function(t) {
+			return t;
+		},
+		easeInQuad: function(t) {
+			return t * t;
+		},
+		easeOutQuad: function(t) {
+			return -1 * t * (t - 2);
+		},
+		easeInOutQuad: function(t) {
+			if ((t /= 1 / 2) < 1) {
+				return 1 / 2 * t * t;
+			}
+			return -1 / 2 * ((--t) * (t - 2) - 1);
+		},
+		easeInCubic: function(t) {
+			return t * t * t;
+		},
+		easeOutCubic: function(t) {
+			return 1 * ((t = t / 1 - 1) * t * t + 1);
+		},
+		easeInOutCubic: function(t) {
+			if ((t /= 1 / 2) < 1) {
+				return 1 / 2 * t * t * t;
+			}
+			return 1 / 2 * ((t -= 2) * t * t + 2);
+		},
+		easeInQuart: function(t) {
+			return t * t * t * t;
+		},
+		easeOutQuart: function(t) {
+			return -1 * ((t = t / 1 - 1) * t * t * t - 1);
+		},
+		easeInOutQuart: function(t) {
+			if ((t /= 1 / 2) < 1) {
+				return 1 / 2 * t * t * t * t;
+			}
+			return -1 / 2 * ((t -= 2) * t * t * t - 2);
+		},
+		easeInQuint: function(t) {
+			return 1 * (t /= 1) * t * t * t * t;
+		},
+		easeOutQuint: function(t) {
+			return 1 * ((t = t / 1 - 1) * t * t * t * t + 1);
+		},
+		easeInOutQuint: function(t) {
+			if ((t /= 1 / 2) < 1) {
+				return 1 / 2 * t * t * t * t * t;
+			}
+			return 1 / 2 * ((t -= 2) * t * t * t * t + 2);
+		},
+		easeInSine: function(t) {
+			return -1 * Math.cos(t / 1 * (Math.PI / 2)) + 1;
+		},
+		easeOutSine: function(t) {
+			return 1 * Math.sin(t / 1 * (Math.PI / 2));
+		},
+		easeInOutSine: function(t) {
+			return -1 / 2 * (Math.cos(Math.PI * t / 1) - 1);
+		},
+		easeInExpo: function(t) {
+			return (t === 0) ? 1 : 1 * Math.pow(2, 10 * (t / 1 - 1));
+		},
+		easeOutExpo: function(t) {
+			return (t === 1) ? 1 : 1 * (-Math.pow(2, -10 * t / 1) + 1);
+		},
+		easeInOutExpo: function(t) {
+			if (t === 0) {
+				return 0;
+			}
+			if (t === 1) {
+				return 1;
+			}
+			if ((t /= 1 / 2) < 1) {
+				return 1 / 2 * Math.pow(2, 10 * (t - 1));
+			}
+			return 1 / 2 * (-Math.pow(2, -10 * --t) + 2);
+		},
+		easeInCirc: function(t) {
+			if (t >= 1) {
+				return t;
+			}
+			return -1 * (Math.sqrt(1 - (t /= 1) * t) - 1);
+		},
+		easeOutCirc: function(t) {
+			return 1 * Math.sqrt(1 - (t = t / 1 - 1) * t);
+		},
+		easeInOutCirc: function(t) {
+			if ((t /= 1 / 2) < 1) {
+				return -1 / 2 * (Math.sqrt(1 - t * t) - 1);
+			}
+			return 1 / 2 * (Math.sqrt(1 - (t -= 2) * t) + 1);
+		},
+		easeInElastic: function(t) {
+			var s = 1.70158;
+			var p = 0;
+			var a = 1;
+			if (t === 0) {
+				return 0;
+			}
+			if ((t /= 1) === 1) {
+				return 1;
+			}
+			if (!p) {
+				p = 1 * 0.3;
+			}
+			if (a < Math.abs(1)) {
+				a = 1;
+				s = p / 4;
+			} else {
+				s = p / (2 * Math.PI) * Math.asin(1 / a);
+			}
+			return -(a * Math.pow(2, 10 * (t -= 1)) * Math.sin((t * 1 - s) * (2 * Math.PI) / p));
+		},
+		easeOutElastic: function(t) {
+			var s = 1.70158;
+			var p = 0;
+			var a = 1;
+			if (t === 0) {
+				return 0;
+			}
+			if ((t /= 1) === 1) {
+				return 1;
+			}
+			if (!p) {
+				p = 1 * 0.3;
+			}
+			if (a < Math.abs(1)) {
+				a = 1;
+				s = p / 4;
+			} else {
+				s = p / (2 * Math.PI) * Math.asin(1 / a);
+			}
+			return a * Math.pow(2, -10 * t) * Math.sin((t * 1 - s) * (2 * Math.PI) / p) + 1;
+		},
+		easeInOutElastic: function(t) {
+			var s = 1.70158;
+			var p = 0;
+			var a = 1;
+			if (t === 0) {
+				return 0;
+			}
+			if ((t /= 1 / 2) === 2) {
+				return 1;
+			}
+			if (!p) {
+				p = 1 * (0.3 * 1.5);
+			}
+			if (a < Math.abs(1)) {
+				a = 1;
+				s = p / 4;
+			} else {
+				s = p / (2 * Math.PI) * Math.asin(1 / a);
+			}
+			if (t < 1) {
+				return -0.5 * (a * Math.pow(2, 10 * (t -= 1)) * Math.sin((t * 1 - s) * (2 * Math.PI) / p));
+			}
+			return a * Math.pow(2, -10 * (t -= 1)) * Math.sin((t * 1 - s) * (2 * Math.PI) / p) * 0.5 + 1;
+		},
+		easeInBack: function(t) {
+			var s = 1.70158;
+			return 1 * (t /= 1) * t * ((s + 1) * t - s);
+		},
+		easeOutBack: function(t) {
+			var s = 1.70158;
+			return 1 * ((t = t / 1 - 1) * t * ((s + 1) * t + s) + 1);
+		},
+		easeInOutBack: function(t) {
+			var s = 1.70158;
+			if ((t /= 1 / 2) < 1) {
+				return 1 / 2 * (t * t * (((s *= (1.525)) + 1) * t - s));
+			}
+			return 1 / 2 * ((t -= 2) * t * (((s *= (1.525)) + 1) * t + s) + 2);
+		},
+		easeInBounce: function(t) {
+			return 1 - easingEffects.easeOutBounce(1 - t);
+		},
+		easeOutBounce: function(t) {
+			if ((t /= 1) < (1 / 2.75)) {
+				return 1 * (7.5625 * t * t);
+			} else if (t < (2 / 2.75)) {
+				return 1 * (7.5625 * (t -= (1.5 / 2.75)) * t + 0.75);
+			} else if (t < (2.5 / 2.75)) {
+				return 1 * (7.5625 * (t -= (2.25 / 2.75)) * t + 0.9375);
+			}
+			return 1 * (7.5625 * (t -= (2.625 / 2.75)) * t + 0.984375);
+		},
+		easeInOutBounce: function(t) {
+			if (t < 1 / 2) {
+				return easingEffects.easeInBounce(t * 2) * 0.5;
+			}
+			return easingEffects.easeOutBounce(t * 2 - 1) * 0.5 + 1 * 0.5;
+		}
+	};
+	// Request animation polyfill - http://www.paulirish.com/2011/requestanimationframe-for-smart-animating/
+	helpers.requestAnimFrame = (function() {
+		if (typeof window === 'undefined') {
+			return function(callback) {
+				callback();
+			};
+		}
+		return window.requestAnimationFrame ||
+			window.webkitRequestAnimationFrame ||
+			window.mozRequestAnimationFrame ||
+			window.oRequestAnimationFrame ||
+			window.msRequestAnimationFrame ||
+			function(callback) {
+				return window.setTimeout(callback, 1000 / 60);
+			};
+	}());
+	// -- DOM methods
+	helpers.getRelativePosition = function(evt, chart) {
+		var mouseX, mouseY;
+		var e = evt.originalEvent || evt,
+			canvas = evt.currentTarget || evt.srcElement,
+			boundingRect = canvas.getBoundingClientRect();
+
+		var touches = e.touches;
+		if (touches && touches.length > 0) {
+			mouseX = touches[0].clientX;
+			mouseY = touches[0].clientY;
+
+		} else {
+			mouseX = e.clientX;
+			mouseY = e.clientY;
+		}
+
+		// Scale mouse coordinates into canvas coordinates
+		// by following the pattern laid out by 'jerryj' in the comments of
+		// http://www.html5canvastutorials.com/advanced/html5-canvas-mouse-coordinates/
+		var paddingLeft = parseFloat(helpers.getStyle(canvas, 'padding-left'));
+		var paddingTop = parseFloat(helpers.getStyle(canvas, 'padding-top'));
+		var paddingRight = parseFloat(helpers.getStyle(canvas, 'padding-right'));
+		var paddingBottom = parseFloat(helpers.getStyle(canvas, 'padding-bottom'));
+		var width = boundingRect.right - boundingRect.left - paddingLeft - paddingRight;
+		var height = boundingRect.bottom - boundingRect.top - paddingTop - paddingBottom;
+
+		// We divide by the current device pixel ratio, because the canvas is scaled up by that amount in each direction. However
+		// the backend model is in unscaled coordinates. Since we are going to deal with our model coordinates, we go back here
+		mouseX = Math.round((mouseX - boundingRect.left - paddingLeft) / (width) * canvas.width / chart.currentDevicePixelRatio);
+		mouseY = Math.round((mouseY - boundingRect.top - paddingTop) / (height) * canvas.height / chart.currentDevicePixelRatio);
+
+		return {
+			x: mouseX,
+			y: mouseY
+		};
+
+	};
+	helpers.addEvent = function(node, eventType, method) {
+		if (node.addEventListener) {
+			node.addEventListener(eventType, method);
+		} else if (node.attachEvent) {
+			node.attachEvent('on' + eventType, method);
+		} else {
+			node['on' + eventType] = method;
+		}
+	};
+	helpers.removeEvent = function(node, eventType, handler) {
+		if (node.removeEventListener) {
+			node.removeEventListener(eventType, handler, false);
+		} else if (node.detachEvent) {
+			node.detachEvent('on' + eventType, handler);
+		} else {
+			node['on' + eventType] = helpers.noop;
+		}
+	};
+
+	// Private helper function to convert max-width/max-height values that may be percentages into a number
+	function parseMaxStyle(styleValue, node, parentProperty) {
+		var valueInPixels;
+		if (typeof(styleValue) === 'string') {
+			valueInPixels = parseInt(styleValue, 10);
+
+			if (styleValue.indexOf('%') !== -1) {
+				// percentage * size in dimension
+				valueInPixels = valueInPixels / 100 * node.parentNode[parentProperty];
+			}
+		} else {
+			valueInPixels = styleValue;
+		}
+
+		return valueInPixels;
+	}
+
+	/**
+	 * Returns if the given value contains an effective constraint.
+	 * @private
+	 */
+	function isConstrainedValue(value) {
+		return value !== undefined && value !== null && value !== 'none';
+	}
+
+	// Private helper to get a constraint dimension
+	// @param domNode : the node to check the constraint on
+	// @param maxStyle : the style that defines the maximum for the direction we are using (maxWidth / maxHeight)
+	// @param percentageProperty : property of parent to use when calculating width as a percentage
+	// @see http://www.nathanaeljones.com/blog/2013/reading-max-width-cross-browser
+	function getConstraintDimension(domNode, maxStyle, percentageProperty) {
+		var view = document.defaultView;
+		var parentNode = domNode.parentNode;
+		var constrainedNode = view.getComputedStyle(domNode)[maxStyle];
+		var constrainedContainer = view.getComputedStyle(parentNode)[maxStyle];
+		var hasCNode = isConstrainedValue(constrainedNode);
+		var hasCContainer = isConstrainedValue(constrainedContainer);
+		var infinity = Number.POSITIVE_INFINITY;
+
+		if (hasCNode || hasCContainer) {
+			return Math.min(
+				hasCNode? parseMaxStyle(constrainedNode, domNode, percentageProperty) : infinity,
+				hasCContainer? parseMaxStyle(constrainedContainer, parentNode, percentageProperty) : infinity);
+		}
+
+		return 'none';
+	}
+	// returns Number or undefined if no constraint
+	helpers.getConstraintWidth = function(domNode) {
+		return getConstraintDimension(domNode, 'max-width', 'clientWidth');
+	};
+	// returns Number or undefined if no constraint
+	helpers.getConstraintHeight = function(domNode) {
+		return getConstraintDimension(domNode, 'max-height', 'clientHeight');
+	};
+	helpers.getMaximumWidth = function(domNode) {
+		var container = domNode.parentNode;
+		var paddingLeft = parseInt(helpers.getStyle(container, 'padding-left'), 10);
+		var paddingRight = parseInt(helpers.getStyle(container, 'padding-right'), 10);
+		var w = container.clientWidth - paddingLeft - paddingRight;
+		var cw = helpers.getConstraintWidth(domNode);
+		return isNaN(cw)? w : Math.min(w, cw);
+	};
+	helpers.getMaximumHeight = function(domNode) {
+		var container = domNode.parentNode;
+		var paddingTop = parseInt(helpers.getStyle(container, 'padding-top'), 10);
+		var paddingBottom = parseInt(helpers.getStyle(container, 'padding-bottom'), 10);
+		var h = container.clientHeight - paddingTop - paddingBottom;
+		var ch = helpers.getConstraintHeight(domNode);
+		return isNaN(ch)? h : Math.min(h, ch);
+	};
+	helpers.getStyle = function(el, property) {
+		return el.currentStyle ?
+			el.currentStyle[property] :
+			document.defaultView.getComputedStyle(el, null).getPropertyValue(property);
+	};
+	helpers.retinaScale = function(chart) {
+		var pixelRatio = chart.currentDevicePixelRatio = window.devicePixelRatio || 1;
+		if (pixelRatio === 1) {
+			return;
+		}
+
+		var canvas = chart.canvas;
+		var height = chart.height;
+		var width = chart.width;
+
+		canvas.height = height * pixelRatio;
+		canvas.width = width * pixelRatio;
+		chart.ctx.scale(pixelRatio, pixelRatio);
+
+		// If no style has been set on the canvas, the render size is used as display size,
+		// making the chart visually bigger, so let's enforce it to the "correct" values.
+		// See https://github.com/chartjs/Chart.js/issues/3575
+		canvas.style.height = height + 'px';
+		canvas.style.width = width + 'px';
+	};
+	// -- Canvas methods
+	helpers.clear = function(chart) {
+		chart.ctx.clearRect(0, 0, chart.width, chart.height);
+	};
+	helpers.fontString = function(pixelSize, fontStyle, fontFamily) {
+		return fontStyle + ' ' + pixelSize + 'px ' + fontFamily;
+	};
+	helpers.longestText = function(ctx, font, arrayOfThings, cache) {
+		cache = cache || {};
+		var data = cache.data = cache.data || {};
+		var gc = cache.garbageCollect = cache.garbageCollect || [];
+
+		if (cache.font !== font) {
+			data = cache.data = {};
+			gc = cache.garbageCollect = [];
+			cache.font = font;
+		}
+
+		ctx.font = font;
+		var longest = 0;
+		helpers.each(arrayOfThings, function(thing) {
+			// Undefined strings and arrays should not be measured
+			if (thing !== undefined && thing !== null && helpers.isArray(thing) !== true) {
+				longest = helpers.measureText(ctx, data, gc, longest, thing);
+			} else if (helpers.isArray(thing)) {
+				// if it is an array lets measure each element
+				// to do maybe simplify this function a bit so we can do this more recursively?
+				helpers.each(thing, function(nestedThing) {
+					// Undefined strings and arrays should not be measured
+					if (nestedThing !== undefined && nestedThing !== null && !helpers.isArray(nestedThing)) {
+						longest = helpers.measureText(ctx, data, gc, longest, nestedThing);
+					}
+				});
+			}
+		});
+
+		var gcLen = gc.length / 2;
+		if (gcLen > arrayOfThings.length) {
+			for (var i = 0; i < gcLen; i++) {
+				delete data[gc[i]];
+			}
+			gc.splice(0, gcLen);
+		}
+		return longest;
+	};
+	helpers.measureText = function(ctx, data, gc, longest, string) {
+		var textWidth = data[string];
+		if (!textWidth) {
+			textWidth = data[string] = ctx.measureText(string).width;
+			gc.push(string);
+		}
+		if (textWidth > longest) {
+			longest = textWidth;
+		}
+		return longest;
+	};
+	helpers.numberOfLabelLines = function(arrayOfThings) {
+		var numberOfLines = 1;
+		helpers.each(arrayOfThings, function(thing) {
+			if (helpers.isArray(thing)) {
+				if (thing.length > numberOfLines) {
+					numberOfLines = thing.length;
+				}
+			}
+		});
+		return numberOfLines;
+	};
+	helpers.drawRoundedRectangle = function(ctx, x, y, width, height, radius) {
+		ctx.beginPath();
+		ctx.moveTo(x + radius, y);
+		ctx.lineTo(x + width - radius, y);
+		ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+		ctx.lineTo(x + width, y + height - radius);
+		ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+		ctx.lineTo(x + radius, y + height);
+		ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+		ctx.lineTo(x, y + radius);
+		ctx.quadraticCurveTo(x, y, x + radius, y);
+		ctx.closePath();
+	};
+
+	helpers.color = !color?
+		function(value) {
+			console.error('Color.js not found!');
+			return value;
+		} :
+		function(value) {
+			/* global CanvasGradient */
+			if (value instanceof CanvasGradient) {
+				value = Chart.defaults.global.defaultColor;
+			}
+
+			return color(value);
+		};
+
+	helpers.isArray = Array.isArray?
+		function(obj) {
+			return Array.isArray(obj);
+		} :
+		function(obj) {
+			return Object.prototype.toString.call(obj) === '[object Array]';
+		};
+	// ! @see http://stackoverflow.com/a/14853974
+	helpers.arrayEquals = function(a0, a1) {
+		var i, ilen, v0, v1;
+
+		if (!a0 || !a1 || a0.length !== a1.length) {
+			return false;
+		}
+
+		for (i = 0, ilen=a0.length; i < ilen; ++i) {
+			v0 = a0[i];
+			v1 = a1[i];
+
+			if (v0 instanceof Array && v1 instanceof Array) {
+				if (!helpers.arrayEquals(v0, v1)) {
+					return false;
+				}
+			} else if (v0 !== v1) {
+				// NOTE: two different object instances will never be equal: {x:20} != {x:20}
+				return false;
+			}
+		}
+
+		return true;
+	};
+	helpers.callback = function(fn, args, thisArg) {
+		if (fn && typeof fn.call === 'function') {
+			fn.apply(thisArg, args);
+		}
+	};
+	helpers.getHoverColor = function(colorValue) {
+		/* global CanvasPattern */
+		return (colorValue instanceof CanvasPattern) ?
+			colorValue :
+			helpers.color(colorValue).saturate(0.5).darken(0.1).rgbString();
+	};
+
+	/**
+	 * Provided for backward compatibility, use Chart.helpers#callback instead.
+	 * @function Chart.helpers#callCallback
+	 * @deprecated since version 2.6.0
+	 * @todo remove at version 3
+	 */
+	helpers.callCallback = helpers.callback;
+};
+
+},{"chartjs-color":48}],24:[function(require,module,exports){
+'use strict';
+
+module.exports = function(Chart) {
+	var helpers = Chart.helpers;
+
+	/**
+	 * Helper function to get relative position for an event
+	 * @param {Event|IEvent} event - The event to get the position for
+	 * @param {Chart} chart - The chart
+	 * @returns {Point} the event position
+	 */
+	function getRelativePosition(e, chart) {
+		if (e.native) {
+			return {
+				x: e.x,
+				y: e.y
+			};
+		}
+
+		return helpers.getRelativePosition(e, chart);
+	}
+
+	/**
+	 * Helper function to traverse all of the visible elements in the chart
+	 * @param chart {chart} the chart
+	 * @param handler {Function} the callback to execute for each visible item
+	 */
+	function parseVisibleItems(chart, handler) {
+		var datasets = chart.data.datasets;
+		var meta, i, j, ilen, jlen;
+
+		for (i = 0, ilen = datasets.length; i < ilen; ++i) {
+			if (!chart.isDatasetVisible(i)) {
+				continue;
+			}
+
+			meta = chart.getDatasetMeta(i);
+			for (j = 0, jlen = meta.data.length; j < jlen; ++j) {
+				var element = meta.data[j];
+				if (!element._view.skip) {
+					handler(element);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Helper function to get the items that intersect the event position
+	 * @param items {ChartElement[]} elements to filter
+	 * @param position {Point} the point to be nearest to
+	 * @return {ChartElement[]} the nearest items
+	 */
+	function getIntersectItems(chart, position) {
+		var elements = [];
+
+		parseVisibleItems(chart, function(element) {
+			if (element.inRange(position.x, position.y)) {
+				elements.push(element);
+			}
+		});
+
+		return elements;
+	}
+
+	/**
+	 * Helper function to get the items nearest to the event position considering all visible items in teh chart
+	 * @param chart {Chart} the chart to look at elements from
+	 * @param position {Point} the point to be nearest to
+	 * @param intersect {Boolean} if true, only consider items that intersect the position
+	 * @param distanceMetric {Function} Optional function to provide the distance between
+	 * @return {ChartElement[]} the nearest items
+	 */
+	function getNearestItems(chart, position, intersect, distanceMetric) {
+		var minDistance = Number.POSITIVE_INFINITY;
+		var nearestItems = [];
+
+		if (!distanceMetric) {
+			distanceMetric = helpers.distanceBetweenPoints;
+		}
+
+		parseVisibleItems(chart, function(element) {
+			if (intersect && !element.inRange(position.x, position.y)) {
+				return;
+			}
+
+			var center = element.getCenterPoint();
+			var distance = distanceMetric(position, center);
+
+			if (distance < minDistance) {
+				nearestItems = [element];
+				minDistance = distance;
+			} else if (distance === minDistance) {
+				// Can have multiple items at the same distance in which case we sort by size
+				nearestItems.push(element);
+			}
+		});
+
+		return nearestItems;
+	}
+
+	function indexMode(chart, e, options) {
+		var position = getRelativePosition(e, chart);
+		var distanceMetric = function(pt1, pt2) {
+			return Math.abs(pt1.x - pt2.x);
+		};
+		var items = options.intersect ? getIntersectItems(chart, position) : getNearestItems(chart, position, false, distanceMetric);
+		var elements = [];
+
+		if (!items.length) {
+			return [];
+		}
+
+		chart.data.datasets.forEach(function(dataset, datasetIndex) {
+			if (chart.isDatasetVisible(datasetIndex)) {
+				var meta = chart.getDatasetMeta(datasetIndex),
+					element = meta.data[items[0]._index];
+
+				// don't count items that are skipped (null data)
+				if (element && !element._view.skip) {
+					elements.push(element);
+				}
+			}
+		});
+
+		return elements;
+	}
+
+	/**
+	 * @interface IInteractionOptions
+	 */
+	/**
+	 * If true, only consider items that intersect the point
+	 * @name IInterfaceOptions#boolean
+	 * @type Boolean
+	 */
+
+	/**
+	 * Contains interaction related functions
+	 * @namespace Chart.Interaction
+	 */
+	Chart.Interaction = {
+		// Helper function for different modes
+		modes: {
+			single: function(chart, e) {
+				var position = getRelativePosition(e, chart);
+				var elements = [];
+
+				parseVisibleItems(chart, function(element) {
+					if (element.inRange(position.x, position.y)) {
+						elements.push(element);
+						return elements;
+					}
+				});
+
+				return elements.slice(0, 1);
+			},
+
+			/**
+			 * @function Chart.Interaction.modes.label
+			 * @deprecated since version 2.4.0
+	 		 * @todo remove at version 3
+			 * @private
+			 */
+			label: indexMode,
+
+			/**
+			 * Returns items at the same index. If the options.intersect parameter is true, we only return items if we intersect something
+			 * If the options.intersect mode is false, we find the nearest item and return the items at the same index as that item
+			 * @function Chart.Interaction.modes.index
+			 * @since v2.4.0
+			 * @param chart {chart} the chart we are returning items from
+			 * @param e {Event} the event we are find things at
+			 * @param options {IInteractionOptions} options to use during interaction
+			 * @return {Chart.Element[]} Array of elements that are under the point. If none are found, an empty array is returned
+			 */
+			index: indexMode,
+
+			/**
+			 * Returns items in the same dataset. If the options.intersect parameter is true, we only return items if we intersect something
+			 * If the options.intersect is false, we find the nearest item and return the items in that dataset
+			 * @function Chart.Interaction.modes.dataset
+			 * @param chart {chart} the chart we are returning items from
+			 * @param e {Event} the event we are find things at
+			 * @param options {IInteractionOptions} options to use during interaction
+			 * @return {Chart.Element[]} Array of elements that are under the point. If none are found, an empty array is returned
+			 */
+			dataset: function(chart, e, options) {
+				var position = getRelativePosition(e, chart);
+				var items = options.intersect ? getIntersectItems(chart, position) : getNearestItems(chart, position, false);
+
+				if (items.length > 0) {
+					items = chart.getDatasetMeta(items[0]._datasetIndex).data;
+				}
+
+				return items;
+			},
+
+			/**
+			 * @function Chart.Interaction.modes.x-axis
+			 * @deprecated since version 2.4.0. Use index mode and intersect == true
+			 * @todo remove at version 3
+			 * @private
+			 */
+			'x-axis': function(chart, e) {
+				return indexMode(chart, e, true);
+			},
+
+			/**
+			 * Point mode returns all elements that hit test based on the event position
+			 * of the event
+			 * @function Chart.Interaction.modes.intersect
+			 * @param chart {chart} the chart we are returning items from
+			 * @param e {Event} the event we are find things at
+			 * @return {Chart.Element[]} Array of elements that are under the point. If none are found, an empty array is returned
+			 */
+			point: function(chart, e) {
+				var position = getRelativePosition(e, chart);
+				return getIntersectItems(chart, position);
+			},
+
+			/**
+			 * nearest mode returns the element closest to the point
+			 * @function Chart.Interaction.modes.intersect
+			 * @param chart {chart} the chart we are returning items from
+			 * @param e {Event} the event we are find things at
+			 * @param options {IInteractionOptions} options to use
+			 * @return {Chart.Element[]} Array of elements that are under the point. If none are found, an empty array is returned
+			 */
+			nearest: function(chart, e, options) {
+				var position = getRelativePosition(e, chart);
+				var nearestItems = getNearestItems(chart, position, options.intersect);
+
+				// We have multiple items at the same distance from the event. Now sort by smallest
+				if (nearestItems.length > 1) {
+					nearestItems.sort(function(a, b) {
+						var sizeA = a.getArea();
+						var sizeB = b.getArea();
+						var ret = sizeA - sizeB;
+
+						if (ret === 0) {
+							// if equal sort by dataset index
+							ret = a._datasetIndex - b._datasetIndex;
+						}
+
+						return ret;
+					});
+				}
+
+				// Return only 1 item
+				return nearestItems.slice(0, 1);
+			},
+
+			/**
+			 * x mode returns the elements that hit-test at the current x coordinate
+			 * @function Chart.Interaction.modes.x
+			 * @param chart {chart} the chart we are returning items from
+			 * @param e {Event} the event we are find things at
+			 * @param options {IInteractionOptions} options to use
+			 * @return {Chart.Element[]} Array of elements that are under the point. If none are found, an empty array is returned
+			 */
+			x: function(chart, e, options) {
+				var position = getRelativePosition(e, chart);
+				var items = [];
+				var intersectsItem = false;
+
+				parseVisibleItems(chart, function(element) {
+					if (element.inXRange(position.x)) {
+						items.push(element);
+					}
+
+					if (element.inRange(position.x, position.y)) {
+						intersectsItem = true;
+					}
+				});
+
+				// If we want to trigger on an intersect and we don't have any items
+				// that intersect the position, return nothing
+				if (options.intersect && !intersectsItem) {
+					items = [];
+				}
+				return items;
+			},
+
+			/**
+			 * y mode returns the elements that hit-test at the current y coordinate
+			 * @function Chart.Interaction.modes.y
+			 * @param chart {chart} the chart we are returning items from
+			 * @param e {Event} the event we are find things at
+			 * @param options {IInteractionOptions} options to use
+			 * @return {Chart.Element[]} Array of elements that are under the point. If none are found, an empty array is returned
+			 */
+			y: function(chart, e, options) {
+				var position = getRelativePosition(e, chart);
+				var items = [];
+				var intersectsItem = false;
+
+				parseVisibleItems(chart, function(element) {
+					if (element.inYRange(position.y)) {
+						items.push(element);
+					}
+
+					if (element.inRange(position.x, position.y)) {
+						intersectsItem = true;
+					}
+				});
+
+				// If we want to trigger on an intersect and we don't have any items
+				// that intersect the position, return nothing
+				if (options.intersect && !intersectsItem) {
+					items = [];
+				}
+				return items;
+			}
+		}
+	};
+};
+
+},{}],25:[function(require,module,exports){
+'use strict';
+
+module.exports = function() {
+
+	// Occupy the global variable of Chart, and create a simple base class
+	var Chart = function(item, config) {
+		this.construct(item, config);
+		return this;
+	};
+
+	// Globally expose the defaults to allow for user updating/changing
+	Chart.defaults = {
+		global: {
+			responsive: true,
+			responsiveAnimationDuration: 0,
+			maintainAspectRatio: true,
+			events: ['mousemove', 'mouseout', 'click', 'touchstart', 'touchmove'],
+			hover: {
+				onHover: null,
+				mode: 'nearest',
+				intersect: true,
+				animationDuration: 400
+			},
+			onClick: null,
+			defaultColor: 'rgba(0,0,0,0.1)',
+			defaultFontColor: '#666',
+			defaultFontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+			defaultFontSize: 12,
+			defaultFontStyle: 'normal',
+			showLines: true,
+
+			// Element defaults defined in element extensions
+			elements: {},
+
+			// Legend callback string
+			legendCallback: function(chart) {
+				var text = [];
+				text.push('<ul class="' + chart.id + '-legend">');
+				for (var i = 0; i < chart.data.datasets.length; i++) {
+					text.push('<li><span style="background-color:' + chart.data.datasets[i].backgroundColor + '"></span>');
+					if (chart.data.datasets[i].label) {
+						text.push(chart.data.datasets[i].label);
+					}
+					text.push('</li>');
+				}
+				text.push('</ul>');
+
+				return text.join('');
+			}
+		}
+	};
+
+	Chart.Chart = Chart;
+
+	return Chart;
+};
+
+},{}],26:[function(require,module,exports){
+'use strict';
+
+module.exports = function(Chart) {
+
+	var helpers = Chart.helpers;
+
+	function filterByPosition(array, position) {
+		return helpers.where(array, function(v) {
+			return v.position === position;
+		});
+	}
+
+	function sortByWeight(array, reverse) {
+		array.forEach(function(v, i) {
+			v._tmpIndex_ = i;
+			return v;
+		});
+		array.sort(function(a, b) {
+			var v0 = reverse ? b : a;
+			var v1 = reverse ? a : b;
+			return v0.weight === v1.weight ?
+				v0._tmpIndex_ - v1._tmpIndex_ :
+				v0.weight - v1.weight;
+		});
+		array.forEach(function(v) {
+			delete v._tmpIndex_;
+		});
+	}
+
+	/**
+	 * @interface ILayoutItem
+	 * @prop {String} position - The position of the item in the chart layout. Possible values are
+	 * 'left', 'top', 'right', 'bottom', and 'chartArea'
+	 * @prop {Number} weight - The weight used to sort the item. Higher weights are further away from the chart area
+	 * @prop {Boolean} fullWidth - if true, and the item is horizontal, then push vertical boxes down
+	 * @prop {Function} isHorizontal - returns true if the layout item is horizontal (ie. top or bottom)
+	 * @prop {Function} update - Takes two parameters: width and height. Returns size of item
+	 * @prop {Function} getPadding -  Returns an object with padding on the edges
+	 * @prop {Number} width - Width of item. Must be valid after update()
+	 * @prop {Number} height - Height of item. Must be valid after update()
+	 * @prop {Number} left - Left edge of the item. Set by layout system and cannot be used in update
+	 * @prop {Number} top - Top edge of the item. Set by layout system and cannot be used in update
+	 * @prop {Number} right - Right edge of the item. Set by layout system and cannot be used in update
+	 * @prop {Number} bottom - Bottom edge of the item. Set by layout system and cannot be used in update
+	 */
+
+	// The layout service is very self explanatory.  It's responsible for the layout within a chart.
+	// Scales, Legends and Plugins all rely on the layout service and can easily register to be placed anywhere they need
+	// It is this service's responsibility of carrying out that layout.
+	Chart.layoutService = {
+		defaults: {},
+
+		/**
+		 * Register a box to a chart.
+		 * A box is simply a reference to an object that requires layout. eg. Scales, Legend, Title.
+		 * @param {Chart} chart - the chart to use
+		 * @param {ILayoutItem} item - the item to add to be layed out
+		 */
+		addBox: function(chart, item) {
+			if (!chart.boxes) {
+				chart.boxes = [];
+			}
+
+			// initialize item with default values
+			item.fullWidth = item.fullWidth || false;
+			item.position = item.position || 'top';
+			item.weight = item.weight || 0;
+
+			chart.boxes.push(item);
+		},
+
+		/**
+		 * Remove a layoutItem from a chart
+		 * @param {Chart} chart - the chart to remove the box from
+		 * @param {Object} layoutItem - the item to remove from the layout
+		 */
+		removeBox: function(chart, layoutItem) {
+			var index = chart.boxes? chart.boxes.indexOf(layoutItem) : -1;
+			if (index !== -1) {
+				chart.boxes.splice(index, 1);
+			}
+		},
+
+		/**
+		 * Sets (or updates) options on the given `item`.
+		 * @param {Chart} chart - the chart in which the item lives (or will be added to)
+		 * @param {Object} item - the item to configure with the given options
+		 * @param {Object} options - the new item options.
+		 */
+		configure: function(chart, item, options) {
+			var props = ['fullWidth', 'position', 'weight'];
+			var ilen = props.length;
+			var i = 0;
+			var prop;
+
+			for (; i<ilen; ++i) {
+				prop = props[i];
+				if (options.hasOwnProperty(prop)) {
+					item[prop] = options[prop];
+				}
+			}
+		},
+
+		/**
+		 * Fits boxes of the given chart into the given size by having each box measure itself
+		 * then running a fitting algorithm
+		 * @param {Chart} chart - the chart
+		 * @param {Number} width - the width to fit into
+		 * @param {Number} height - the height to fit into
+		 */
+		update: function(chart, width, height) {
+			if (!chart) {
+				return;
+			}
+
+			var layoutOptions = chart.options.layout;
+			var padding = layoutOptions ? layoutOptions.padding : null;
+
+			var leftPadding = 0;
+			var rightPadding = 0;
+			var topPadding = 0;
+			var bottomPadding = 0;
+
+			if (!isNaN(padding)) {
+				// options.layout.padding is a number. assign to all
+				leftPadding = padding;
+				rightPadding = padding;
+				topPadding = padding;
+				bottomPadding = padding;
+			} else {
+				leftPadding = padding.left || 0;
+				rightPadding = padding.right || 0;
+				topPadding = padding.top || 0;
+				bottomPadding = padding.bottom || 0;
+			}
+
+			var leftBoxes = filterByPosition(chart.boxes, 'left');
+			var rightBoxes = filterByPosition(chart.boxes, 'right');
+			var topBoxes = filterByPosition(chart.boxes, 'top');
+			var bottomBoxes = filterByPosition(chart.boxes, 'bottom');
+			var chartAreaBoxes = filterByPosition(chart.boxes, 'chartArea');
+
+			// Sort boxes by weight. A higher weight is further away from the chart area
+			sortByWeight(leftBoxes, true);
+			sortByWeight(rightBoxes, false);
+			sortByWeight(topBoxes, true);
+			sortByWeight(bottomBoxes, false);
+
+			// Essentially we now have any number of boxes on each of the 4 sides.
+			// Our canvas looks like the following.
+			// The areas L1 and L2 are the left axes. R1 is the right axis, T1 is the top axis and
+			// B1 is the bottom axis
+			// There are also 4 quadrant-like locations (left to right instead of clockwise) reserved for chart overlays
+			// These locations are single-box locations only, when trying to register a chartArea location that is already taken,
+			// an error will be thrown.
+			//
+			// |----------------------------------------------------|
+			// |                  T1 (Full Width)                   |
+			// |----------------------------------------------------|
+			// |    |    |                 T2                  |    |
+			// |    |----|-------------------------------------|----|
+			// |    |    | C1 |                           | C2 |    |
+			// |    |    |----|                           |----|    |
+			// |    |    |                                     |    |
+			// | L1 | L2 |           ChartArea (C0)            | R1 |
+			// |    |    |                                     |    |
+			// |    |    |----|                           |----|    |
+			// |    |    | C3 |                           | C4 |    |
+			// |    |----|-------------------------------------|----|
+			// |    |    |                 B1                  |    |
+			// |----------------------------------------------------|
+			// |                  B2 (Full Width)                   |
+			// |----------------------------------------------------|
+			//
+			// What we do to find the best sizing, we do the following
+			// 1. Determine the minimum size of the chart area.
+			// 2. Split the remaining width equally between each vertical axis
+			// 3. Split the remaining height equally between each horizontal axis
+			// 4. Give each layout the maximum size it can be. The layout will return it's minimum size
+			// 5. Adjust the sizes of each axis based on it's minimum reported size.
+			// 6. Refit each axis
+			// 7. Position each axis in the final location
+			// 8. Tell the chart the final location of the chart area
+			// 9. Tell any axes that overlay the chart area the positions of the chart area
+
+			// Step 1
+			var chartWidth = width - leftPadding - rightPadding;
+			var chartHeight = height - topPadding - bottomPadding;
+			var chartAreaWidth = chartWidth / 2; // min 50%
+			var chartAreaHeight = chartHeight / 2; // min 50%
+
+			// Step 2
+			var verticalBoxWidth = (width - chartAreaWidth) / (leftBoxes.length + rightBoxes.length);
+
+			// Step 3
+			var horizontalBoxHeight = (height - chartAreaHeight) / (topBoxes.length + bottomBoxes.length);
+
+			// Step 4
+			var maxChartAreaWidth = chartWidth;
+			var maxChartAreaHeight = chartHeight;
+			var minBoxSizes = [];
+
+			function getMinimumBoxSize(box) {
+				var minSize;
+				var isHorizontal = box.isHorizontal();
+
+				if (isHorizontal) {
+					minSize = box.update(box.fullWidth ? chartWidth : maxChartAreaWidth, horizontalBoxHeight);
+					maxChartAreaHeight -= minSize.height;
+				} else {
+					minSize = box.update(verticalBoxWidth, chartAreaHeight);
+					maxChartAreaWidth -= minSize.width;
+				}
+
+				minBoxSizes.push({
+					horizontal: isHorizontal,
+					minSize: minSize,
+					box: box,
+				});
+			}
+
+			helpers.each(leftBoxes.concat(rightBoxes, topBoxes, bottomBoxes), getMinimumBoxSize);
+
+			// If a horizontal box has padding, we move the left boxes over to avoid ugly charts (see issue #2478)
+			var maxHorizontalLeftPadding = 0;
+			var maxHorizontalRightPadding = 0;
+			var maxVerticalTopPadding = 0;
+			var maxVerticalBottomPadding = 0;
+
+			helpers.each(topBoxes.concat(bottomBoxes), function(horizontalBox) {
+				if (horizontalBox.getPadding) {
+					var boxPadding = horizontalBox.getPadding();
+					maxHorizontalLeftPadding = Math.max(maxHorizontalLeftPadding, boxPadding.left);
+					maxHorizontalRightPadding = Math.max(maxHorizontalRightPadding, boxPadding.right);
+				}
+			});
+
+			helpers.each(leftBoxes.concat(rightBoxes), function(verticalBox) {
+				if (verticalBox.getPadding) {
+					var boxPadding = verticalBox.getPadding();
+					maxVerticalTopPadding = Math.max(maxVerticalTopPadding, boxPadding.top);
+					maxVerticalBottomPadding = Math.max(maxVerticalBottomPadding, boxPadding.bottom);
+				}
+			});
+
+			// At this point, maxChartAreaHeight and maxChartAreaWidth are the size the chart area could
+			// be if the axes are drawn at their minimum sizes.
+			// Steps 5 & 6
+			var totalLeftBoxesWidth = leftPadding;
+			var totalRightBoxesWidth = rightPadding;
+			var totalTopBoxesHeight = topPadding;
+			var totalBottomBoxesHeight = bottomPadding;
+
+			// Function to fit a box
+			function fitBox(box) {
+				var minBoxSize = helpers.findNextWhere(minBoxSizes, function(minBox) {
+					return minBox.box === box;
+				});
+
+				if (minBoxSize) {
+					if (box.isHorizontal()) {
+						var scaleMargin = {
+							left: Math.max(totalLeftBoxesWidth, maxHorizontalLeftPadding),
+							right: Math.max(totalRightBoxesWidth, maxHorizontalRightPadding),
+							top: 0,
+							bottom: 0
+						};
+
+						// Don't use min size here because of label rotation. When the labels are rotated, their rotation highly depends
+						// on the margin. Sometimes they need to increase in size slightly
+						box.update(box.fullWidth ? chartWidth : maxChartAreaWidth, chartHeight / 2, scaleMargin);
+					} else {
+						box.update(minBoxSize.minSize.width, maxChartAreaHeight);
+					}
+				}
+			}
+
+			// Update, and calculate the left and right margins for the horizontal boxes
+			helpers.each(leftBoxes.concat(rightBoxes), fitBox);
+
+			helpers.each(leftBoxes, function(box) {
+				totalLeftBoxesWidth += box.width;
+			});
+
+			helpers.each(rightBoxes, function(box) {
+				totalRightBoxesWidth += box.width;
+			});
+
+			// Set the Left and Right margins for the horizontal boxes
+			helpers.each(topBoxes.concat(bottomBoxes), fitBox);
+
+			// Figure out how much margin is on the top and bottom of the vertical boxes
+			helpers.each(topBoxes, function(box) {
+				totalTopBoxesHeight += box.height;
+			});
+
+			helpers.each(bottomBoxes, function(box) {
+				totalBottomBoxesHeight += box.height;
+			});
+
+			function finalFitVerticalBox(box) {
+				var minBoxSize = helpers.findNextWhere(minBoxSizes, function(minSize) {
+					return minSize.box === box;
+				});
+
+				var scaleMargin = {
+					left: 0,
+					right: 0,
+					top: totalTopBoxesHeight,
+					bottom: totalBottomBoxesHeight
+				};
+
+				if (minBoxSize) {
+					box.update(minBoxSize.minSize.width, maxChartAreaHeight, scaleMargin);
+				}
+			}
+
+			// Let the left layout know the final margin
+			helpers.each(leftBoxes.concat(rightBoxes), finalFitVerticalBox);
+
+			// Recalculate because the size of each layout might have changed slightly due to the margins (label rotation for instance)
+			totalLeftBoxesWidth = leftPadding;
+			totalRightBoxesWidth = rightPadding;
+			totalTopBoxesHeight = topPadding;
+			totalBottomBoxesHeight = bottomPadding;
+
+			helpers.each(leftBoxes, function(box) {
+				totalLeftBoxesWidth += box.width;
+			});
+
+			helpers.each(rightBoxes, function(box) {
+				totalRightBoxesWidth += box.width;
+			});
+
+			helpers.each(topBoxes, function(box) {
+				totalTopBoxesHeight += box.height;
+			});
+			helpers.each(bottomBoxes, function(box) {
+				totalBottomBoxesHeight += box.height;
+			});
+
+			// We may be adding some padding to account for rotated x axis labels
+			var leftPaddingAddition = Math.max(maxHorizontalLeftPadding - totalLeftBoxesWidth, 0);
+			totalLeftBoxesWidth += leftPaddingAddition;
+			totalRightBoxesWidth += Math.max(maxHorizontalRightPadding - totalRightBoxesWidth, 0);
+
+			var topPaddingAddition = Math.max(maxVerticalTopPadding - totalTopBoxesHeight, 0);
+			totalTopBoxesHeight += topPaddingAddition;
+			totalBottomBoxesHeight += Math.max(maxVerticalBottomPadding - totalBottomBoxesHeight, 0);
+
+			// Figure out if our chart area changed. This would occur if the dataset layout label rotation
+			// changed due to the application of the margins in step 6. Since we can only get bigger, this is safe to do
+			// without calling `fit` again
+			var newMaxChartAreaHeight = height - totalTopBoxesHeight - totalBottomBoxesHeight;
+			var newMaxChartAreaWidth = width - totalLeftBoxesWidth - totalRightBoxesWidth;
+
+			if (newMaxChartAreaWidth !== maxChartAreaWidth || newMaxChartAreaHeight !== maxChartAreaHeight) {
+				helpers.each(leftBoxes, function(box) {
+					box.height = newMaxChartAreaHeight;
+				});
+
+				helpers.each(rightBoxes, function(box) {
+					box.height = newMaxChartAreaHeight;
+				});
+
+				helpers.each(topBoxes, function(box) {
+					if (!box.fullWidth) {
+						box.width = newMaxChartAreaWidth;
+					}
+				});
+
+				helpers.each(bottomBoxes, function(box) {
+					if (!box.fullWidth) {
+						box.width = newMaxChartAreaWidth;
+					}
+				});
+
+				maxChartAreaHeight = newMaxChartAreaHeight;
+				maxChartAreaWidth = newMaxChartAreaWidth;
+			}
+
+			// Step 7 - Position the boxes
+			var left = leftPadding + leftPaddingAddition;
+			var top = topPadding + topPaddingAddition;
+
+			function placeBox(box) {
+				if (box.isHorizontal()) {
+					box.left = box.fullWidth ? leftPadding : totalLeftBoxesWidth;
+					box.right = box.fullWidth ? width - rightPadding : totalLeftBoxesWidth + maxChartAreaWidth;
+					box.top = top;
+					box.bottom = top + box.height;
+
+					// Move to next point
+					top = box.bottom;
+
+				} else {
+
+					box.left = left;
+					box.right = left + box.width;
+					box.top = totalTopBoxesHeight;
+					box.bottom = totalTopBoxesHeight + maxChartAreaHeight;
+
+					// Move to next point
+					left = box.right;
+				}
+			}
+
+			helpers.each(leftBoxes.concat(topBoxes), placeBox);
+
+			// Account for chart width and height
+			left += maxChartAreaWidth;
+			top += maxChartAreaHeight;
+
+			helpers.each(rightBoxes, placeBox);
+			helpers.each(bottomBoxes, placeBox);
+
+			// Step 8
+			chart.chartArea = {
+				left: totalLeftBoxesWidth,
+				top: totalTopBoxesHeight,
+				right: totalLeftBoxesWidth + maxChartAreaWidth,
+				bottom: totalTopBoxesHeight + maxChartAreaHeight
+			};
+
+			// Step 9
+			helpers.each(chartAreaBoxes, function(box) {
+				box.left = chart.chartArea.left;
+				box.top = chart.chartArea.top;
+				box.right = chart.chartArea.right;
+				box.bottom = chart.chartArea.bottom;
+
+				box.update(maxChartAreaWidth, maxChartAreaHeight);
+			});
+		}
+	};
+};
+
+},{}],27:[function(require,module,exports){
+'use strict';
+
+module.exports = function(Chart) {
+
+	var helpers = Chart.helpers;
+
+	Chart.defaults.global.plugins = {};
+
+	/**
+	 * The plugin service singleton
+	 * @namespace Chart.plugins
+	 * @since 2.1.0
+	 */
+	Chart.plugins = {
+		/**
+		 * Globally registered plugins.
+		 * @private
+		 */
+		_plugins: [],
+
+		/**
+		 * This identifier is used to invalidate the descriptors cache attached to each chart
+		 * when a global plugin is registered or unregistered. In this case, the cache ID is
+		 * incremented and descriptors are regenerated during following API calls.
+		 * @private
+		 */
+		_cacheId: 0,
+
+		/**
+		 * Registers the given plugin(s) if not already registered.
+		 * @param {Array|Object} plugins plugin instance(s).
+		 */
+		register: function(plugins) {
+			var p = this._plugins;
+			([]).concat(plugins).forEach(function(plugin) {
+				if (p.indexOf(plugin) === -1) {
+					p.push(plugin);
+				}
+			});
+
+			this._cacheId++;
+		},
+
+		/**
+		 * Unregisters the given plugin(s) only if registered.
+		 * @param {Array|Object} plugins plugin instance(s).
+		 */
+		unregister: function(plugins) {
+			var p = this._plugins;
+			([]).concat(plugins).forEach(function(plugin) {
+				var idx = p.indexOf(plugin);
+				if (idx !== -1) {
+					p.splice(idx, 1);
+				}
+			});
+
+			this._cacheId++;
+		},
+
+		/**
+		 * Remove all registered plugins.
+		 * @since 2.1.5
+		 */
+		clear: function() {
+			this._plugins = [];
+			this._cacheId++;
+		},
+
+		/**
+		 * Returns the number of registered plugins?
+		 * @returns {Number}
+		 * @since 2.1.5
+		 */
+		count: function() {
+			return this._plugins.length;
+		},
+
+		/**
+		 * Returns all registered plugin instances.
+		 * @returns {Array} array of plugin objects.
+		 * @since 2.1.5
+		 */
+		getAll: function() {
+			return this._plugins;
+		},
+
+		/**
+		 * Calls enabled plugins for `chart` on the specified hook and with the given args.
+		 * This method immediately returns as soon as a plugin explicitly returns false. The
+		 * returned value can be used, for instance, to interrupt the current action.
+		 * @param {Object} chart - The chart instance for which plugins should be called.
+		 * @param {String} hook - The name of the plugin method to call (e.g. 'beforeUpdate').
+		 * @param {Array} [args] - Extra arguments to apply to the hook call.
+		 * @returns {Boolean} false if any of the plugins return false, else returns true.
+		 */
+		notify: function(chart, hook, args) {
+			var descriptors = this.descriptors(chart);
+			var ilen = descriptors.length;
+			var i, descriptor, plugin, params, method;
+
+			for (i=0; i<ilen; ++i) {
+				descriptor = descriptors[i];
+				plugin = descriptor.plugin;
+				method = plugin[hook];
+				if (typeof method === 'function') {
+					params = [chart].concat(args || []);
+					params.push(descriptor.options);
+					if (method.apply(plugin, params) === false) {
+						return false;
+					}
+				}
+			}
+
+			return true;
+		},
+
+		/**
+		 * Returns descriptors of enabled plugins for the given chart.
+		 * @returns {Array} [{ plugin, options }]
+		 * @private
+		 */
+		descriptors: function(chart) {
+			var cache = chart._plugins || (chart._plugins = {});
+			if (cache.id === this._cacheId) {
+				return cache.descriptors;
+			}
+
+			var plugins = [];
+			var descriptors = [];
+			var config = (chart && chart.config) || {};
+			var defaults = Chart.defaults.global.plugins;
+			var options = (config.options && config.options.plugins) || {};
+
+			this._plugins.concat(config.plugins || []).forEach(function(plugin) {
+				var idx = plugins.indexOf(plugin);
+				if (idx !== -1) {
+					return;
+				}
+
+				var id = plugin.id;
+				var opts = options[id];
+				if (opts === false) {
+					return;
+				}
+
+				if (opts === true) {
+					opts = helpers.clone(defaults[id]);
+				}
+
+				plugins.push(plugin);
+				descriptors.push({
+					plugin: plugin,
+					options: opts || {}
+				});
+			});
+
+			cache.descriptors = descriptors;
+			cache.id = this._cacheId;
+			return descriptors;
+		}
+	};
+
+	/**
+	 * Plugin extension hooks.
+	 * @interface IPlugin
+	 * @since 2.1.0
+	 */
+	/**
+	 * @method IPlugin#beforeInit
+	 * @desc Called before initializing `chart`.
+	 * @param {Chart.Controller} chart - The chart instance.
+	 * @param {Object} options - The plugin options.
+	 */
+	/**
+	 * @method IPlugin#afterInit
+	 * @desc Called after `chart` has been initialized and before the first update.
+	 * @param {Chart.Controller} chart - The chart instance.
+	 * @param {Object} options - The plugin options.
+	 */
+	/**
+	 * @method IPlugin#beforeUpdate
+	 * @desc Called before updating `chart`. If any plugin returns `false`, the update
+	 * is cancelled (and thus subsequent render(s)) until another `update` is triggered.
+	 * @param {Chart.Controller} chart - The chart instance.
+	 * @param {Object} options - The plugin options.
+	 * @returns {Boolean} `false` to cancel the chart update.
+	 */
+	/**
+	 * @method IPlugin#afterUpdate
+	 * @desc Called after `chart` has been updated and before rendering. Note that this
+	 * hook will not be called if the chart update has been previously cancelled.
+	 * @param {Chart.Controller} chart - The chart instance.
+	 * @param {Object} options - The plugin options.
+	 */
+	/**
+	 * @method IPlugin#beforeDatasetsUpdate
+ 	 * @desc Called before updating the `chart` datasets. If any plugin returns `false`,
+	 * the datasets update is cancelled until another `update` is triggered.
+	 * @param {Chart.Controller} chart - The chart instance.
+	 * @param {Object} options - The plugin options.
+	 * @returns {Boolean} false to cancel the datasets update.
+	 * @since version 2.1.5
+	 */
+	/**
+	 * @method IPlugin#afterDatasetsUpdate
+	 * @desc Called after the `chart` datasets have been updated. Note that this hook
+	 * will not be called if the datasets update has been previously cancelled.
+	 * @param {Chart.Controller} chart - The chart instance.
+	 * @param {Object} options - The plugin options.
+	 * @since version 2.1.5
+	 */
+	/**
+	 * @method IPlugin#beforeDatasetUpdate
+ 	 * @desc Called before updating the `chart` dataset at the given `args.index`. If any plugin
+	 * returns `false`, the datasets update is cancelled until another `update` is triggered.
+	 * @param {Chart} chart - The chart instance.
+	 * @param {Object} args - The call arguments.
+	 * @param {Object} args.index - The dataset index.
+	 * @param {Number} args.meta - The dataset metadata.
+	 * @param {Object} options - The plugin options.
+	 * @returns {Boolean} `false` to cancel the chart datasets drawing.
+	 */
+	/**
+	 * @method IPlugin#afterDatasetUpdate
+ 	 * @desc Called after the `chart` datasets at the given `args.index` has been updated. Note
+	 * that this hook will not be called if the datasets update has been previously cancelled.
+	 * @param {Chart} chart - The chart instance.
+	 * @param {Object} args - The call arguments.
+	 * @param {Object} args.index - The dataset index.
+	 * @param {Number} args.meta - The dataset metadata.
+	 * @param {Object} options - The plugin options.
+	 */
+	/**
+	 * @method IPlugin#beforeLayout
+	 * @desc Called before laying out `chart`. If any plugin returns `false`,
+	 * the layout update is cancelled until another `update` is triggered.
+	 * @param {Chart.Controller} chart - The chart instance.
+	 * @param {Object} options - The plugin options.
+	 * @returns {Boolean} `false` to cancel the chart layout.
+	 */
+	/**
+	 * @method IPlugin#afterLayout
+	 * @desc Called after the `chart` has been layed out. Note that this hook will not
+	 * be called if the layout update has been previously cancelled.
+	 * @param {Chart.Controller} chart - The chart instance.
+	 * @param {Object} options - The plugin options.
+	 */
+	/**
+	 * @method IPlugin#beforeRender
+	 * @desc Called before rendering `chart`. If any plugin returns `false`,
+	 * the rendering is cancelled until another `render` is triggered.
+	 * @param {Chart.Controller} chart - The chart instance.
+	 * @param {Object} options - The plugin options.
+	 * @returns {Boolean} `false` to cancel the chart rendering.
+	 */
+	/**
+	 * @method IPlugin#afterRender
+	 * @desc Called after the `chart` has been fully rendered (and animation completed). Note
+	 * that this hook will not be called if the rendering has been previously cancelled.
+	 * @param {Chart.Controller} chart - The chart instance.
+	 * @param {Object} options - The plugin options.
+	 */
+	/**
+	 * @method IPlugin#beforeDraw
+	 * @desc Called before drawing `chart` at every animation frame specified by the given
+	 * easing value. If any plugin returns `false`, the frame drawing is cancelled until
+	 * another `render` is triggered.
+	 * @param {Chart.Controller} chart - The chart instance.
+	 * @param {Number} easingValue - The current animation value, between 0.0 and 1.0.
+	 * @param {Object} options - The plugin options.
+	 * @returns {Boolean} `false` to cancel the chart drawing.
+	 */
+	/**
+	 * @method IPlugin#afterDraw
+	 * @desc Called after the `chart` has been drawn for the specific easing value. Note
+	 * that this hook will not be called if the drawing has been previously cancelled.
+	 * @param {Chart.Controller} chart - The chart instance.
+	 * @param {Number} easingValue - The current animation value, between 0.0 and 1.0.
+	 * @param {Object} options - The plugin options.
+	 */
+	/**
+	 * @method IPlugin#beforeDatasetsDraw
+ 	 * @desc Called before drawing the `chart` datasets. If any plugin returns `false`,
+	 * the datasets drawing is cancelled until another `render` is triggered.
+	 * @param {Chart.Controller} chart - The chart instance.
+	 * @param {Number} easingValue - The current animation value, between 0.0 and 1.0.
+	 * @param {Object} options - The plugin options.
+	 * @returns {Boolean} `false` to cancel the chart datasets drawing.
+	 */
+	/**
+	 * @method IPlugin#afterDatasetsDraw
+	 * @desc Called after the `chart` datasets have been drawn. Note that this hook
+	 * will not be called if the datasets drawing has been previously cancelled.
+	 * @param {Chart.Controller} chart - The chart instance.
+	 * @param {Number} easingValue - The current animation value, between 0.0 and 1.0.
+	 * @param {Object} options - The plugin options.
+	 */
+	/**
+	 * @method IPlugin#beforeDatasetDraw
+ 	 * @desc Called before drawing the `chart` dataset at the given `args.index` (datasets
+	 * are drawn in the reverse order). If any plugin returns `false`, the datasets drawing
+	 * is cancelled until another `render` is triggered.
+	 * @param {Chart} chart - The chart instance.
+	 * @param {Object} args - The call arguments.
+	 * @param {Object} args.index - The dataset index.
+	 * @param {Number} args.meta - The dataset metadata.
+	 * @param {Number} args.easingValue - The current animation value, between 0.0 and 1.0.
+	 * @param {Object} options - The plugin options.
+	 * @returns {Boolean} `false` to cancel the chart datasets drawing.
+	 */
+	/**
+	 * @method IPlugin#afterDatasetDraw
+ 	 * @desc Called after the `chart` datasets at the given `args.index` have been drawn
+	 * (datasets are drawn in the reverse order). Note that this hook will not be called
+	 * if the datasets drawing has been previously cancelled.
+	 * @param {Chart} chart - The chart instance.
+	 * @param {Object} args - The call arguments.
+	 * @param {Object} args.index - The dataset index.
+	 * @param {Number} args.meta - The dataset metadata.
+	 * @param {Number} args.easingValue - The current animation value, between 0.0 and 1.0.
+	 * @param {Object} options - The plugin options.
+	 */
+	/**
+	 * @method IPlugin#beforeEvent
+ 	 * @desc Called before processing the specified `event`. If any plugin returns `false`,
+	 * the event will be discarded.
+	 * @param {Chart.Controller} chart - The chart instance.
+	 * @param {IEvent} event - The event object.
+	 * @param {Object} options - The plugin options.
+	 */
+	/**
+	 * @method IPlugin#afterEvent
+	 * @desc Called after the `event` has been consumed. Note that this hook
+	 * will not be called if the `event` has been previously discarded.
+	 * @param {Chart.Controller} chart - The chart instance.
+	 * @param {IEvent} event - The event object.
+	 * @param {Object} options - The plugin options.
+	 */
+	/**
+	 * @method IPlugin#resize
+	 * @desc Called after the chart as been resized.
+	 * @param {Chart.Controller} chart - The chart instance.
+	 * @param {Number} size - The new canvas display size (eq. canvas.style width & height).
+	 * @param {Object} options - The plugin options.
+	 */
+	/**
+	 * @method IPlugin#destroy
+	 * @desc Called after the chart as been destroyed.
+	 * @param {Chart.Controller} chart - The chart instance.
+	 * @param {Object} options - The plugin options.
+	 */
+
+	/**
+	 * Provided for backward compatibility, use Chart.plugins instead
+	 * @namespace Chart.pluginService
+	 * @deprecated since version 2.1.5
+	 * @todo remove at version 3
+	 * @private
+	 */
+	Chart.pluginService = Chart.plugins;
+
+	/**
+	 * Provided for backward compatibility, inheriting from Chart.PlugingBase has no
+	 * effect, instead simply create/register plugins via plain JavaScript objects.
+	 * @interface Chart.PluginBase
+	 * @deprecated since version 2.5.0
+	 * @todo remove at version 3
+	 * @private
+	 */
+	Chart.PluginBase = Chart.Element.extend({});
+};
+
+},{}],28:[function(require,module,exports){
+'use strict';
+
+module.exports = function(Chart) {
+
+	var helpers = Chart.helpers;
+
+	Chart.defaults.scale = {
+		display: true,
+		position: 'left',
+
+		// grid line settings
+		gridLines: {
+			display: true,
+			color: 'rgba(0, 0, 0, 0.1)',
+			lineWidth: 1,
+			drawBorder: true,
+			drawOnChartArea: true,
+			drawTicks: true,
+			tickMarkLength: 10,
+			zeroLineWidth: 1,
+			zeroLineColor: 'rgba(0,0,0,0.25)',
+			zeroLineBorderDash: [],
+			zeroLineBorderDashOffset: 0.0,
+			offsetGridLines: false,
+			borderDash: [],
+			borderDashOffset: 0.0
+		},
+
+		// scale label
+		scaleLabel: {
+			// actual label
+			labelString: '',
+
+			// display property
+			display: false
+		},
+
+		// label settings
+		ticks: {
+			beginAtZero: false,
+			minRotation: 0,
+			maxRotation: 50,
+			mirror: false,
+			padding: 0,
+			reverse: false,
+			display: true,
+			autoSkip: true,
+			autoSkipPadding: 0,
+			labelOffset: 0,
+			// We pass through arrays to be rendered as multiline labels, we convert Others to strings here.
+			callback: Chart.Ticks.formatters.values
+		}
+	};
+
+	function computeTextSize(context, tick, font) {
+		return helpers.isArray(tick) ?
+			helpers.longestText(context, font, tick) :
+			context.measureText(tick).width;
+	}
+
+	function parseFontOptions(options) {
+		var getValueOrDefault = helpers.getValueOrDefault;
+		var globalDefaults = Chart.defaults.global;
+		var size = getValueOrDefault(options.fontSize, globalDefaults.defaultFontSize);
+		var style = getValueOrDefault(options.fontStyle, globalDefaults.defaultFontStyle);
+		var family = getValueOrDefault(options.fontFamily, globalDefaults.defaultFontFamily);
+
+		return {
+			size: size,
+			style: style,
+			family: family,
+			font: helpers.fontString(size, style, family)
+		};
+	}
+
+	Chart.Scale = Chart.Element.extend({
+		/**
+		 * Get the padding needed for the scale
+		 * @method getPadding
+		 * @private
+		 * @returns {Padding} the necessary padding
+		 */
+		getPadding: function() {
+			var me = this;
+			return {
+				left: me.paddingLeft || 0,
+				top: me.paddingTop || 0,
+				right: me.paddingRight || 0,
+				bottom: me.paddingBottom || 0
+			};
+		},
+
+		// These methods are ordered by lifecyle. Utilities then follow.
+		// Any function defined here is inherited by all scale types.
+		// Any function can be extended by the scale type
+
+		beforeUpdate: function() {
+			helpers.callback(this.options.beforeUpdate, [this]);
+		},
+		update: function(maxWidth, maxHeight, margins) {
+			var me = this;
+
+			// Update Lifecycle - Probably don't want to ever extend or overwrite this function ;)
+			me.beforeUpdate();
+
+			// Absorb the master measurements
+			me.maxWidth = maxWidth;
+			me.maxHeight = maxHeight;
+			me.margins = helpers.extend({
+				left: 0,
+				right: 0,
+				top: 0,
+				bottom: 0
+			}, margins);
+			me.longestTextCache = me.longestTextCache || {};
+
+			// Dimensions
+			me.beforeSetDimensions();
+			me.setDimensions();
+			me.afterSetDimensions();
+
+			// Data min/max
+			me.beforeDataLimits();
+			me.determineDataLimits();
+			me.afterDataLimits();
+
+			// Ticks
+			me.beforeBuildTicks();
+			me.buildTicks();
+			me.afterBuildTicks();
+
+			me.beforeTickToLabelConversion();
+			me.convertTicksToLabels();
+			me.afterTickToLabelConversion();
+
+			// Tick Rotation
+			me.beforeCalculateTickRotation();
+			me.calculateTickRotation();
+			me.afterCalculateTickRotation();
+			// Fit
+			me.beforeFit();
+			me.fit();
+			me.afterFit();
+			//
+			me.afterUpdate();
+
+			return me.minSize;
+
+		},
+		afterUpdate: function() {
+			helpers.callback(this.options.afterUpdate, [this]);
+		},
+
+		//
+
+		beforeSetDimensions: function() {
+			helpers.callback(this.options.beforeSetDimensions, [this]);
+		},
+		setDimensions: function() {
+			var me = this;
+			// Set the unconstrained dimension before label rotation
+			if (me.isHorizontal()) {
+				// Reset position before calculating rotation
+				me.width = me.maxWidth;
+				me.left = 0;
+				me.right = me.width;
+			} else {
+				me.height = me.maxHeight;
+
+				// Reset position before calculating rotation
+				me.top = 0;
+				me.bottom = me.height;
+			}
+
+			// Reset padding
+			me.paddingLeft = 0;
+			me.paddingTop = 0;
+			me.paddingRight = 0;
+			me.paddingBottom = 0;
+		},
+		afterSetDimensions: function() {
+			helpers.callback(this.options.afterSetDimensions, [this]);
+		},
+
+		// Data limits
+		beforeDataLimits: function() {
+			helpers.callback(this.options.beforeDataLimits, [this]);
+		},
+		determineDataLimits: helpers.noop,
+		afterDataLimits: function() {
+			helpers.callback(this.options.afterDataLimits, [this]);
+		},
+
+		//
+		beforeBuildTicks: function() {
+			helpers.callback(this.options.beforeBuildTicks, [this]);
+		},
+		buildTicks: helpers.noop,
+		afterBuildTicks: function() {
+			helpers.callback(this.options.afterBuildTicks, [this]);
+		},
+
+		beforeTickToLabelConversion: function() {
+			helpers.callback(this.options.beforeTickToLabelConversion, [this]);
+		},
+		convertTicksToLabels: function() {
+			var me = this;
+			// Convert ticks to strings
+			var tickOpts = me.options.ticks;
+			me.ticks = me.ticks.map(tickOpts.userCallback || tickOpts.callback);
+		},
+		afterTickToLabelConversion: function() {
+			helpers.callback(this.options.afterTickToLabelConversion, [this]);
+		},
+
+		//
+
+		beforeCalculateTickRotation: function() {
+			helpers.callback(this.options.beforeCalculateTickRotation, [this]);
+		},
+		calculateTickRotation: function() {
+			var me = this;
+			var context = me.ctx;
+			var tickOpts = me.options.ticks;
+
+			// Get the width of each grid by calculating the difference
+			// between x offsets between 0 and 1.
+			var tickFont = parseFontOptions(tickOpts);
+			context.font = tickFont.font;
+
+			var labelRotation = tickOpts.minRotation || 0;
+
+			if (me.options.display && me.isHorizontal()) {
+				var originalLabelWidth = helpers.longestText(context, tickFont.font, me.ticks, me.longestTextCache);
+				var labelWidth = originalLabelWidth;
+				var cosRotation;
+				var sinRotation;
+
+				// Allow 3 pixels x2 padding either side for label readability
+				var tickWidth = me.getPixelForTick(1) - me.getPixelForTick(0) - 6;
+
+				// Max label rotation can be set or default to 90 - also act as a loop counter
+				while (labelWidth > tickWidth && labelRotation < tickOpts.maxRotation) {
+					var angleRadians = helpers.toRadians(labelRotation);
+					cosRotation = Math.cos(angleRadians);
+					sinRotation = Math.sin(angleRadians);
+
+					if (sinRotation * originalLabelWidth > me.maxHeight) {
+						// go back one step
+						labelRotation--;
+						break;
+					}
+
+					labelRotation++;
+					labelWidth = cosRotation * originalLabelWidth;
+				}
+			}
+
+			me.labelRotation = labelRotation;
+		},
+		afterCalculateTickRotation: function() {
+			helpers.callback(this.options.afterCalculateTickRotation, [this]);
+		},
+
+		//
+
+		beforeFit: function() {
+			helpers.callback(this.options.beforeFit, [this]);
+		},
+		fit: function() {
+			var me = this;
+			// Reset
+			var minSize = me.minSize = {
+				width: 0,
+				height: 0
+			};
+
+			var opts = me.options;
+			var tickOpts = opts.ticks;
+			var scaleLabelOpts = opts.scaleLabel;
+			var gridLineOpts = opts.gridLines;
+			var display = opts.display;
+			var isHorizontal = me.isHorizontal();
+
+			var tickFont = parseFontOptions(tickOpts);
+			var scaleLabelFontSize = parseFontOptions(scaleLabelOpts).size * 1.5;
+			var tickMarkLength = opts.gridLines.tickMarkLength;
+
+			// Width
+			if (isHorizontal) {
+				// subtract the margins to line up with the chartArea if we are a full width scale
+				minSize.width = me.isFullWidth() ? me.maxWidth - me.margins.left - me.margins.right : me.maxWidth;
+			} else {
+				minSize.width = display && gridLineOpts.drawTicks ? tickMarkLength : 0;
+			}
+
+			// height
+			if (isHorizontal) {
+				minSize.height = display && gridLineOpts.drawTicks ? tickMarkLength : 0;
+			} else {
+				minSize.height = me.maxHeight; // fill all the height
+			}
+
+			// Are we showing a title for the scale?
+			if (scaleLabelOpts.display && display) {
+				if (isHorizontal) {
+					minSize.height += scaleLabelFontSize;
+				} else {
+					minSize.width += scaleLabelFontSize;
+				}
+			}
+
+			// Don't bother fitting the ticks if we are not showing them
+			if (tickOpts.display && display) {
+				var largestTextWidth = helpers.longestText(me.ctx, tickFont.font, me.ticks, me.longestTextCache);
+				var tallestLabelHeightInLines = helpers.numberOfLabelLines(me.ticks);
+				var lineSpace = tickFont.size * 0.5;
+
+				if (isHorizontal) {
+					// A horizontal axis is more constrained by the height.
+					me.longestLabelWidth = largestTextWidth;
+
+					var angleRadians = helpers.toRadians(me.labelRotation);
+					var cosRotation = Math.cos(angleRadians);
+					var sinRotation = Math.sin(angleRadians);
+
+					// TODO - improve this calculation
+					var labelHeight = (sinRotation * largestTextWidth)
+						+ (tickFont.size * tallestLabelHeightInLines)
+						+ (lineSpace * tallestLabelHeightInLines);
+
+					minSize.height = Math.min(me.maxHeight, minSize.height + labelHeight);
+					me.ctx.font = tickFont.font;
+
+					var firstTick = me.ticks[0];
+					var firstLabelWidth = computeTextSize(me.ctx, firstTick, tickFont.font);
+
+					var lastTick = me.ticks[me.ticks.length - 1];
+					var lastLabelWidth = computeTextSize(me.ctx, lastTick, tickFont.font);
+
+					// Ensure that our ticks are always inside the canvas. When rotated, ticks are right aligned which means that the right padding is dominated
+					// by the font height
+					if (me.labelRotation !== 0) {
+						me.paddingLeft = opts.position === 'bottom'? (cosRotation * firstLabelWidth) + 3: (cosRotation * lineSpace) + 3; // add 3 px to move away from canvas edges
+						me.paddingRight = opts.position === 'bottom'? (cosRotation * lineSpace) + 3: (cosRotation * lastLabelWidth) + 3;
+					} else {
+						me.paddingLeft = firstLabelWidth / 2 + 3; // add 3 px to move away from canvas edges
+						me.paddingRight = lastLabelWidth / 2 + 3;
+					}
+				} else {
+					// A vertical axis is more constrained by the width. Labels are the dominant factor here, so get that length first
+					// Account for padding
+
+					if (tickOpts.mirror) {
+						largestTextWidth = 0;
+					} else {
+						largestTextWidth += me.options.ticks.padding;
+					}
+					minSize.width = Math.min(me.maxWidth, minSize.width + largestTextWidth);
+					me.paddingTop = tickFont.size / 2;
+					me.paddingBottom = tickFont.size / 2;
+				}
+			}
+
+			me.handleMargins();
+
+			me.width = minSize.width;
+			me.height = minSize.height;
+		},
+
+		/**
+		 * Handle margins and padding interactions
+		 * @private
+		 */
+		handleMargins: function() {
+			var me = this;
+			if (me.margins) {
+				me.paddingLeft = Math.max(me.paddingLeft - me.margins.left, 0);
+				me.paddingTop = Math.max(me.paddingTop - me.margins.top, 0);
+				me.paddingRight = Math.max(me.paddingRight - me.margins.right, 0);
+				me.paddingBottom = Math.max(me.paddingBottom - me.margins.bottom, 0);
+			}
+		},
+
+		afterFit: function() {
+			helpers.callback(this.options.afterFit, [this]);
+		},
+
+		// Shared Methods
+		isHorizontal: function() {
+			return this.options.position === 'top' || this.options.position === 'bottom';
+		},
+		isFullWidth: function() {
+			return (this.options.fullWidth);
+		},
+
+		// Get the correct value. NaN bad inputs, If the value type is object get the x or y based on whether we are horizontal or not
+		getRightValue: function(rawValue) {
+			// Null and undefined values first
+			if (rawValue === null || typeof(rawValue) === 'undefined') {
+				return NaN;
+			}
+			// isNaN(object) returns true, so make sure NaN is checking for a number; Discard Infinite values
+			if (typeof(rawValue) === 'number' && !isFinite(rawValue)) {
+				return NaN;
+			}
+			// If it is in fact an object, dive in one more level
+			if (typeof(rawValue) === 'object') {
+				if ((rawValue instanceof Date) || (rawValue.isValid)) {
+					return rawValue;
+				}
+				return this.getRightValue(this.isHorizontal() ? rawValue.x : rawValue.y);
+			}
+
+			// Value is good, return it
+			return rawValue;
+		},
+
+		// Used to get the value to display in the tooltip for the data at the given index
+		// function getLabelForIndex(index, datasetIndex)
+		getLabelForIndex: helpers.noop,
+
+		// Used to get data value locations.  Value can either be an index or a numerical value
+		getPixelForValue: helpers.noop,
+
+		// Used to get the data value from a given pixel. This is the inverse of getPixelForValue
+		getValueForPixel: helpers.noop,
+
+		// Used for tick location, should
+		getPixelForTick: function(index, includeOffset) {
+			var me = this;
+			if (me.isHorizontal()) {
+				var innerWidth = me.width - (me.paddingLeft + me.paddingRight);
+				var tickWidth = innerWidth / Math.max((me.ticks.length - ((me.options.gridLines.offsetGridLines) ? 0 : 1)), 1);
+				var pixel = (tickWidth * index) + me.paddingLeft;
+
+				if (includeOffset) {
+					pixel += tickWidth / 2;
+				}
+
+				var finalVal = me.left + Math.round(pixel);
+				finalVal += me.isFullWidth() ? me.margins.left : 0;
+				return finalVal;
+			}
+			var innerHeight = me.height - (me.paddingTop + me.paddingBottom);
+			return me.top + (index * (innerHeight / (me.ticks.length - 1)));
+		},
+
+		// Utility for getting the pixel location of a percentage of scale
+		getPixelForDecimal: function(decimal /* , includeOffset*/) {
+			var me = this;
+			if (me.isHorizontal()) {
+				var innerWidth = me.width - (me.paddingLeft + me.paddingRight);
+				var valueOffset = (innerWidth * decimal) + me.paddingLeft;
+
+				var finalVal = me.left + Math.round(valueOffset);
+				finalVal += me.isFullWidth() ? me.margins.left : 0;
+				return finalVal;
+			}
+			return me.top + (decimal * me.height);
+		},
+
+		getBasePixel: function() {
+			return this.getPixelForValue(this.getBaseValue());
+		},
+
+		getBaseValue: function() {
+			var me = this;
+			var min = me.min;
+			var max = me.max;
+
+			return me.beginAtZero ? 0:
+				min < 0 && max < 0? max :
+				min > 0 && max > 0? min :
+				0;
+		},
+
+		// Actually draw the scale on the canvas
+		// @param {rectangle} chartArea : the area of the chart to draw full grid lines on
+		draw: function(chartArea) {
+			var me = this;
+			var options = me.options;
+			if (!options.display) {
+				return;
+			}
+
+			var context = me.ctx;
+			var globalDefaults = Chart.defaults.global;
+			var optionTicks = options.ticks;
+			var gridLines = options.gridLines;
+			var scaleLabel = options.scaleLabel;
+
+			var isRotated = me.labelRotation !== 0;
+			var skipRatio;
+			var useAutoskipper = optionTicks.autoSkip;
+			var isHorizontal = me.isHorizontal();
+
+			// figure out the maximum number of gridlines to show
+			var maxTicks;
+			if (optionTicks.maxTicksLimit) {
+				maxTicks = optionTicks.maxTicksLimit;
+			}
+
+			var tickFontColor = helpers.getValueOrDefault(optionTicks.fontColor, globalDefaults.defaultFontColor);
+			var tickFont = parseFontOptions(optionTicks);
+
+			var tl = gridLines.drawTicks ? gridLines.tickMarkLength : 0;
+
+			var scaleLabelFontColor = helpers.getValueOrDefault(scaleLabel.fontColor, globalDefaults.defaultFontColor);
+			var scaleLabelFont = parseFontOptions(scaleLabel);
+
+			var labelRotationRadians = helpers.toRadians(me.labelRotation);
+			var cosRotation = Math.cos(labelRotationRadians);
+			var longestRotatedLabel = me.longestLabelWidth * cosRotation;
+
+			// Make sure we draw text in the correct color and font
+			context.fillStyle = tickFontColor;
+
+			var itemsToDraw = [];
+
+			if (isHorizontal) {
+				skipRatio = false;
+
+				if ((longestRotatedLabel + optionTicks.autoSkipPadding) * me.ticks.length > (me.width - (me.paddingLeft + me.paddingRight))) {
+					skipRatio = 1 + Math.floor(((longestRotatedLabel + optionTicks.autoSkipPadding) * me.ticks.length) / (me.width - (me.paddingLeft + me.paddingRight)));
+				}
+
+				// if they defined a max number of optionTicks,
+				// increase skipRatio until that number is met
+				if (maxTicks && me.ticks.length > maxTicks) {
+					while (!skipRatio || me.ticks.length / (skipRatio || 1) > maxTicks) {
+						if (!skipRatio) {
+							skipRatio = 1;
+						}
+						skipRatio += 1;
+					}
+				}
+
+				if (!useAutoskipper) {
+					skipRatio = false;
+				}
+			}
+
+
+			var xTickStart = options.position === 'right' ? me.left : me.right - tl;
+			var xTickEnd = options.position === 'right' ? me.left + tl : me.right;
+			var yTickStart = options.position === 'bottom' ? me.top : me.bottom - tl;
+			var yTickEnd = options.position === 'bottom' ? me.top + tl : me.bottom;
+
+			helpers.each(me.ticks, function(label, index) {
+				// If the callback returned a null or undefined value, do not draw this line
+				if (label === undefined || label === null) {
+					return;
+				}
+
+				var isLastTick = me.ticks.length === index + 1;
+
+				// Since we always show the last tick,we need may need to hide the last shown one before
+				var shouldSkip = (skipRatio > 1 && index % skipRatio > 0) || (index % skipRatio === 0 && index + skipRatio >= me.ticks.length);
+				if (shouldSkip && !isLastTick || (label === undefined || label === null)) {
+					return;
+				}
+
+				var lineWidth, lineColor, borderDash, borderDashOffset;
+				if (index === (typeof me.zeroLineIndex !== 'undefined' ? me.zeroLineIndex : 0)) {
+					// Draw the first index specially
+					lineWidth = gridLines.zeroLineWidth;
+					lineColor = gridLines.zeroLineColor;
+					borderDash = gridLines.zeroLineBorderDash;
+					borderDashOffset = gridLines.zeroLineBorderDashOffset;
+				} else {
+					lineWidth = helpers.getValueAtIndexOrDefault(gridLines.lineWidth, index);
+					lineColor = helpers.getValueAtIndexOrDefault(gridLines.color, index);
+					borderDash = helpers.getValueOrDefault(gridLines.borderDash, globalDefaults.borderDash);
+					borderDashOffset = helpers.getValueOrDefault(gridLines.borderDashOffset, globalDefaults.borderDashOffset);
+				}
+
+				// Common properties
+				var tx1, ty1, tx2, ty2, x1, y1, x2, y2, labelX, labelY;
+				var textAlign = 'middle';
+				var textBaseline = 'middle';
+
+				if (isHorizontal) {
+
+					if (options.position === 'bottom') {
+						// bottom
+						textBaseline = !isRotated? 'top':'middle';
+						textAlign = !isRotated? 'center': 'right';
+						labelY = me.top + tl;
+					} else {
+						// top
+						textBaseline = !isRotated? 'bottom':'middle';
+						textAlign = !isRotated? 'center': 'left';
+						labelY = me.bottom - tl;
+					}
+
+					var xLineValue = me.getPixelForTick(index) + helpers.aliasPixel(lineWidth); // xvalues for grid lines
+					labelX = me.getPixelForTick(index, gridLines.offsetGridLines) + optionTicks.labelOffset; // x values for optionTicks (need to consider offsetLabel option)
+
+					tx1 = tx2 = x1 = x2 = xLineValue;
+					ty1 = yTickStart;
+					ty2 = yTickEnd;
+					y1 = chartArea.top;
+					y2 = chartArea.bottom;
+				} else {
+					var isLeft = options.position === 'left';
+					var tickPadding = optionTicks.padding;
+					var labelXOffset;
+
+					if (optionTicks.mirror) {
+						textAlign = isLeft ? 'left' : 'right';
+						labelXOffset = tickPadding;
+					} else {
+						textAlign = isLeft ? 'right' : 'left';
+						labelXOffset = tl + tickPadding;
+					}
+
+					labelX = isLeft ? me.right - labelXOffset : me.left + labelXOffset;
+
+					var yLineValue = me.getPixelForTick(index); // xvalues for grid lines
+					yLineValue += helpers.aliasPixel(lineWidth);
+					labelY = me.getPixelForTick(index, gridLines.offsetGridLines);
+
+					tx1 = xTickStart;
+					tx2 = xTickEnd;
+					x1 = chartArea.left;
+					x2 = chartArea.right;
+					ty1 = ty2 = y1 = y2 = yLineValue;
+				}
+
+				itemsToDraw.push({
+					tx1: tx1,
+					ty1: ty1,
+					tx2: tx2,
+					ty2: ty2,
+					x1: x1,
+					y1: y1,
+					x2: x2,
+					y2: y2,
+					labelX: labelX,
+					labelY: labelY,
+					glWidth: lineWidth,
+					glColor: lineColor,
+					glBorderDash: borderDash,
+					glBorderDashOffset: borderDashOffset,
+					rotation: -1 * labelRotationRadians,
+					label: label,
+					textBaseline: textBaseline,
+					textAlign: textAlign
+				});
+			});
+
+			// Draw all of the tick labels, tick marks, and grid lines at the correct places
+			helpers.each(itemsToDraw, function(itemToDraw) {
+				if (gridLines.display) {
+					context.save();
+					context.lineWidth = itemToDraw.glWidth;
+					context.strokeStyle = itemToDraw.glColor;
+					if (context.setLineDash) {
+						context.setLineDash(itemToDraw.glBorderDash);
+						context.lineDashOffset = itemToDraw.glBorderDashOffset;
+					}
+
+					context.beginPath();
+
+					if (gridLines.drawTicks) {
+						context.moveTo(itemToDraw.tx1, itemToDraw.ty1);
+						context.lineTo(itemToDraw.tx2, itemToDraw.ty2);
+					}
+
+					if (gridLines.drawOnChartArea) {
+						context.moveTo(itemToDraw.x1, itemToDraw.y1);
+						context.lineTo(itemToDraw.x2, itemToDraw.y2);
+					}
+
+					context.stroke();
+					context.restore();
+				}
+
+				if (optionTicks.display) {
+					context.save();
+					context.translate(itemToDraw.labelX, itemToDraw.labelY);
+					context.rotate(itemToDraw.rotation);
+					context.font = tickFont.font;
+					context.textBaseline = itemToDraw.textBaseline;
+					context.textAlign = itemToDraw.textAlign;
+
+					var label = itemToDraw.label;
+					if (helpers.isArray(label)) {
+						for (var i = 0, y = 0; i < label.length; ++i) {
+							// We just make sure the multiline element is a string here..
+							context.fillText('' + label[i], 0, y);
+							// apply same lineSpacing as calculated @ L#320
+							y += (tickFont.size * 1.5);
+						}
+					} else {
+						context.fillText(label, 0, 0);
+					}
+					context.restore();
+				}
+			});
+
+			if (scaleLabel.display) {
+				// Draw the scale label
+				var scaleLabelX;
+				var scaleLabelY;
+				var rotation = 0;
+
+				if (isHorizontal) {
+					scaleLabelX = me.left + ((me.right - me.left) / 2); // midpoint of the width
+					scaleLabelY = options.position === 'bottom' ? me.bottom - (scaleLabelFont.size / 2) : me.top + (scaleLabelFont.size / 2);
+				} else {
+					var isLeft = options.position === 'left';
+					scaleLabelX = isLeft ? me.left + (scaleLabelFont.size / 2) : me.right - (scaleLabelFont.size / 2);
+					scaleLabelY = me.top + ((me.bottom - me.top) / 2);
+					rotation = isLeft ? -0.5 * Math.PI : 0.5 * Math.PI;
+				}
+
+				context.save();
+				context.translate(scaleLabelX, scaleLabelY);
+				context.rotate(rotation);
+				context.textAlign = 'center';
+				context.textBaseline = 'middle';
+				context.fillStyle = scaleLabelFontColor; // render in correct colour
+				context.font = scaleLabelFont.font;
+				context.fillText(scaleLabel.labelString, 0, 0);
+				context.restore();
+			}
+
+			if (gridLines.drawBorder) {
+				// Draw the line at the edge of the axis
+				context.lineWidth = helpers.getValueAtIndexOrDefault(gridLines.lineWidth, 0);
+				context.strokeStyle = helpers.getValueAtIndexOrDefault(gridLines.color, 0);
+				var x1 = me.left,
+					x2 = me.right,
+					y1 = me.top,
+					y2 = me.bottom;
+
+				var aliasPixel = helpers.aliasPixel(context.lineWidth);
+				if (isHorizontal) {
+					y1 = y2 = options.position === 'top' ? me.bottom : me.top;
+					y1 += aliasPixel;
+					y2 += aliasPixel;
+				} else {
+					x1 = x2 = options.position === 'left' ? me.right : me.left;
+					x1 += aliasPixel;
+					x2 += aliasPixel;
+				}
+
+				context.beginPath();
+				context.moveTo(x1, y1);
+				context.lineTo(x2, y2);
+				context.stroke();
+			}
+		}
+	});
+};
+
+},{}],29:[function(require,module,exports){
+'use strict';
+
+module.exports = function(Chart) {
+
+	var helpers = Chart.helpers;
+
+	Chart.scaleService = {
+		// Scale registration object. Extensions can register new scale types (such as log or DB scales) and then
+		// use the new chart options to grab the correct scale
+		constructors: {},
+		// Use a registration function so that we can move to an ES6 map when we no longer need to support
+		// old browsers
+
+		// Scale config defaults
+		defaults: {},
+		registerScaleType: function(type, scaleConstructor, defaults) {
+			this.constructors[type] = scaleConstructor;
+			this.defaults[type] = helpers.clone(defaults);
+		},
+		getScaleConstructor: function(type) {
+			return this.constructors.hasOwnProperty(type) ? this.constructors[type] : undefined;
+		},
+		getScaleDefaults: function(type) {
+			// Return the scale defaults merged with the global settings so that we always use the latest ones
+			return this.defaults.hasOwnProperty(type) ? helpers.scaleMerge(Chart.defaults.scale, this.defaults[type]) : {};
+		},
+		updateScaleDefaults: function(type, additions) {
+			var defaults = this.defaults;
+			if (defaults.hasOwnProperty(type)) {
+				defaults[type] = helpers.extend(defaults[type], additions);
+			}
+		},
+		addScalesToLayout: function(chart) {
+			// Adds each scale to the chart.boxes array to be sized accordingly
+			helpers.each(chart.scales, function(scale) {
+				// Set ILayoutItem parameters for backwards compatibility
+				scale.fullWidth = scale.options.fullWidth;
+				scale.position = scale.options.position;
+				scale.weight = scale.options.weight;
+				Chart.layoutService.addBox(chart, scale);
+			});
+		}
+	};
+};
+
+},{}],30:[function(require,module,exports){
+'use strict';
+
+module.exports = function(Chart) {
+
+	var helpers = Chart.helpers;
+
+	/**
+	 * Namespace to hold static tick generation functions
+	 * @namespace Chart.Ticks
+	 */
+	Chart.Ticks = {
+		/**
+		 * Namespace to hold generators for different types of ticks
+		 * @namespace Chart.Ticks.generators
+		 */
+		generators: {
+			/**
+			 * Interface for the options provided to the numeric tick generator
+			 * @interface INumericTickGenerationOptions
+			 */
+			/**
+			 * The maximum number of ticks to display
+			 * @name INumericTickGenerationOptions#maxTicks
+			 * @type Number
+			 */
+			/**
+			 * The distance between each tick.
+			 * @name INumericTickGenerationOptions#stepSize
+			 * @type Number
+			 * @optional
+			 */
+			/**
+			 * Forced minimum for the ticks. If not specified, the minimum of the data range is used to calculate the tick minimum
+			 * @name INumericTickGenerationOptions#min
+			 * @type Number
+			 * @optional
+			 */
+			/**
+			 * The maximum value of the ticks. If not specified, the maximum of the data range is used to calculate the tick maximum
+			 * @name INumericTickGenerationOptions#max
+			 * @type Number
+			 * @optional
+			 */
+
+			/**
+			 * Generate a set of linear ticks
+			 * @method Chart.Ticks.generators.linear
+			 * @param generationOptions {INumericTickGenerationOptions} the options used to generate the ticks
+			 * @param dataRange {IRange} the range of the data
+			 * @returns {Array<Number>} array of tick values
+			 */
+			linear: function(generationOptions, dataRange) {
+				var ticks = [];
+				// To get a "nice" value for the tick spacing, we will use the appropriately named
+				// "nice number" algorithm. See http://stackoverflow.com/questions/8506881/nice-label-algorithm-for-charts-with-minimum-ticks
+				// for details.
+
+				var spacing;
+				if (generationOptions.stepSize && generationOptions.stepSize > 0) {
+					spacing = generationOptions.stepSize;
+				} else {
+					var niceRange = helpers.niceNum(dataRange.max - dataRange.min, false);
+					spacing = helpers.niceNum(niceRange / (generationOptions.maxTicks - 1), true);
+				}
+				var niceMin = Math.floor(dataRange.min / spacing) * spacing;
+				var niceMax = Math.ceil(dataRange.max / spacing) * spacing;
+
+				// If min, max and stepSize is set and they make an evenly spaced scale use it.
+				if (generationOptions.min && generationOptions.max && generationOptions.stepSize) {
+					// If very close to our whole number, use it.
+					if (helpers.almostWhole((generationOptions.max - generationOptions.min) / generationOptions.stepSize, spacing / 1000)) {
+						niceMin = generationOptions.min;
+						niceMax = generationOptions.max;
+					}
+				}
+
+				var numSpaces = (niceMax - niceMin) / spacing;
+				// If very close to our rounded value, use it.
+				if (helpers.almostEquals(numSpaces, Math.round(numSpaces), spacing / 1000)) {
+					numSpaces = Math.round(numSpaces);
+				} else {
+					numSpaces = Math.ceil(numSpaces);
+				}
+
+				// Put the values into the ticks array
+				ticks.push(generationOptions.min !== undefined ? generationOptions.min : niceMin);
+				for (var j = 1; j < numSpaces; ++j) {
+					ticks.push(niceMin + (j * spacing));
+				}
+				ticks.push(generationOptions.max !== undefined ? generationOptions.max : niceMax);
+
+				return ticks;
+			},
+
+			/**
+			 * Generate a set of logarithmic ticks
+			 * @method Chart.Ticks.generators.logarithmic
+			 * @param generationOptions {INumericTickGenerationOptions} the options used to generate the ticks
+			 * @param dataRange {IRange} the range of the data
+			 * @returns {Array<Number>} array of tick values
+			 */
+			logarithmic: function(generationOptions, dataRange) {
+				var ticks = [];
+				var getValueOrDefault = helpers.getValueOrDefault;
+
+				// Figure out what the max number of ticks we can support it is based on the size of
+				// the axis area. For now, we say that the minimum tick spacing in pixels must be 50
+				// We also limit the maximum number of ticks to 11 which gives a nice 10 squares on
+				// the graph
+				var tickVal = getValueOrDefault(generationOptions.min, Math.pow(10, Math.floor(helpers.log10(dataRange.min))));
+
+				var endExp = Math.floor(helpers.log10(dataRange.max));
+				var endSignificand = Math.ceil(dataRange.max / Math.pow(10, endExp));
+				var exp;
+				var significand;
+
+				if (tickVal === 0) {
+					exp = Math.floor(helpers.log10(dataRange.minNotZero));
+					significand = Math.floor(dataRange.minNotZero / Math.pow(10, exp));
+
+					ticks.push(tickVal);
+					tickVal = significand * Math.pow(10, exp);
+				} else {
+					exp = Math.floor(helpers.log10(tickVal));
+					significand = Math.floor(tickVal / Math.pow(10, exp));
+				}
+
+				do {
+					ticks.push(tickVal);
+
+					++significand;
+					if (significand === 10) {
+						significand = 1;
+						++exp;
+					}
+
+					tickVal = significand * Math.pow(10, exp);
+				} while (exp < endExp || (exp === endExp && significand < endSignificand));
+
+				var lastTick = getValueOrDefault(generationOptions.max, tickVal);
+				ticks.push(lastTick);
+
+				return ticks;
+			}
+		},
+
+		/**
+		 * Namespace to hold formatters for different types of ticks
+		 * @namespace Chart.Ticks.formatters
+		 */
+		formatters: {
+			/**
+			 * Formatter for value labels
+			 * @method Chart.Ticks.formatters.values
+			 * @param value the value to display
+			 * @return {String|Array} the label to display
+			 */
+			values: function(value) {
+				return helpers.isArray(value) ? value : '' + value;
+			},
+
+			/**
+			 * Formatter for linear numeric ticks
+			 * @method Chart.Ticks.formatters.linear
+			 * @param tickValue {Number} the value to be formatted
+			 * @param index {Number} the position of the tickValue parameter in the ticks array
+			 * @param ticks {Array<Number>} the list of ticks being converted
+			 * @return {String} string representation of the tickValue parameter
+			 */
+			linear: function(tickValue, index, ticks) {
+				// If we have lots of ticks, don't use the ones
+				var delta = ticks.length > 3 ? ticks[2] - ticks[1] : ticks[1] - ticks[0];
+
+				// If we have a number like 2.5 as the delta, figure out how many decimal places we need
+				if (Math.abs(delta) > 1) {
+					if (tickValue !== Math.floor(tickValue)) {
+						// not an integer
+						delta = tickValue - Math.floor(tickValue);
+					}
+				}
+
+				var logDelta = helpers.log10(Math.abs(delta));
+				var tickString = '';
+
+				if (tickValue !== 0) {
+					var numDecimal = -1 * Math.floor(logDelta);
+					numDecimal = Math.max(Math.min(numDecimal, 20), 0); // toFixed has a max of 20 decimal places
+					tickString = tickValue.toFixed(numDecimal);
+				} else {
+					tickString = '0'; // never show decimal places for 0
+				}
+
+				return tickString;
+			},
+
+			logarithmic: function(tickValue, index, ticks) {
+				var remain = tickValue / (Math.pow(10, Math.floor(helpers.log10(tickValue))));
+
+				if (tickValue === 0) {
+					return '0';
+				} else if (remain === 1 || remain === 2 || remain === 5 || index === 0 || index === ticks.length - 1) {
+					return tickValue.toExponential();
+				}
+				return '';
+			}
+		}
+	};
+};
+
+},{}],31:[function(require,module,exports){
+'use strict';
+
+module.exports = function(Chart) {
+
+	var helpers = Chart.helpers;
+
+	/**
+ 	 * Helper method to merge the opacity into a color
+ 	 */
+	function mergeOpacity(colorString, opacity) {
+		var color = helpers.color(colorString);
+		return color.alpha(opacity * color.alpha()).rgbaString();
+	}
+
+	Chart.defaults.global.tooltips = {
+		enabled: true,
+		custom: null,
+		mode: 'nearest',
+		position: 'average',
+		intersect: true,
+		backgroundColor: 'rgba(0,0,0,0.8)',
+		titleFontStyle: 'bold',
+		titleSpacing: 2,
+		titleMarginBottom: 6,
+		titleFontColor: '#fff',
+		titleAlign: 'left',
+		bodySpacing: 2,
+		bodyFontColor: '#fff',
+		bodyAlign: 'left',
+		footerFontStyle: 'bold',
+		footerSpacing: 2,
+		footerMarginTop: 6,
+		footerFontColor: '#fff',
+		footerAlign: 'left',
+		yPadding: 6,
+		xPadding: 6,
+		caretPadding: 2,
+		caretSize: 5,
+		cornerRadius: 6,
+		multiKeyBackground: '#fff',
+		displayColors: true,
+		borderColor: 'rgba(0,0,0,0)',
+		borderWidth: 0,
+		callbacks: {
+			// Args are: (tooltipItems, data)
+			beforeTitle: helpers.noop,
+			title: function(tooltipItems, data) {
+				// Pick first xLabel for now
+				var title = '';
+				var labels = data.labels;
+				var labelCount = labels ? labels.length : 0;
+
+				if (tooltipItems.length > 0) {
+					var item = tooltipItems[0];
+
+					if (item.xLabel) {
+						title = item.xLabel;
+					} else if (labelCount > 0 && item.index < labelCount) {
+						title = labels[item.index];
+					}
+				}
+
+				return title;
+			},
+			afterTitle: helpers.noop,
+
+			// Args are: (tooltipItems, data)
+			beforeBody: helpers.noop,
+
+			// Args are: (tooltipItem, data)
+			beforeLabel: helpers.noop,
+			label: function(tooltipItem, data) {
+				var label = data.datasets[tooltipItem.datasetIndex].label || '';
+
+				if (label) {
+					label += ': ';
+				}
+				label += tooltipItem.yLabel;
+				return label;
+			},
+			labelColor: function(tooltipItem, chart) {
+				var meta = chart.getDatasetMeta(tooltipItem.datasetIndex);
+				var activeElement = meta.data[tooltipItem.index];
+				var view = activeElement._view;
+				return {
+					borderColor: view.borderColor,
+					backgroundColor: view.backgroundColor
+				};
+			},
+			afterLabel: helpers.noop,
+
+			// Args are: (tooltipItems, data)
+			afterBody: helpers.noop,
+
+			// Args are: (tooltipItems, data)
+			beforeFooter: helpers.noop,
+			footer: helpers.noop,
+			afterFooter: helpers.noop
+		}
+	};
+
+	// Helper to push or concat based on if the 2nd parameter is an array or not
+	function pushOrConcat(base, toPush) {
+		if (toPush) {
+			if (helpers.isArray(toPush)) {
+				// base = base.concat(toPush);
+				Array.prototype.push.apply(base, toPush);
+			} else {
+				base.push(toPush);
+			}
+		}
+
+		return base;
+	}
+
+	// Private helper to create a tooltip item model
+	// @param element : the chart element (point, arc, bar) to create the tooltip item for
+	// @return : new tooltip item
+	function createTooltipItem(element) {
+		var xScale = element._xScale;
+		var yScale = element._yScale || element._scale; // handle radar || polarArea charts
+		var index = element._index,
+			datasetIndex = element._datasetIndex;
+
+		return {
+			xLabel: xScale ? xScale.getLabelForIndex(index, datasetIndex) : '',
+			yLabel: yScale ? yScale.getLabelForIndex(index, datasetIndex) : '',
+			index: index,
+			datasetIndex: datasetIndex,
+			x: element._model.x,
+			y: element._model.y
+		};
+	}
+
+	/**
+	 * Helper to get the reset model for the tooltip
+	 * @param tooltipOpts {Object} the tooltip options
+	 */
+	function getBaseModel(tooltipOpts) {
+		var globalDefaults = Chart.defaults.global;
+		var getValueOrDefault = helpers.getValueOrDefault;
+
+		return {
+			// Positioning
+			xPadding: tooltipOpts.xPadding,
+			yPadding: tooltipOpts.yPadding,
+			xAlign: tooltipOpts.xAlign,
+			yAlign: tooltipOpts.yAlign,
+
+			// Body
+			bodyFontColor: tooltipOpts.bodyFontColor,
+			_bodyFontFamily: getValueOrDefault(tooltipOpts.bodyFontFamily, globalDefaults.defaultFontFamily),
+			_bodyFontStyle: getValueOrDefault(tooltipOpts.bodyFontStyle, globalDefaults.defaultFontStyle),
+			_bodyAlign: tooltipOpts.bodyAlign,
+			bodyFontSize: getValueOrDefault(tooltipOpts.bodyFontSize, globalDefaults.defaultFontSize),
+			bodySpacing: tooltipOpts.bodySpacing,
+
+			// Title
+			titleFontColor: tooltipOpts.titleFontColor,
+			_titleFontFamily: getValueOrDefault(tooltipOpts.titleFontFamily, globalDefaults.defaultFontFamily),
+			_titleFontStyle: getValueOrDefault(tooltipOpts.titleFontStyle, globalDefaults.defaultFontStyle),
+			titleFontSize: getValueOrDefault(tooltipOpts.titleFontSize, globalDefaults.defaultFontSize),
+			_titleAlign: tooltipOpts.titleAlign,
+			titleSpacing: tooltipOpts.titleSpacing,
+			titleMarginBottom: tooltipOpts.titleMarginBottom,
+
+			// Footer
+			footerFontColor: tooltipOpts.footerFontColor,
+			_footerFontFamily: getValueOrDefault(tooltipOpts.footerFontFamily, globalDefaults.defaultFontFamily),
+			_footerFontStyle: getValueOrDefault(tooltipOpts.footerFontStyle, globalDefaults.defaultFontStyle),
+			footerFontSize: getValueOrDefault(tooltipOpts.footerFontSize, globalDefaults.defaultFontSize),
+			_footerAlign: tooltipOpts.footerAlign,
+			footerSpacing: tooltipOpts.footerSpacing,
+			footerMarginTop: tooltipOpts.footerMarginTop,
+
+			// Appearance
+			caretSize: tooltipOpts.caretSize,
+			cornerRadius: tooltipOpts.cornerRadius,
+			backgroundColor: tooltipOpts.backgroundColor,
+			opacity: 0,
+			legendColorBackground: tooltipOpts.multiKeyBackground,
+			displayColors: tooltipOpts.displayColors,
+			borderColor: tooltipOpts.borderColor,
+			borderWidth: tooltipOpts.borderWidth
+		};
+	}
+
+	/**
+	 * Get the size of the tooltip
+	 */
+	function getTooltipSize(tooltip, model) {
+		var ctx = tooltip._chart.ctx;
+
+		var height = model.yPadding * 2; // Tooltip Padding
+		var width = 0;
+
+		// Count of all lines in the body
+		var body = model.body;
+		var combinedBodyLength = body.reduce(function(count, bodyItem) {
+			return count + bodyItem.before.length + bodyItem.lines.length + bodyItem.after.length;
+		}, 0);
+		combinedBodyLength += model.beforeBody.length + model.afterBody.length;
+
+		var titleLineCount = model.title.length;
+		var footerLineCount = model.footer.length;
+		var titleFontSize = model.titleFontSize,
+			bodyFontSize = model.bodyFontSize,
+			footerFontSize = model.footerFontSize;
+
+		height += titleLineCount * titleFontSize; // Title Lines
+		height += titleLineCount ? (titleLineCount - 1) * model.titleSpacing : 0; // Title Line Spacing
+		height += titleLineCount ? model.titleMarginBottom : 0; // Title's bottom Margin
+		height += combinedBodyLength * bodyFontSize; // Body Lines
+		height += combinedBodyLength ? (combinedBodyLength - 1) * model.bodySpacing : 0; // Body Line Spacing
+		height += footerLineCount ? model.footerMarginTop : 0; // Footer Margin
+		height += footerLineCount * (footerFontSize); // Footer Lines
+		height += footerLineCount ? (footerLineCount - 1) * model.footerSpacing : 0; // Footer Line Spacing
+
+		// Title width
+		var widthPadding = 0;
+		var maxLineWidth = function(line) {
+			width = Math.max(width, ctx.measureText(line).width + widthPadding);
+		};
+
+		ctx.font = helpers.fontString(titleFontSize, model._titleFontStyle, model._titleFontFamily);
+		helpers.each(model.title, maxLineWidth);
+
+		// Body width
+		ctx.font = helpers.fontString(bodyFontSize, model._bodyFontStyle, model._bodyFontFamily);
+		helpers.each(model.beforeBody.concat(model.afterBody), maxLineWidth);
+
+		// Body lines may include some extra width due to the color box
+		widthPadding = model.displayColors ? (bodyFontSize + 2) : 0;
+		helpers.each(body, function(bodyItem) {
+			helpers.each(bodyItem.before, maxLineWidth);
+			helpers.each(bodyItem.lines, maxLineWidth);
+			helpers.each(bodyItem.after, maxLineWidth);
+		});
+
+		// Reset back to 0
+		widthPadding = 0;
+
+		// Footer width
+		ctx.font = helpers.fontString(footerFontSize, model._footerFontStyle, model._footerFontFamily);
+		helpers.each(model.footer, maxLineWidth);
+
+		// Add padding
+		width += 2 * model.xPadding;
+
+		return {
+			width: width,
+			height: height
+		};
+	}
+
+	/**
+	 * Helper to get the alignment of a tooltip given the size
+	 */
+	function determineAlignment(tooltip, size) {
+		var model = tooltip._model;
+		var chart = tooltip._chart;
+		var chartArea = tooltip._chart.chartArea;
+		var xAlign = 'center';
+		var yAlign = 'center';
+
+		if (model.y < size.height) {
+			yAlign = 'top';
+		} else if (model.y > (chart.height - size.height)) {
+			yAlign = 'bottom';
+		}
+
+		var lf, rf; // functions to determine left, right alignment
+		var olf, orf; // functions to determine if left/right alignment causes tooltip to go outside chart
+		var yf; // function to get the y alignment if the tooltip goes outside of the left or right edges
+		var midX = (chartArea.left + chartArea.right) / 2;
+		var midY = (chartArea.top + chartArea.bottom) / 2;
+
+		if (yAlign === 'center') {
+			lf = function(x) {
+				return x <= midX;
+			};
+			rf = function(x) {
+				return x > midX;
+			};
+		} else {
+			lf = function(x) {
+				return x <= (size.width / 2);
+			};
+			rf = function(x) {
+				return x >= (chart.width - (size.width / 2));
+			};
+		}
+
+		olf = function(x) {
+			return x + size.width > chart.width;
+		};
+		orf = function(x) {
+			return x - size.width < 0;
+		};
+		yf = function(y) {
+			return y <= midY ? 'top' : 'bottom';
+		};
+
+		if (lf(model.x)) {
+			xAlign = 'left';
+
+			// Is tooltip too wide and goes over the right side of the chart.?
+			if (olf(model.x)) {
+				xAlign = 'center';
+				yAlign = yf(model.y);
+			}
+		} else if (rf(model.x)) {
+			xAlign = 'right';
+
+			// Is tooltip too wide and goes outside left edge of canvas?
+			if (orf(model.x)) {
+				xAlign = 'center';
+				yAlign = yf(model.y);
+			}
+		}
+
+		var opts = tooltip._options;
+		return {
+			xAlign: opts.xAlign ? opts.xAlign : xAlign,
+			yAlign: opts.yAlign ? opts.yAlign : yAlign
+		};
+	}
+
+	/**
+	 * @Helper to get the location a tooltip needs to be placed at given the initial position (via the vm) and the size and alignment
+	 */
+	function getBackgroundPoint(vm, size, alignment) {
+		// Background Position
+		var x = vm.x;
+		var y = vm.y;
+
+		var caretSize = vm.caretSize,
+			caretPadding = vm.caretPadding,
+			cornerRadius = vm.cornerRadius,
+			xAlign = alignment.xAlign,
+			yAlign = alignment.yAlign,
+			paddingAndSize = caretSize + caretPadding,
+			radiusAndPadding = cornerRadius + caretPadding;
+
+		if (xAlign === 'right') {
+			x -= size.width;
+		} else if (xAlign === 'center') {
+			x -= (size.width / 2);
+		}
+
+		if (yAlign === 'top') {
+			y += paddingAndSize;
+		} else if (yAlign === 'bottom') {
+			y -= size.height + paddingAndSize;
+		} else {
+			y -= (size.height / 2);
+		}
+
+		if (yAlign === 'center') {
+			if (xAlign === 'left') {
+				x += paddingAndSize;
+			} else if (xAlign === 'right') {
+				x -= paddingAndSize;
+			}
+		} else if (xAlign === 'left') {
+			x -= radiusAndPadding;
+		} else if (xAlign === 'right') {
+			x += radiusAndPadding;
+		}
+
+		return {
+			x: x,
+			y: y
+		};
+	}
+
+	Chart.Tooltip = Chart.Element.extend({
+		initialize: function() {
+			this._model = getBaseModel(this._options);
+		},
+
+		// Get the title
+		// Args are: (tooltipItem, data)
+		getTitle: function() {
+			var me = this;
+			var opts = me._options;
+			var callbacks = opts.callbacks;
+
+			var beforeTitle = callbacks.beforeTitle.apply(me, arguments),
+				title = callbacks.title.apply(me, arguments),
+				afterTitle = callbacks.afterTitle.apply(me, arguments);
+
+			var lines = [];
+			lines = pushOrConcat(lines, beforeTitle);
+			lines = pushOrConcat(lines, title);
+			lines = pushOrConcat(lines, afterTitle);
+
+			return lines;
+		},
+
+		// Args are: (tooltipItem, data)
+		getBeforeBody: function() {
+			var lines = this._options.callbacks.beforeBody.apply(this, arguments);
+			return helpers.isArray(lines) ? lines : lines !== undefined ? [lines] : [];
+		},
+
+		// Args are: (tooltipItem, data)
+		getBody: function(tooltipItems, data) {
+			var me = this;
+			var callbacks = me._options.callbacks;
+			var bodyItems = [];
+
+			helpers.each(tooltipItems, function(tooltipItem) {
+				var bodyItem = {
+					before: [],
+					lines: [],
+					after: []
+				};
+				pushOrConcat(bodyItem.before, callbacks.beforeLabel.call(me, tooltipItem, data));
+				pushOrConcat(bodyItem.lines, callbacks.label.call(me, tooltipItem, data));
+				pushOrConcat(bodyItem.after, callbacks.afterLabel.call(me, tooltipItem, data));
+
+				bodyItems.push(bodyItem);
+			});
+
+			return bodyItems;
+		},
+
+		// Args are: (tooltipItem, data)
+		getAfterBody: function() {
+			var lines = this._options.callbacks.afterBody.apply(this, arguments);
+			return helpers.isArray(lines) ? lines : lines !== undefined ? [lines] : [];
+		},
+
+		// Get the footer and beforeFooter and afterFooter lines
+		// Args are: (tooltipItem, data)
+		getFooter: function() {
+			var me = this;
+			var callbacks = me._options.callbacks;
+
+			var beforeFooter = callbacks.beforeFooter.apply(me, arguments);
+			var footer = callbacks.footer.apply(me, arguments);
+			var afterFooter = callbacks.afterFooter.apply(me, arguments);
+
+			var lines = [];
+			lines = pushOrConcat(lines, beforeFooter);
+			lines = pushOrConcat(lines, footer);
+			lines = pushOrConcat(lines, afterFooter);
+
+			return lines;
+		},
+
+		update: function(changed) {
+			var me = this;
+			var opts = me._options;
+
+			// Need to regenerate the model because its faster than using extend and it is necessary due to the optimization in Chart.Element.transition
+			// that does _view = _model if ease === 1. This causes the 2nd tooltip update to set properties in both the view and model at the same time
+			// which breaks any animations.
+			var existingModel = me._model;
+			var model = me._model = getBaseModel(opts);
+			var active = me._active;
+
+			var data = me._data;
+
+			// In the case where active.length === 0 we need to keep these at existing values for good animations
+			var alignment = {
+				xAlign: existingModel.xAlign,
+				yAlign: existingModel.yAlign
+			};
+			var backgroundPoint = {
+				x: existingModel.x,
+				y: existingModel.y
+			};
+			var tooltipSize = {
+				width: existingModel.width,
+				height: existingModel.height
+			};
+			var tooltipPosition = {
+				x: existingModel.caretX,
+				y: existingModel.caretY
+			};
+
+			var i, len;
+
+			if (active.length) {
+				model.opacity = 1;
+
+				var labelColors = [];
+				tooltipPosition = Chart.Tooltip.positioners[opts.position](active, me._eventPosition);
+
+				var tooltipItems = [];
+				for (i = 0, len = active.length; i < len; ++i) {
+					tooltipItems.push(createTooltipItem(active[i]));
+				}
+
+				// If the user provided a filter function, use it to modify the tooltip items
+				if (opts.filter) {
+					tooltipItems = tooltipItems.filter(function(a) {
+						return opts.filter(a, data);
+					});
+				}
+
+				// If the user provided a sorting function, use it to modify the tooltip items
+				if (opts.itemSort) {
+					tooltipItems = tooltipItems.sort(function(a, b) {
+						return opts.itemSort(a, b, data);
+					});
+				}
+
+				// Determine colors for boxes
+				helpers.each(tooltipItems, function(tooltipItem) {
+					labelColors.push(opts.callbacks.labelColor.call(me, tooltipItem, me._chart));
+				});
+
+				// Build the Text Lines
+				model.title = me.getTitle(tooltipItems, data);
+				model.beforeBody = me.getBeforeBody(tooltipItems, data);
+				model.body = me.getBody(tooltipItems, data);
+				model.afterBody = me.getAfterBody(tooltipItems, data);
+				model.footer = me.getFooter(tooltipItems, data);
+
+				// Initial positioning and colors
+				model.x = Math.round(tooltipPosition.x);
+				model.y = Math.round(tooltipPosition.y);
+				model.caretPadding = opts.caretPadding;
+				model.labelColors = labelColors;
+
+				// data points
+				model.dataPoints = tooltipItems;
+
+				// We need to determine alignment of the tooltip
+				tooltipSize = getTooltipSize(this, model);
+				alignment = determineAlignment(this, tooltipSize);
+				// Final Size and Position
+				backgroundPoint = getBackgroundPoint(model, tooltipSize, alignment);
+			} else {
+				model.opacity = 0;
+			}
+
+			model.xAlign = alignment.xAlign;
+			model.yAlign = alignment.yAlign;
+			model.x = backgroundPoint.x;
+			model.y = backgroundPoint.y;
+			model.width = tooltipSize.width;
+			model.height = tooltipSize.height;
+
+			// Point where the caret on the tooltip points to
+			model.caretX = tooltipPosition.x;
+			model.caretY = tooltipPosition.y;
+
+			me._model = model;
+
+			if (changed && opts.custom) {
+				opts.custom.call(me, model);
+			}
+
+			return me;
+		},
+		drawCaret: function(tooltipPoint, size) {
+			var ctx = this._chart.ctx;
+			var vm = this._view;
+			var caretPosition = this.getCaretPosition(tooltipPoint, size, vm);
+
+			ctx.lineTo(caretPosition.x1, caretPosition.y1);
+			ctx.lineTo(caretPosition.x2, caretPosition.y2);
+			ctx.lineTo(caretPosition.x3, caretPosition.y3);
+		},
+		getCaretPosition: function(tooltipPoint, size, vm) {
+			var x1, x2, x3;
+			var y1, y2, y3;
+			var caretSize = vm.caretSize;
+			var cornerRadius = vm.cornerRadius;
+			var xAlign = vm.xAlign,
+				yAlign = vm.yAlign;
+			var ptX = tooltipPoint.x,
+				ptY = tooltipPoint.y;
+			var width = size.width,
+				height = size.height;
+
+			if (yAlign === 'center') {
+				y2 = ptY + (height / 2);
+
+				if (xAlign === 'left') {
+					x1 = ptX;
+					x2 = x1 - caretSize;
+					x3 = x1;
+
+					y1 = y2 + caretSize;
+					y3 = y2 - caretSize;
+				} else {
+					x1 = ptX + width;
+					x2 = x1 + caretSize;
+					x3 = x1;
+
+					y1 = y2 - caretSize;
+					y3 = y2 + caretSize;
+				}
+			} else {
+				if (xAlign === 'left') {
+					x2 = ptX + cornerRadius + (caretSize);
+					x1 = x2 - caretSize;
+					x3 = x2 + caretSize;
+				} else if (xAlign === 'right') {
+					x2 = ptX + width - cornerRadius - caretSize;
+					x1 = x2 - caretSize;
+					x3 = x2 + caretSize;
+				} else {
+					x2 = ptX + (width / 2);
+					x1 = x2 - caretSize;
+					x3 = x2 + caretSize;
+				}
+				if (yAlign === 'top') {
+					y1 = ptY;
+					y2 = y1 - caretSize;
+					y3 = y1;
+				} else {
+					y1 = ptY + height;
+					y2 = y1 + caretSize;
+					y3 = y1;
+					// invert drawing order
+					var tmp = x3;
+					x3 = x1;
+					x1 = tmp;
+				}
+			}
+			return {x1: x1, x2: x2, x3: x3, y1: y1, y2: y2, y3: y3};
+		},
+		drawTitle: function(pt, vm, ctx, opacity) {
+			var title = vm.title;
+
+			if (title.length) {
+				ctx.textAlign = vm._titleAlign;
+				ctx.textBaseline = 'top';
+
+				var titleFontSize = vm.titleFontSize,
+					titleSpacing = vm.titleSpacing;
+
+				ctx.fillStyle = mergeOpacity(vm.titleFontColor, opacity);
+				ctx.font = helpers.fontString(titleFontSize, vm._titleFontStyle, vm._titleFontFamily);
+
+				var i, len;
+				for (i = 0, len = title.length; i < len; ++i) {
+					ctx.fillText(title[i], pt.x, pt.y);
+					pt.y += titleFontSize + titleSpacing; // Line Height and spacing
+
+					if (i + 1 === title.length) {
+						pt.y += vm.titleMarginBottom - titleSpacing; // If Last, add margin, remove spacing
+					}
+				}
+			}
+		},
+		drawBody: function(pt, vm, ctx, opacity) {
+			var bodyFontSize = vm.bodyFontSize;
+			var bodySpacing = vm.bodySpacing;
+			var body = vm.body;
+
+			ctx.textAlign = vm._bodyAlign;
+			ctx.textBaseline = 'top';
+
+			var textColor = mergeOpacity(vm.bodyFontColor, opacity);
+			ctx.fillStyle = textColor;
+			ctx.font = helpers.fontString(bodyFontSize, vm._bodyFontStyle, vm._bodyFontFamily);
+
+			// Before Body
+			var xLinePadding = 0;
+			var fillLineOfText = function(line) {
+				ctx.fillText(line, pt.x + xLinePadding, pt.y);
+				pt.y += bodyFontSize + bodySpacing;
+			};
+
+			// Before body lines
+			helpers.each(vm.beforeBody, fillLineOfText);
+
+			var drawColorBoxes = vm.displayColors;
+			xLinePadding = drawColorBoxes ? (bodyFontSize + 2) : 0;
+
+			// Draw body lines now
+			helpers.each(body, function(bodyItem, i) {
+				helpers.each(bodyItem.before, fillLineOfText);
+
+				helpers.each(bodyItem.lines, function(line) {
+					// Draw Legend-like boxes if needed
+					if (drawColorBoxes) {
+						// Fill a white rect so that colours merge nicely if the opacity is < 1
+						ctx.fillStyle = mergeOpacity(vm.legendColorBackground, opacity);
+						ctx.fillRect(pt.x, pt.y, bodyFontSize, bodyFontSize);
+
+						// Border
+						ctx.strokeStyle = mergeOpacity(vm.labelColors[i].borderColor, opacity);
+						ctx.strokeRect(pt.x, pt.y, bodyFontSize, bodyFontSize);
+
+						// Inner square
+						ctx.fillStyle = mergeOpacity(vm.labelColors[i].backgroundColor, opacity);
+						ctx.fillRect(pt.x + 1, pt.y + 1, bodyFontSize - 2, bodyFontSize - 2);
+
+						ctx.fillStyle = textColor;
+					}
+
+					fillLineOfText(line);
+				});
+
+				helpers.each(bodyItem.after, fillLineOfText);
+			});
+
+			// Reset back to 0 for after body
+			xLinePadding = 0;
+
+			// After body lines
+			helpers.each(vm.afterBody, fillLineOfText);
+			pt.y -= bodySpacing; // Remove last body spacing
+		},
+		drawFooter: function(pt, vm, ctx, opacity) {
+			var footer = vm.footer;
+
+			if (footer.length) {
+				pt.y += vm.footerMarginTop;
+
+				ctx.textAlign = vm._footerAlign;
+				ctx.textBaseline = 'top';
+
+				ctx.fillStyle = mergeOpacity(vm.footerFontColor, opacity);
+				ctx.font = helpers.fontString(vm.footerFontSize, vm._footerFontStyle, vm._footerFontFamily);
+
+				helpers.each(footer, function(line) {
+					ctx.fillText(line, pt.x, pt.y);
+					pt.y += vm.footerFontSize + vm.footerSpacing;
+				});
+			}
+		},
+		drawBackground: function(pt, vm, ctx, tooltipSize, opacity) {
+			ctx.fillStyle = mergeOpacity(vm.backgroundColor, opacity);
+			ctx.strokeStyle = mergeOpacity(vm.borderColor, opacity);
+			ctx.lineWidth = vm.borderWidth;
+			var xAlign = vm.xAlign;
+			var yAlign = vm.yAlign;
+			var x = pt.x;
+			var y = pt.y;
+			var width = tooltipSize.width;
+			var height = tooltipSize.height;
+			var radius = vm.cornerRadius;
+
+			ctx.beginPath();
+			ctx.moveTo(x + radius, y);
+			if (yAlign === 'top') {
+				this.drawCaret(pt, tooltipSize);
+			}
+			ctx.lineTo(x + width - radius, y);
+			ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+			if (yAlign === 'center' && xAlign === 'right') {
+				this.drawCaret(pt, tooltipSize);
+			}
+			ctx.lineTo(x + width, y + height - radius);
+			ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+			if (yAlign === 'bottom') {
+				this.drawCaret(pt, tooltipSize);
+			}
+			ctx.lineTo(x + radius, y + height);
+			ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+			if (yAlign === 'center' && xAlign === 'left') {
+				this.drawCaret(pt, tooltipSize);
+			}
+			ctx.lineTo(x, y + radius);
+			ctx.quadraticCurveTo(x, y, x + radius, y);
+			ctx.closePath();
+
+			ctx.fill();
+
+			if (vm.borderWidth > 0) {
+				ctx.stroke();
+			}
+		},
+		draw: function() {
+			var ctx = this._chart.ctx;
+			var vm = this._view;
+
+			if (vm.opacity === 0) {
+				return;
+			}
+
+			var tooltipSize = {
+				width: vm.width,
+				height: vm.height
+			};
+			var pt = {
+				x: vm.x,
+				y: vm.y
+			};
+
+			// IE11/Edge does not like very small opacities, so snap to 0
+			var opacity = Math.abs(vm.opacity < 1e-3) ? 0 : vm.opacity;
+
+			// Truthy/falsey value for empty tooltip
+			var hasTooltipContent = vm.title.length || vm.beforeBody.length || vm.body.length || vm.afterBody.length || vm.footer.length;
+
+			if (this._options.enabled && hasTooltipContent) {
+				// Draw Background
+				this.drawBackground(pt, vm, ctx, tooltipSize, opacity);
+
+				// Draw Title, Body, and Footer
+				pt.x += vm.xPadding;
+				pt.y += vm.yPadding;
+
+				// Titles
+				this.drawTitle(pt, vm, ctx, opacity);
+
+				// Body
+				this.drawBody(pt, vm, ctx, opacity);
+
+				// Footer
+				this.drawFooter(pt, vm, ctx, opacity);
+			}
+		},
+
+		/**
+		 * Handle an event
+		 * @private
+		 * @param {IEvent} event - The event to handle
+		 * @returns {Boolean} true if the tooltip changed
+		 */
+		handleEvent: function(e) {
+			var me = this;
+			var options = me._options;
+			var changed = false;
+
+			me._lastActive = me._lastActive || [];
+
+			// Find Active Elements for tooltips
+			if (e.type === 'mouseout') {
+				me._active = [];
+			} else {
+				me._active = me._chart.getElementsAtEventForMode(e, options.mode, options);
+			}
+
+			// Remember Last Actives
+			changed = !helpers.arrayEquals(me._active, me._lastActive);
+
+			// If tooltip didn't change, do not handle the target event
+			if (!changed) {
+				return false;
+			}
+
+			me._lastActive = me._active;
+
+			if (options.enabled || options.custom) {
+				me._eventPosition = {
+					x: e.x,
+					y: e.y
+				};
+
+				var model = me._model;
+				me.update(true);
+				me.pivot();
+
+				// See if our tooltip position changed
+				changed |= (model.x !== me._model.x) || (model.y !== me._model.y);
+			}
+
+			return changed;
+		}
+	});
+
+	/**
+	 * @namespace Chart.Tooltip.positioners
+	 */
+	Chart.Tooltip.positioners = {
+		/**
+		 * Average mode places the tooltip at the average position of the elements shown
+		 * @function Chart.Tooltip.positioners.average
+		 * @param elements {ChartElement[]} the elements being displayed in the tooltip
+		 * @returns {Point} tooltip position
+		 */
+		average: function(elements) {
+			if (!elements.length) {
+				return false;
+			}
+
+			var i, len;
+			var x = 0;
+			var y = 0;
+			var count = 0;
+
+			for (i = 0, len = elements.length; i < len; ++i) {
+				var el = elements[i];
+				if (el && el.hasValue()) {
+					var pos = el.tooltipPosition();
+					x += pos.x;
+					y += pos.y;
+					++count;
+				}
+			}
+
+			return {
+				x: Math.round(x / count),
+				y: Math.round(y / count)
+			};
+		},
+
+		/**
+		 * Gets the tooltip position nearest of the item nearest to the event position
+		 * @function Chart.Tooltip.positioners.nearest
+		 * @param elements {Chart.Element[]} the tooltip elements
+		 * @param eventPosition {Point} the position of the event in canvas coordinates
+		 * @returns {Point} the tooltip position
+		 */
+		nearest: function(elements, eventPosition) {
+			var x = eventPosition.x;
+			var y = eventPosition.y;
+
+			var nearestElement;
+			var minDistance = Number.POSITIVE_INFINITY;
+			var i, len;
+			for (i = 0, len = elements.length; i < len; ++i) {
+				var el = elements[i];
+				if (el && el.hasValue()) {
+					var center = el.getCenterPoint();
+					var d = helpers.distanceBetweenPoints(eventPosition, center);
+
+					if (d < minDistance) {
+						minDistance = d;
+						nearestElement = el;
+					}
+				}
+			}
+
+			if (nearestElement) {
+				var tp = nearestElement.tooltipPosition();
+				x = tp.x;
+				y = tp.y;
+			}
+
+			return {
+				x: x,
+				y: y
+			};
+		}
+	};
+};
+
+},{}],32:[function(require,module,exports){
+'use strict';
+
+module.exports = function(Chart) {
+
+	var helpers = Chart.helpers,
+		globalOpts = Chart.defaults.global;
+
+	globalOpts.elements.arc = {
+		backgroundColor: globalOpts.defaultColor,
+		borderColor: '#fff',
+		borderWidth: 2
+	};
+
+	Chart.elements.Arc = Chart.Element.extend({
+		inLabelRange: function(mouseX) {
+			var vm = this._view;
+
+			if (vm) {
+				return (Math.pow(mouseX - vm.x, 2) < Math.pow(vm.radius + vm.hoverRadius, 2));
+			}
+			return false;
+		},
+		inRange: function(chartX, chartY) {
+			var vm = this._view;
+
+			if (vm) {
+				var pointRelativePosition = helpers.getAngleFromPoint(vm, {
+						x: chartX,
+						y: chartY
+					}),
+					angle = pointRelativePosition.angle,
+					distance = pointRelativePosition.distance;
+
+				// Sanitise angle range
+				var startAngle = vm.startAngle;
+				var endAngle = vm.endAngle;
+				while (endAngle < startAngle) {
+					endAngle += 2.0 * Math.PI;
+				}
+				while (angle > endAngle) {
+					angle -= 2.0 * Math.PI;
+				}
+				while (angle < startAngle) {
+					angle += 2.0 * Math.PI;
+				}
+
+				// Check if within the range of the open/close angle
+				var betweenAngles = (angle >= startAngle && angle <= endAngle),
+					withinRadius = (distance >= vm.innerRadius && distance <= vm.outerRadius);
+
+				return (betweenAngles && withinRadius);
+			}
+			return false;
+		},
+		getCenterPoint: function() {
+			var vm = this._view;
+			var halfAngle = (vm.startAngle + vm.endAngle) / 2;
+			var halfRadius = (vm.innerRadius + vm.outerRadius) / 2;
+			return {
+				x: vm.x + Math.cos(halfAngle) * halfRadius,
+				y: vm.y + Math.sin(halfAngle) * halfRadius
+			};
+		},
+		getArea: function() {
+			var vm = this._view;
+			return Math.PI * ((vm.endAngle - vm.startAngle) / (2 * Math.PI)) * (Math.pow(vm.outerRadius, 2) - Math.pow(vm.innerRadius, 2));
+		},
+		tooltipPosition: function() {
+			var vm = this._view;
+
+			var centreAngle = vm.startAngle + ((vm.endAngle - vm.startAngle) / 2),
+				rangeFromCentre = (vm.outerRadius - vm.innerRadius) / 2 + vm.innerRadius;
+			return {
+				x: vm.x + (Math.cos(centreAngle) * rangeFromCentre),
+				y: vm.y + (Math.sin(centreAngle) * rangeFromCentre)
+			};
+		},
+		draw: function() {
+
+			var ctx = this._chart.ctx,
+				vm = this._view,
+				sA = vm.startAngle,
+				eA = vm.endAngle;
+
+			ctx.beginPath();
+
+			ctx.arc(vm.x, vm.y, vm.outerRadius, sA, eA);
+			ctx.arc(vm.x, vm.y, vm.innerRadius, eA, sA, true);
+
+			ctx.closePath();
+			ctx.strokeStyle = vm.borderColor;
+			ctx.lineWidth = vm.borderWidth;
+
+			ctx.fillStyle = vm.backgroundColor;
+
+			ctx.fill();
+			ctx.lineJoin = 'bevel';
+
+			if (vm.borderWidth) {
+				ctx.stroke();
+			}
+		}
+	});
+};
+
+},{}],33:[function(require,module,exports){
+'use strict';
+
+module.exports = function(Chart) {
+
+	var helpers = Chart.helpers;
+	var globalDefaults = Chart.defaults.global;
+
+	Chart.defaults.global.elements.line = {
+		tension: 0.4,
+		backgroundColor: globalDefaults.defaultColor,
+		borderWidth: 3,
+		borderColor: globalDefaults.defaultColor,
+		borderCapStyle: 'butt',
+		borderDash: [],
+		borderDashOffset: 0.0,
+		borderJoinStyle: 'miter',
+		capBezierPoints: true,
+		fill: true, // do we fill in the area between the line and its base axis
+	};
+
+	Chart.elements.Line = Chart.Element.extend({
+		draw: function() {
+			var me = this;
+			var vm = me._view;
+			var ctx = me._chart.ctx;
+			var spanGaps = vm.spanGaps;
+			var points = me._children.slice(); // clone array
+			var globalOptionLineElements = globalDefaults.elements.line;
+			var lastDrawnIndex = -1;
+			var index, current, previous, currentVM;
+
+			// If we are looping, adding the first point again
+			if (me._loop && points.length) {
+				points.push(points[0]);
+			}
+
+			ctx.save();
+
+			// Stroke Line Options
+			ctx.lineCap = vm.borderCapStyle || globalOptionLineElements.borderCapStyle;
+
+			// IE 9 and 10 do not support line dash
+			if (ctx.setLineDash) {
+				ctx.setLineDash(vm.borderDash || globalOptionLineElements.borderDash);
+			}
+
+			ctx.lineDashOffset = vm.borderDashOffset || globalOptionLineElements.borderDashOffset;
+			ctx.lineJoin = vm.borderJoinStyle || globalOptionLineElements.borderJoinStyle;
+			ctx.lineWidth = vm.borderWidth || globalOptionLineElements.borderWidth;
+			ctx.strokeStyle = vm.borderColor || globalDefaults.defaultColor;
+
+			// Stroke Line
+			ctx.beginPath();
+			lastDrawnIndex = -1;
+
+			for (index = 0; index < points.length; ++index) {
+				current = points[index];
+				previous = helpers.previousItem(points, index);
+				currentVM = current._view;
+
+				// First point moves to it's starting position no matter what
+				if (index === 0) {
+					if (!currentVM.skip) {
+						ctx.moveTo(currentVM.x, currentVM.y);
+						lastDrawnIndex = index;
+					}
+				} else {
+					previous = lastDrawnIndex === -1 ? previous : points[lastDrawnIndex];
+
+					if (!currentVM.skip) {
+						if ((lastDrawnIndex !== (index - 1) && !spanGaps) || lastDrawnIndex === -1) {
+							// There was a gap and this is the first point after the gap
+							ctx.moveTo(currentVM.x, currentVM.y);
+						} else {
+							// Line to next point
+							helpers.canvas.lineTo(ctx, previous._view, current._view);
+						}
+						lastDrawnIndex = index;
+					}
+				}
+			}
+
+			ctx.stroke();
+			ctx.restore();
+		}
+	});
+};
+
+},{}],34:[function(require,module,exports){
+'use strict';
+
+module.exports = function(Chart) {
+
+	var helpers = Chart.helpers,
+		globalOpts = Chart.defaults.global,
+		defaultColor = globalOpts.defaultColor;
+
+	globalOpts.elements.point = {
+		radius: 3,
+		pointStyle: 'circle',
+		backgroundColor: defaultColor,
+		borderWidth: 1,
+		borderColor: defaultColor,
+		// Hover
+		hitRadius: 1,
+		hoverRadius: 4,
+		hoverBorderWidth: 1
+	};
+
+	function xRange(mouseX) {
+		var vm = this._view;
+		return vm ? (Math.pow(mouseX - vm.x, 2) < Math.pow(vm.radius + vm.hitRadius, 2)) : false;
+	}
+
+	function yRange(mouseY) {
+		var vm = this._view;
+		return vm ? (Math.pow(mouseY - vm.y, 2) < Math.pow(vm.radius + vm.hitRadius, 2)) : false;
+	}
+
+	Chart.elements.Point = Chart.Element.extend({
+		inRange: function(mouseX, mouseY) {
+			var vm = this._view;
+			return vm ? ((Math.pow(mouseX - vm.x, 2) + Math.pow(mouseY - vm.y, 2)) < Math.pow(vm.hitRadius + vm.radius, 2)) : false;
+		},
+
+		inLabelRange: xRange,
+		inXRange: xRange,
+		inYRange: yRange,
+
+		getCenterPoint: function() {
+			var vm = this._view;
+			return {
+				x: vm.x,
+				y: vm.y
+			};
+		},
+		getArea: function() {
+			return Math.PI * Math.pow(this._view.radius, 2);
+		},
+		tooltipPosition: function() {
+			var vm = this._view;
+			return {
+				x: vm.x,
+				y: vm.y,
+				padding: vm.radius + vm.borderWidth
+			};
+		},
+		draw: function(chartArea) {
+			var vm = this._view;
+			var model = this._model;
+			var ctx = this._chart.ctx;
+			var pointStyle = vm.pointStyle;
+			var radius = vm.radius;
+			var x = vm.x;
+			var y = vm.y;
+			var color = Chart.helpers.color;
+			var errMargin = 1.01; // 1.01 is margin for Accumulated error. (Especially Edge, IE.)
+			var ratio = 0;
+
+			if (vm.skip) {
+				return;
+			}
+
+			ctx.strokeStyle = vm.borderColor || defaultColor;
+			ctx.lineWidth = helpers.getValueOrDefault(vm.borderWidth, globalOpts.elements.point.borderWidth);
+			ctx.fillStyle = vm.backgroundColor || defaultColor;
+
+			// Cliping for Points.
+			// going out from inner charArea?
+			if ((chartArea !== undefined) && ((model.x < chartArea.left) || (chartArea.right*errMargin < model.x) || (model.y < chartArea.top) || (chartArea.bottom*errMargin < model.y))) {
+				// Point fade out
+				if (model.x < chartArea.left) {
+					ratio = (x - model.x) / (chartArea.left - model.x);
+				} else if (chartArea.right*errMargin < model.x) {
+					ratio = (model.x - x) / (model.x - chartArea.right);
+				} else if (model.y < chartArea.top) {
+					ratio = (y - model.y) / (chartArea.top - model.y);
+				} else if (chartArea.bottom*errMargin < model.y) {
+					ratio = (model.y - y) / (model.y - chartArea.bottom);
+				}
+				ratio = Math.round(ratio*100) / 100;
+				ctx.strokeStyle = color(ctx.strokeStyle).alpha(ratio).rgbString();
+				ctx.fillStyle = color(ctx.fillStyle).alpha(ratio).rgbString();
+			}
+
+			Chart.canvasHelpers.drawPoint(ctx, pointStyle, radius, x, y);
+		}
+	});
+};
+
+},{}],35:[function(require,module,exports){
+'use strict';
+
+module.exports = function(Chart) {
+
+	var globalOpts = Chart.defaults.global;
+
+	globalOpts.elements.rectangle = {
+		backgroundColor: globalOpts.defaultColor,
+		borderWidth: 0,
+		borderColor: globalOpts.defaultColor,
+		borderSkipped: 'bottom'
+	};
+
+	function isVertical(bar) {
+		return bar._view.width !== undefined;
+	}
+
+	/**
+	 * Helper function to get the bounds of the bar regardless of the orientation
+	 * @private
+	 * @param bar {Chart.Element.Rectangle} the bar
+	 * @return {Bounds} bounds of the bar
+	 */
+	function getBarBounds(bar) {
+		var vm = bar._view;
+		var x1, x2, y1, y2;
+
+		if (isVertical(bar)) {
+			// vertical
+			var halfWidth = vm.width / 2;
+			x1 = vm.x - halfWidth;
+			x2 = vm.x + halfWidth;
+			y1 = Math.min(vm.y, vm.base);
+			y2 = Math.max(vm.y, vm.base);
+		} else {
+			// horizontal bar
+			var halfHeight = vm.height / 2;
+			x1 = Math.min(vm.x, vm.base);
+			x2 = Math.max(vm.x, vm.base);
+			y1 = vm.y - halfHeight;
+			y2 = vm.y + halfHeight;
+		}
+
+		return {
+			left: x1,
+			top: y1,
+			right: x2,
+			bottom: y2
+		};
+	}
+
+	Chart.elements.Rectangle = Chart.Element.extend({
+		draw: function() {
+			var ctx = this._chart.ctx;
+			var vm = this._view;
+			var left, right, top, bottom, signX, signY, borderSkipped;
+			var borderWidth = vm.borderWidth;
+
+			if (!vm.horizontal) {
+				// bar
+				left = vm.x - vm.width / 2;
+				right = vm.x + vm.width / 2;
+				top = vm.y;
+				bottom = vm.base;
+				signX = 1;
+				signY = bottom > top? 1: -1;
+				borderSkipped = vm.borderSkipped || 'bottom';
+			} else {
+				// horizontal bar
+				left = vm.base;
+				right = vm.x;
+				top = vm.y - vm.height / 2;
+				bottom = vm.y + vm.height / 2;
+				signX = right > left? 1: -1;
+				signY = 1;
+				borderSkipped = vm.borderSkipped || 'left';
+			}
+
+			// Canvas doesn't allow us to stroke inside the width so we can
+			// adjust the sizes to fit if we're setting a stroke on the line
+			if (borderWidth) {
+				// borderWidth shold be less than bar width and bar height.
+				var barSize = Math.min(Math.abs(left - right), Math.abs(top - bottom));
+				borderWidth = borderWidth > barSize? barSize: borderWidth;
+				var halfStroke = borderWidth / 2;
+				// Adjust borderWidth when bar top position is near vm.base(zero).
+				var borderLeft = left + (borderSkipped !== 'left'? halfStroke * signX: 0);
+				var borderRight = right + (borderSkipped !== 'right'? -halfStroke * signX: 0);
+				var borderTop = top + (borderSkipped !== 'top'? halfStroke * signY: 0);
+				var borderBottom = bottom + (borderSkipped !== 'bottom'? -halfStroke * signY: 0);
+				// not become a vertical line?
+				if (borderLeft !== borderRight) {
+					top = borderTop;
+					bottom = borderBottom;
+				}
+				// not become a horizontal line?
+				if (borderTop !== borderBottom) {
+					left = borderLeft;
+					right = borderRight;
+				}
+			}
+
+			ctx.beginPath();
+			ctx.fillStyle = vm.backgroundColor;
+			ctx.strokeStyle = vm.borderColor;
+			ctx.lineWidth = borderWidth;
+
+			// Corner points, from bottom-left to bottom-right clockwise
+			// | 1 2 |
+			// | 0 3 |
+			var corners = [
+				[left, bottom],
+				[left, top],
+				[right, top],
+				[right, bottom]
+			];
+
+			// Find first (starting) corner with fallback to 'bottom'
+			var borders = ['bottom', 'left', 'top', 'right'];
+			var startCorner = borders.indexOf(borderSkipped, 0);
+			if (startCorner === -1) {
+				startCorner = 0;
+			}
+
+			function cornerAt(index) {
+				return corners[(startCorner + index) % 4];
+			}
+
+			// Draw rectangle from 'startCorner'
+			var corner = cornerAt(0);
+			ctx.moveTo(corner[0], corner[1]);
+
+			for (var i = 1; i < 4; i++) {
+				corner = cornerAt(i);
+				ctx.lineTo(corner[0], corner[1]);
+			}
+
+			ctx.fill();
+			if (borderWidth) {
+				ctx.stroke();
+			}
+		},
+		height: function() {
+			var vm = this._view;
+			return vm.base - vm.y;
+		},
+		inRange: function(mouseX, mouseY) {
+			var inRange = false;
+
+			if (this._view) {
+				var bounds = getBarBounds(this);
+				inRange = mouseX >= bounds.left && mouseX <= bounds.right && mouseY >= bounds.top && mouseY <= bounds.bottom;
+			}
+
+			return inRange;
+		},
+		inLabelRange: function(mouseX, mouseY) {
+			var me = this;
+			if (!me._view) {
+				return false;
+			}
+
+			var inRange = false;
+			var bounds = getBarBounds(me);
+
+			if (isVertical(me)) {
+				inRange = mouseX >= bounds.left && mouseX <= bounds.right;
+			} else {
+				inRange = mouseY >= bounds.top && mouseY <= bounds.bottom;
+			}
+
+			return inRange;
+		},
+		inXRange: function(mouseX) {
+			var bounds = getBarBounds(this);
+			return mouseX >= bounds.left && mouseX <= bounds.right;
+		},
+		inYRange: function(mouseY) {
+			var bounds = getBarBounds(this);
+			return mouseY >= bounds.top && mouseY <= bounds.bottom;
+		},
+		getCenterPoint: function() {
+			var vm = this._view;
+			var x, y;
+			if (isVertical(this)) {
+				x = vm.x;
+				y = (vm.y + vm.base) / 2;
+			} else {
+				x = (vm.x + vm.base) / 2;
+				y = vm.y;
+			}
+
+			return {x: x, y: y};
+		},
+		getArea: function() {
+			var vm = this._view;
+			return vm.width * Math.abs(vm.y - vm.base);
+		},
+		tooltipPosition: function() {
+			var vm = this._view;
+			return {
+				x: vm.x,
+				y: vm.y
+			};
+		}
+	});
+
+};
+
+},{}],36:[function(require,module,exports){
+'use strict';
+
+// Chart.Platform implementation for targeting a web browser
+module.exports = function(Chart) {
+	var helpers = Chart.helpers;
+
+	// DOM event types -> Chart.js event types.
+	// Note: only events with different types are mapped.
+	// https://developer.mozilla.org/en-US/docs/Web/Events
+	var eventTypeMap = {
+		// Touch events
+		touchstart: 'mousedown',
+		touchmove: 'mousemove',
+		touchend: 'mouseup',
+
+		// Pointer events
+		pointerenter: 'mouseenter',
+		pointerdown: 'mousedown',
+		pointermove: 'mousemove',
+		pointerup: 'mouseup',
+		pointerleave: 'mouseout',
+		pointerout: 'mouseout'
+	};
+
+	/**
+	 * The "used" size is the final value of a dimension property after all calculations have
+	 * been performed. This method uses the computed style of `element` but returns undefined
+	 * if the computed style is not expressed in pixels. That can happen in some cases where
+	 * `element` has a size relative to its parent and this last one is not yet displayed,
+	 * for example because of `display: none` on a parent node.
+	 * @see https://developer.mozilla.org/en-US/docs/Web/CSS/used_value
+	 * @returns {Number} Size in pixels or undefined if unknown.
+	 */
+	function readUsedSize(element, property) {
+		var value = helpers.getStyle(element, property);
+		var matches = value && value.match(/^(\d+)(\.\d+)?px$/);
+		return matches? Number(matches[1]) : undefined;
+	}
+
+	/**
+	 * Initializes the canvas style and render size without modifying the canvas display size,
+	 * since responsiveness is handled by the controller.resize() method. The config is used
+	 * to determine the aspect ratio to apply in case no explicit height has been specified.
+	 */
+	function initCanvas(canvas, config) {
+		var style = canvas.style;
+
+		// NOTE(SB) canvas.getAttribute('width') !== canvas.width: in the first case it
+		// returns null or '' if no explicit value has been set to the canvas attribute.
+		var renderHeight = canvas.getAttribute('height');
+		var renderWidth = canvas.getAttribute('width');
+
+		// Chart.js modifies some canvas values that we want to restore on destroy
+		canvas._chartjs = {
+			initial: {
+				height: renderHeight,
+				width: renderWidth,
+				style: {
+					display: style.display,
+					height: style.height,
+					width: style.width
+				}
+			}
+		};
+
+		// Force canvas to display as block to avoid extra space caused by inline
+		// elements, which would interfere with the responsive resize process.
+		// https://github.com/chartjs/Chart.js/issues/2538
+		style.display = style.display || 'block';
+
+		if (renderWidth === null || renderWidth === '') {
+			var displayWidth = readUsedSize(canvas, 'width');
+			if (displayWidth !== undefined) {
+				canvas.width = displayWidth;
+			}
+		}
+
+		if (renderHeight === null || renderHeight === '') {
+			if (canvas.style.height === '') {
+				// If no explicit render height and style height, let's apply the aspect ratio,
+				// which one can be specified by the user but also by charts as default option
+				// (i.e. options.aspectRatio). If not specified, use canvas aspect ratio of 2.
+				canvas.height = canvas.width / (config.options.aspectRatio || 2);
+			} else {
+				var displayHeight = readUsedSize(canvas, 'height');
+				if (displayWidth !== undefined) {
+					canvas.height = displayHeight;
+				}
+			}
+		}
+
+		return canvas;
+	}
+
+	function createEvent(type, chart, x, y, nativeEvent) {
+		return {
+			type: type,
+			chart: chart,
+			native: nativeEvent || null,
+			x: x !== undefined? x : null,
+			y: y !== undefined? y : null,
+		};
+	}
+
+	function fromNativeEvent(event, chart) {
+		var type = eventTypeMap[event.type] || event.type;
+		var pos = helpers.getRelativePosition(event, chart);
+		return createEvent(type, chart, pos.x, pos.y, event);
+	}
+
+	function createResizer(handler) {
+		var iframe = document.createElement('iframe');
+		iframe.className = 'chartjs-hidden-iframe';
+		iframe.style.cssText =
+			'display:block;'+
+			'overflow:hidden;'+
+			'border:0;'+
+			'margin:0;'+
+			'top:0;'+
+			'left:0;'+
+			'bottom:0;'+
+			'right:0;'+
+			'height:100%;'+
+			'width:100%;'+
+			'position:absolute;'+
+			'pointer-events:none;'+
+			'z-index:-1;';
+
+		// Prevent the iframe to gain focus on tab.
+		// https://github.com/chartjs/Chart.js/issues/3090
+		iframe.tabIndex = -1;
+
+		// If the iframe is re-attached to the DOM, the resize listener is removed because the
+		// content is reloaded, so make sure to install the handler after the iframe is loaded.
+		// https://github.com/chartjs/Chart.js/issues/3521
+		helpers.addEvent(iframe, 'load', function() {
+			helpers.addEvent(iframe.contentWindow || iframe, 'resize', handler);
+
+			// The iframe size might have changed while loading, which can also
+			// happen if the size has been changed while detached from the DOM.
+			handler();
+		});
+
+		return iframe;
+	}
+
+	function addResizeListener(node, listener, chart) {
+		var stub = node._chartjs = {
+			ticking: false
+		};
+
+		// Throttle the callback notification until the next animation frame.
+		var notify = function() {
+			if (!stub.ticking) {
+				stub.ticking = true;
+				helpers.requestAnimFrame.call(window, function() {
+					if (stub.resizer) {
+						stub.ticking = false;
+						return listener(createEvent('resize', chart));
+					}
+				});
+			}
+		};
+
+		// Let's keep track of this added iframe and thus avoid DOM query when removing it.
+		stub.resizer = createResizer(notify);
+
+		node.insertBefore(stub.resizer, node.firstChild);
+	}
+
+	function removeResizeListener(node) {
+		if (!node || !node._chartjs) {
+			return;
+		}
+
+		var resizer = node._chartjs.resizer;
+		if (resizer) {
+			resizer.parentNode.removeChild(resizer);
+			node._chartjs.resizer = null;
+		}
+
+		delete node._chartjs;
+	}
+
+	return {
+		acquireContext: function(item, config) {
+			if (typeof item === 'string') {
+				item = document.getElementById(item);
+			} else if (item.length) {
+				// Support for array based queries (such as jQuery)
+				item = item[0];
+			}
+
+			if (item && item.canvas) {
+				// Support for any object associated to a canvas (including a context2d)
+				item = item.canvas;
+			}
+
+			// To prevent canvas fingerprinting, some add-ons undefine the getContext
+			// method, for example: https://github.com/kkapsner/CanvasBlocker
+			// https://github.com/chartjs/Chart.js/issues/2807
+			var context = item && item.getContext && item.getContext('2d');
+
+			// `instanceof HTMLCanvasElement/CanvasRenderingContext2D` fails when the item is
+			// inside an iframe or when running in a protected environment. We could guess the
+			// types from their toString() value but let's keep things flexible and assume it's
+			// a sufficient condition if the item has a context2D which has item as `canvas`.
+			// https://github.com/chartjs/Chart.js/issues/3887
+			// https://github.com/chartjs/Chart.js/issues/4102
+			// https://github.com/chartjs/Chart.js/issues/4152
+			if (context && context.canvas === item) {
+				initCanvas(item, config);
+				return context;
+			}
+
+			return null;
+		},
+
+		releaseContext: function(context) {
+			var canvas = context.canvas;
+			if (!canvas._chartjs) {
+				return;
+			}
+
+			var initial = canvas._chartjs.initial;
+			['height', 'width'].forEach(function(prop) {
+				var value = initial[prop];
+				if (value === undefined || value === null) {
+					canvas.removeAttribute(prop);
+				} else {
+					canvas.setAttribute(prop, value);
+				}
+			});
+
+			helpers.each(initial.style || {}, function(value, key) {
+				canvas.style[key] = value;
+			});
+
+			// The canvas render size might have been changed (and thus the state stack discarded),
+			// we can't use save() and restore() to restore the initial state. So make sure that at
+			// least the canvas context is reset to the default state by setting the canvas width.
+			// https://www.w3.org/TR/2011/WD-html5-20110525/the-canvas-element.html
+			canvas.width = canvas.width;
+
+			delete canvas._chartjs;
+		},
+
+		addEventListener: function(chart, type, listener) {
+			var canvas = chart.canvas;
+			if (type === 'resize') {
+				// Note: the resize event is not supported on all browsers.
+				addResizeListener(canvas.parentNode, listener, chart);
+				return;
+			}
+
+			var stub = listener._chartjs || (listener._chartjs = {});
+			var proxies = stub.proxies || (stub.proxies = {});
+			var proxy = proxies[chart.id + '_' + type] = function(event) {
+				listener(fromNativeEvent(event, chart));
+			};
+
+			helpers.addEvent(canvas, type, proxy);
+		},
+
+		removeEventListener: function(chart, type, listener) {
+			var canvas = chart.canvas;
+			if (type === 'resize') {
+				// Note: the resize event is not supported on all browsers.
+				removeResizeListener(canvas.parentNode, listener);
+				return;
+			}
+
+			var stub = listener._chartjs || {};
+			var proxies = stub.proxies || {};
+			var proxy = proxies[chart.id + '_' + type];
+			if (!proxy) {
+				return;
+			}
+
+			helpers.removeEvent(canvas, type, proxy);
+		}
+	};
+};
+
+},{}],37:[function(require,module,exports){
+'use strict';
+
+// By default, select the browser (DOM) platform.
+// @TODO Make possible to select another platform at build time.
+var implementation = require('./platform.dom.js');
+
+module.exports = function(Chart) {
+	/**
+	 * @namespace Chart.platform
+	 * @see https://chartjs.gitbooks.io/proposals/content/Platform.html
+	 * @since 2.4.0
+	 */
+	Chart.platform = {
+		/**
+		 * Called at chart construction time, returns a context2d instance implementing
+		 * the [W3C Canvas 2D Context API standard]{@link https://www.w3.org/TR/2dcontext/}.
+		 * @param {*} item - The native item from which to acquire context (platform specific)
+		 * @param {Object} options - The chart options
+		 * @returns {CanvasRenderingContext2D} context2d instance
+		 */
+		acquireContext: function() {},
+
+		/**
+		 * Called at chart destruction time, releases any resources associated to the context
+		 * previously returned by the acquireContext() method.
+		 * @param {CanvasRenderingContext2D} context - The context2d instance
+		 * @returns {Boolean} true if the method succeeded, else false
+		 */
+		releaseContext: function() {},
+
+		/**
+		 * Registers the specified listener on the given chart.
+		 * @param {Chart} chart - Chart from which to listen for event
+		 * @param {String} type - The ({@link IEvent}) type to listen for
+		 * @param {Function} listener - Receives a notification (an object that implements
+		 * the {@link IEvent} interface) when an event of the specified type occurs.
+		 */
+		addEventListener: function() {},
+
+		/**
+		 * Removes the specified listener previously registered with addEventListener.
+		 * @param {Chart} chart -Chart from which to remove the listener
+		 * @param {String} type - The ({@link IEvent}) type to remove
+		 * @param {Function} listener - The listener function to remove from the event target.
+		 */
+		removeEventListener: function() {}
+	};
+
+	/**
+	 * @interface IPlatform
+	 * Allows abstracting platform dependencies away from the chart
+	 * @borrows Chart.platform.acquireContext as acquireContext
+	 * @borrows Chart.platform.releaseContext as releaseContext
+	 * @borrows Chart.platform.addEventListener as addEventListener
+	 * @borrows Chart.platform.removeEventListener as removeEventListener
+	 */
+
+	/**
+	 * @interface IEvent
+	 * @prop {String} type - The event type name, possible values are:
+	 * 'contextmenu', 'mouseenter', 'mousedown', 'mousemove', 'mouseup', 'mouseout',
+	 * 'click', 'dblclick', 'keydown', 'keypress', 'keyup' and 'resize'
+	 * @prop {*} native - The original native event (null for emulated events, e.g. 'resize')
+	 * @prop {Number} x - The mouse x position, relative to the canvas (null for incompatible events)
+	 * @prop {Number} y - The mouse y position, relative to the canvas (null for incompatible events)
+	 */
+
+	Chart.helpers.extend(Chart.platform, implementation(Chart));
+};
+
+},{"./platform.dom.js":36}],38:[function(require,module,exports){
+'use strict';
+
+module.exports = function(Chart) {
+	/**
+	 * Plugin based on discussion from the following Chart.js issues:
+	 * @see https://github.com/chartjs/Chart.js/issues/2380#issuecomment-279961569
+	 * @see https://github.com/chartjs/Chart.js/issues/2440#issuecomment-256461897
+	 */
+	Chart.defaults.global.plugins.filler = {
+		propagate: true
+	};
+
+	var defaults = Chart.defaults;
+	var helpers = Chart.helpers;
+	var mappers = {
+		dataset: function(source) {
+			var index = source.fill;
+			var chart = source.chart;
+			var meta = chart.getDatasetMeta(index);
+			var visible = meta && chart.isDatasetVisible(index);
+			var points = (visible && meta.dataset._children) || [];
+
+			return !points.length? null : function(point, i) {
+				return points[i]._view || null;
+			};
+		},
+
+		boundary: function(source) {
+			var boundary = source.boundary;
+			var x = boundary? boundary.x : null;
+			var y = boundary? boundary.y : null;
+
+			return function(point) {
+				return {
+					x: x === null? point.x : x,
+					y: y === null? point.y : y,
+				};
+			};
+		}
+	};
+
+	// @todo if (fill[0] === '#')
+	function decodeFill(el, index, count) {
+		var model = el._model || {};
+		var fill = model.fill;
+		var target;
+
+		if (fill === undefined) {
+			fill = !!model.backgroundColor;
+		}
+
+		if (fill === false || fill === null) {
+			return false;
+		}
+
+		if (fill === true) {
+			return 'origin';
+		}
+
+		target = parseFloat(fill, 10);
+		if (isFinite(target) && Math.floor(target) === target) {
+			if (fill[0] === '-' || fill[0] === '+') {
+				target = index + target;
+			}
+
+			if (target === index || target < 0 || target >= count) {
+				return false;
+			}
+
+			return target;
+		}
+
+		switch (fill) {
+		// compatibility
+		case 'bottom':
+			return 'start';
+		case 'top':
+			return 'end';
+		case 'zero':
+			return 'origin';
+		// supported boundaries
+		case 'origin':
+		case 'start':
+		case 'end':
+			return fill;
+		// invalid fill values
+		default:
+			return false;
+		}
+	}
+
+	function computeBoundary(source) {
+		var model = source.el._model || {};
+		var scale = source.el._scale || {};
+		var fill = source.fill;
+		var target = null;
+		var horizontal;
+
+		if (isFinite(fill)) {
+			return null;
+		}
+
+		// Backward compatibility: until v3, we still need to support boundary values set on
+		// the model (scaleTop, scaleBottom and scaleZero) because some external plugins and
+		// controllers might still use it (e.g. the Smith chart).
+
+		if (fill === 'start') {
+			target = model.scaleBottom === undefined? scale.bottom : model.scaleBottom;
+		} else if (fill === 'end') {
+			target = model.scaleTop === undefined? scale.top : model.scaleTop;
+		} else if (model.scaleZero !== undefined) {
+			target = model.scaleZero;
+		} else if (scale.getBasePosition) {
+			target = scale.getBasePosition();
+		} else if (scale.getBasePixel) {
+			target = scale.getBasePixel();
+		}
+
+		if (target !== undefined && target !== null) {
+			if (target.x !== undefined && target.y !== undefined) {
+				return target;
+			}
+
+			if (typeof target === 'number' && isFinite(target)) {
+				horizontal = scale.isHorizontal();
+				return {
+					x: horizontal? target : null,
+					y: horizontal? null : target
+				};
+			}
+		}
+
+		return null;
+	}
+
+	function resolveTarget(sources, index, propagate) {
+		var source = sources[index];
+		var fill = source.fill;
+		var visited = [index];
+		var target;
+
+		if (!propagate) {
+			return fill;
+		}
+
+		while (fill !== false && visited.indexOf(fill) === -1) {
+			if (!isFinite(fill)) {
+				return fill;
+			}
+
+			target = sources[fill];
+			if (!target) {
+				return false;
+			}
+
+			if (target.visible) {
+				return fill;
+			}
+
+			visited.push(fill);
+			fill = target.fill;
+		}
+
+		return false;
+	}
+
+	function createMapper(source) {
+		var fill = source.fill;
+		var type = 'dataset';
+
+		if (fill === false) {
+			return null;
+		}
+
+		if (!isFinite(fill)) {
+			type = 'boundary';
+		}
+
+		return mappers[type](source);
+	}
+
+	function isDrawable(point) {
+		return point && !point.skip;
+	}
+
+	function drawArea(ctx, curve0, curve1, len0, len1) {
+		var i;
+
+		if (!len0 || !len1) {
+			return;
+		}
+
+		// building first area curve (normal)
+		ctx.moveTo(curve0[0].x, curve0[0].y);
+		for (i=1; i<len0; ++i) {
+			helpers.canvas.lineTo(ctx, curve0[i-1], curve0[i]);
+		}
+
+		// joining the two area curves
+		ctx.lineTo(curve1[len1-1].x, curve1[len1-1].y);
+
+		// building opposite area curve (reverse)
+		for (i=len1-1; i>0; --i) {
+			helpers.canvas.lineTo(ctx, curve1[i], curve1[i-1], true);
+		}
+	}
+
+	function doFill(ctx, points, mapper, view, color, loop) {
+		var count = points.length;
+		var span = view.spanGaps;
+		var curve0 = [];
+		var curve1 = [];
+		var len0 = 0;
+		var len1 = 0;
+		var i, ilen, index, p0, p1, d0, d1;
+
+		ctx.beginPath();
+
+		for (i = 0, ilen = (count + !!loop); i < ilen; ++i) {
+			index = i%count;
+			p0 = points[index]._view;
+			p1 = mapper(p0, index, view);
+			d0 = isDrawable(p0);
+			d1 = isDrawable(p1);
+
+			if (d0 && d1) {
+				len0 = curve0.push(p0);
+				len1 = curve1.push(p1);
+			} else if (len0 && len1) {
+				if (!span) {
+					drawArea(ctx, curve0, curve1, len0, len1);
+					len0 = len1 = 0;
+					curve0 = [];
+					curve1 = [];
+				} else {
+					if (d0) {
+						curve0.push(p0);
+					}
+					if (d1) {
+						curve1.push(p1);
+					}
+				}
+			}
+		}
+
+		drawArea(ctx, curve0, curve1, len0, len1);
+
+		ctx.closePath();
+		ctx.fillStyle = color;
+		ctx.fill();
+	}
+
+	return {
+		id: 'filler',
+
+		afterDatasetsUpdate: function(chart, options) {
+			var count = (chart.data.datasets || []).length;
+			var propagate = options.propagate;
+			var sources = [];
+			var meta, i, el, source;
+
+			for (i = 0; i < count; ++i) {
+				meta = chart.getDatasetMeta(i);
+				el = meta.dataset;
+				source = null;
+
+				if (el && el._model && el instanceof Chart.elements.Line) {
+					source = {
+						visible: chart.isDatasetVisible(i),
+						fill: decodeFill(el, i, count),
+						chart: chart,
+						el: el
+					};
+				}
+
+				meta.$filler = source;
+				sources.push(source);
+			}
+
+			for (i=0; i<count; ++i) {
+				source = sources[i];
+				if (!source) {
+					continue;
+				}
+
+				source.fill = resolveTarget(sources, i, propagate);
+				source.boundary = computeBoundary(source);
+				source.mapper = createMapper(source);
+			}
+		},
+
+		beforeDatasetDraw: function(chart, args) {
+			var meta = args.meta.$filler;
+			if (!meta) {
+				return;
+			}
+
+			var el = meta.el;
+			var view = el._view;
+			var points = el._children || [];
+			var mapper = meta.mapper;
+			var color = view.backgroundColor || defaults.global.defaultColor;
+
+			if (mapper && color && points.length) {
+				doFill(chart.ctx, points, mapper, view, color, el._loop);
+			}
+		}
+	};
+};
+
+},{}],39:[function(require,module,exports){
+'use strict';
+
+module.exports = function(Chart) {
+
+	var helpers = Chart.helpers;
+	var layout = Chart.layoutService;
+	var noop = helpers.noop;
+
+	Chart.defaults.global.legend = {
+		display: true,
+		position: 'top',
+		fullWidth: true,
+		reverse: false,
+		weight: 1000,
+
+		// a callback that will handle
+		onClick: function(e, legendItem) {
+			var index = legendItem.datasetIndex;
+			var ci = this.chart;
+			var meta = ci.getDatasetMeta(index);
+
+			// See controller.isDatasetVisible comment
+			meta.hidden = meta.hidden === null? !ci.data.datasets[index].hidden : null;
+
+			// We hid a dataset ... rerender the chart
+			ci.update();
+		},
+
+		onHover: null,
+
+		labels: {
+			boxWidth: 40,
+			padding: 10,
+			// Generates labels shown in the legend
+			// Valid properties to return:
+			// text : text to display
+			// fillStyle : fill of coloured box
+			// strokeStyle: stroke of coloured box
+			// hidden : if this legend item refers to a hidden item
+			// lineCap : cap style for line
+			// lineDash
+			// lineDashOffset :
+			// lineJoin :
+			// lineWidth :
+			generateLabels: function(chart) {
+				var data = chart.data;
+				return helpers.isArray(data.datasets) ? data.datasets.map(function(dataset, i) {
+					return {
+						text: dataset.label,
+						fillStyle: (!helpers.isArray(dataset.backgroundColor) ? dataset.backgroundColor : dataset.backgroundColor[0]),
+						hidden: !chart.isDatasetVisible(i),
+						lineCap: dataset.borderCapStyle,
+						lineDash: dataset.borderDash,
+						lineDashOffset: dataset.borderDashOffset,
+						lineJoin: dataset.borderJoinStyle,
+						lineWidth: dataset.borderWidth,
+						strokeStyle: dataset.borderColor,
+						pointStyle: dataset.pointStyle,
+
+						// Below is extra data used for toggling the datasets
+						datasetIndex: i
+					};
+				}, this) : [];
+			}
+		}
+	};
+
+	/**
+	 * Helper function to get the box width based on the usePointStyle option
+	 * @param labelopts {Object} the label options on the legend
+	 * @param fontSize {Number} the label font size
+	 * @return {Number} width of the color box area
+	 */
+	function getBoxWidth(labelOpts, fontSize) {
+		return labelOpts.usePointStyle ?
+			fontSize * Math.SQRT2 :
+			labelOpts.boxWidth;
+	}
+
+	Chart.Legend = Chart.Element.extend({
+
+		initialize: function(config) {
+			helpers.extend(this, config);
+
+			// Contains hit boxes for each dataset (in dataset order)
+			this.legendHitBoxes = [];
+
+			// Are we in doughnut mode which has a different data type
+			this.doughnutMode = false;
+		},
+
+		// These methods are ordered by lifecycle. Utilities then follow.
+		// Any function defined here is inherited by all legend types.
+		// Any function can be extended by the legend type
+
+		beforeUpdate: noop,
+		update: function(maxWidth, maxHeight, margins) {
+			var me = this;
+
+			// Update Lifecycle - Probably don't want to ever extend or overwrite this function ;)
+			me.beforeUpdate();
+
+			// Absorb the master measurements
+			me.maxWidth = maxWidth;
+			me.maxHeight = maxHeight;
+			me.margins = margins;
+
+			// Dimensions
+			me.beforeSetDimensions();
+			me.setDimensions();
+			me.afterSetDimensions();
+			// Labels
+			me.beforeBuildLabels();
+			me.buildLabels();
+			me.afterBuildLabels();
+
+			// Fit
+			me.beforeFit();
+			me.fit();
+			me.afterFit();
+			//
+			me.afterUpdate();
+
+			return me.minSize;
+		},
+		afterUpdate: noop,
+
+		//
+
+		beforeSetDimensions: noop,
+		setDimensions: function() {
+			var me = this;
+			// Set the unconstrained dimension before label rotation
+			if (me.isHorizontal()) {
+				// Reset position before calculating rotation
+				me.width = me.maxWidth;
+				me.left = 0;
+				me.right = me.width;
+			} else {
+				me.height = me.maxHeight;
+
+				// Reset position before calculating rotation
+				me.top = 0;
+				me.bottom = me.height;
+			}
+
+			// Reset padding
+			me.paddingLeft = 0;
+			me.paddingTop = 0;
+			me.paddingRight = 0;
+			me.paddingBottom = 0;
+
+			// Reset minSize
+			me.minSize = {
+				width: 0,
+				height: 0
+			};
+		},
+		afterSetDimensions: noop,
+
+		//
+
+		beforeBuildLabels: noop,
+		buildLabels: function() {
+			var me = this;
+			var labelOpts = me.options.labels;
+			var legendItems = labelOpts.generateLabels.call(me, me.chart);
+
+			if (labelOpts.filter) {
+				legendItems = legendItems.filter(function(item) {
+					return labelOpts.filter(item, me.chart.data);
+				});
+			}
+
+			if (me.options.reverse) {
+				legendItems.reverse();
+			}
+
+			me.legendItems = legendItems;
+		},
+		afterBuildLabels: noop,
+
+		//
+
+		beforeFit: noop,
+		fit: function() {
+			var me = this;
+			var opts = me.options;
+			var labelOpts = opts.labels;
+			var display = opts.display;
+
+			var ctx = me.ctx;
+
+			var globalDefault = Chart.defaults.global,
+				itemOrDefault = helpers.getValueOrDefault,
+				fontSize = itemOrDefault(labelOpts.fontSize, globalDefault.defaultFontSize),
+				fontStyle = itemOrDefault(labelOpts.fontStyle, globalDefault.defaultFontStyle),
+				fontFamily = itemOrDefault(labelOpts.fontFamily, globalDefault.defaultFontFamily),
+				labelFont = helpers.fontString(fontSize, fontStyle, fontFamily);
+
+			// Reset hit boxes
+			var hitboxes = me.legendHitBoxes = [];
+
+			var minSize = me.minSize;
+			var isHorizontal = me.isHorizontal();
+
+			if (isHorizontal) {
+				minSize.width = me.maxWidth; // fill all the width
+				minSize.height = display ? 10 : 0;
+			} else {
+				minSize.width = display ? 10 : 0;
+				minSize.height = me.maxHeight; // fill all the height
+			}
+
+			// Increase sizes here
+			if (display) {
+				ctx.font = labelFont;
+
+				if (isHorizontal) {
+					// Labels
+
+					// Width of each line of legend boxes. Labels wrap onto multiple lines when there are too many to fit on one
+					var lineWidths = me.lineWidths = [0];
+					var totalHeight = me.legendItems.length ? fontSize + (labelOpts.padding) : 0;
+
+					ctx.textAlign = 'left';
+					ctx.textBaseline = 'top';
+
+					helpers.each(me.legendItems, function(legendItem, i) {
+						var boxWidth = getBoxWidth(labelOpts, fontSize);
+						var width = boxWidth + (fontSize / 2) + ctx.measureText(legendItem.text).width;
+
+						if (lineWidths[lineWidths.length - 1] + width + labelOpts.padding >= me.width) {
+							totalHeight += fontSize + (labelOpts.padding);
+							lineWidths[lineWidths.length] = me.left;
+						}
+
+						// Store the hitbox width and height here. Final position will be updated in `draw`
+						hitboxes[i] = {
+							left: 0,
+							top: 0,
+							width: width,
+							height: fontSize
+						};
+
+						lineWidths[lineWidths.length - 1] += width + labelOpts.padding;
+					});
+
+					minSize.height += totalHeight;
+
+				} else {
+					var vPadding = labelOpts.padding;
+					var columnWidths = me.columnWidths = [];
+					var totalWidth = labelOpts.padding;
+					var currentColWidth = 0;
+					var currentColHeight = 0;
+					var itemHeight = fontSize + vPadding;
+
+					helpers.each(me.legendItems, function(legendItem, i) {
+						var boxWidth = getBoxWidth(labelOpts, fontSize);
+						var itemWidth = boxWidth + (fontSize / 2) + ctx.measureText(legendItem.text).width;
+
+						// If too tall, go to new column
+						if (currentColHeight + itemHeight > minSize.height) {
+							totalWidth += currentColWidth + labelOpts.padding;
+							columnWidths.push(currentColWidth); // previous column width
+
+							currentColWidth = 0;
+							currentColHeight = 0;
+						}
+
+						// Get max width
+						currentColWidth = Math.max(currentColWidth, itemWidth);
+						currentColHeight += itemHeight;
+
+						// Store the hitbox width and height here. Final position will be updated in `draw`
+						hitboxes[i] = {
+							left: 0,
+							top: 0,
+							width: itemWidth,
+							height: fontSize
+						};
+					});
+
+					totalWidth += currentColWidth;
+					columnWidths.push(currentColWidth);
+					minSize.width += totalWidth;
+				}
+			}
+
+			me.width = minSize.width;
+			me.height = minSize.height;
+		},
+		afterFit: noop,
+
+		// Shared Methods
+		isHorizontal: function() {
+			return this.options.position === 'top' || this.options.position === 'bottom';
+		},
+
+		// Actually draw the legend on the canvas
+		draw: function() {
+			var me = this;
+			var opts = me.options;
+			var labelOpts = opts.labels;
+			var globalDefault = Chart.defaults.global,
+				lineDefault = globalDefault.elements.line,
+				legendWidth = me.width,
+				lineWidths = me.lineWidths;
+
+			if (opts.display) {
+				var ctx = me.ctx,
+					cursor,
+					itemOrDefault = helpers.getValueOrDefault,
+					fontColor = itemOrDefault(labelOpts.fontColor, globalDefault.defaultFontColor),
+					fontSize = itemOrDefault(labelOpts.fontSize, globalDefault.defaultFontSize),
+					fontStyle = itemOrDefault(labelOpts.fontStyle, globalDefault.defaultFontStyle),
+					fontFamily = itemOrDefault(labelOpts.fontFamily, globalDefault.defaultFontFamily),
+					labelFont = helpers.fontString(fontSize, fontStyle, fontFamily);
+
+				// Canvas setup
+				ctx.textAlign = 'left';
+				ctx.textBaseline = 'top';
+				ctx.lineWidth = 0.5;
+				ctx.strokeStyle = fontColor; // for strikethrough effect
+				ctx.fillStyle = fontColor; // render in correct colour
+				ctx.font = labelFont;
+
+				var boxWidth = getBoxWidth(labelOpts, fontSize),
+					hitboxes = me.legendHitBoxes;
+
+				// current position
+				var drawLegendBox = function(x, y, legendItem) {
+					if (isNaN(boxWidth) || boxWidth <= 0) {
+						return;
+					}
+
+					// Set the ctx for the box
+					ctx.save();
+
+					ctx.fillStyle = itemOrDefault(legendItem.fillStyle, globalDefault.defaultColor);
+					ctx.lineCap = itemOrDefault(legendItem.lineCap, lineDefault.borderCapStyle);
+					ctx.lineDashOffset = itemOrDefault(legendItem.lineDashOffset, lineDefault.borderDashOffset);
+					ctx.lineJoin = itemOrDefault(legendItem.lineJoin, lineDefault.borderJoinStyle);
+					ctx.lineWidth = itemOrDefault(legendItem.lineWidth, lineDefault.borderWidth);
+					ctx.strokeStyle = itemOrDefault(legendItem.strokeStyle, globalDefault.defaultColor);
+					var isLineWidthZero = (itemOrDefault(legendItem.lineWidth, lineDefault.borderWidth) === 0);
+
+					if (ctx.setLineDash) {
+						// IE 9 and 10 do not support line dash
+						ctx.setLineDash(itemOrDefault(legendItem.lineDash, lineDefault.borderDash));
+					}
+
+					if (opts.labels && opts.labels.usePointStyle) {
+						// Recalculate x and y for drawPoint() because its expecting
+						// x and y to be center of figure (instead of top left)
+						var radius = fontSize * Math.SQRT2 / 2;
+						var offSet = radius / Math.SQRT2;
+						var centerX = x + offSet;
+						var centerY = y + offSet;
+
+						// Draw pointStyle as legend symbol
+						Chart.canvasHelpers.drawPoint(ctx, legendItem.pointStyle, radius, centerX, centerY);
+					} else {
+						// Draw box as legend symbol
+						if (!isLineWidthZero) {
+							ctx.strokeRect(x, y, boxWidth, fontSize);
+						}
+						ctx.fillRect(x, y, boxWidth, fontSize);
+					}
+
+					ctx.restore();
+				};
+				var fillText = function(x, y, legendItem, textWidth) {
+					ctx.fillText(legendItem.text, boxWidth + (fontSize / 2) + x, y);
+
+					if (legendItem.hidden) {
+						// Strikethrough the text if hidden
+						ctx.beginPath();
+						ctx.lineWidth = 2;
+						ctx.moveTo(boxWidth + (fontSize / 2) + x, y + (fontSize / 2));
+						ctx.lineTo(boxWidth + (fontSize / 2) + x + textWidth, y + (fontSize / 2));
+						ctx.stroke();
+					}
+				};
+
+				// Horizontal
+				var isHorizontal = me.isHorizontal();
+				if (isHorizontal) {
+					cursor = {
+						x: me.left + ((legendWidth - lineWidths[0]) / 2),
+						y: me.top + labelOpts.padding,
+						line: 0
+					};
+				} else {
+					cursor = {
+						x: me.left + labelOpts.padding,
+						y: me.top + labelOpts.padding,
+						line: 0
+					};
+				}
+
+				var itemHeight = fontSize + labelOpts.padding;
+				helpers.each(me.legendItems, function(legendItem, i) {
+					var textWidth = ctx.measureText(legendItem.text).width,
+						width = boxWidth + (fontSize / 2) + textWidth,
+						x = cursor.x,
+						y = cursor.y;
+
+					if (isHorizontal) {
+						if (x + width >= legendWidth) {
+							y = cursor.y += itemHeight;
+							cursor.line++;
+							x = cursor.x = me.left + ((legendWidth - lineWidths[cursor.line]) / 2);
+						}
+					} else if (y + itemHeight > me.bottom) {
+						x = cursor.x = x + me.columnWidths[cursor.line] + labelOpts.padding;
+						y = cursor.y = me.top + labelOpts.padding;
+						cursor.line++;
+					}
+
+					drawLegendBox(x, y, legendItem);
+
+					hitboxes[i].left = x;
+					hitboxes[i].top = y;
+
+					// Fill the actual label
+					fillText(x, y, legendItem, textWidth);
+
+					if (isHorizontal) {
+						cursor.x += width + (labelOpts.padding);
+					} else {
+						cursor.y += itemHeight;
+					}
+
+				});
+			}
+		},
+
+		/**
+		 * Handle an event
+		 * @private
+		 * @param {IEvent} event - The event to handle
+		 * @return {Boolean} true if a change occured
+		 */
+		handleEvent: function(e) {
+			var me = this;
+			var opts = me.options;
+			var type = e.type === 'mouseup' ? 'click' : e.type;
+			var changed = false;
+
+			if (type === 'mousemove') {
+				if (!opts.onHover) {
+					return;
+				}
+			} else if (type === 'click') {
+				if (!opts.onClick) {
+					return;
+				}
+			} else {
+				return;
+			}
+
+			// Chart event already has relative position in it
+			var x = e.x,
+				y = e.y;
+
+			if (x >= me.left && x <= me.right && y >= me.top && y <= me.bottom) {
+				// See if we are touching one of the dataset boxes
+				var lh = me.legendHitBoxes;
+				for (var i = 0; i < lh.length; ++i) {
+					var hitBox = lh[i];
+
+					if (x >= hitBox.left && x <= hitBox.left + hitBox.width && y >= hitBox.top && y <= hitBox.top + hitBox.height) {
+						// Touching an element
+						if (type === 'click') {
+							// use e.native for backwards compatibility
+							opts.onClick.call(me, e.native, me.legendItems[i]);
+							changed = true;
+							break;
+						} else if (type === 'mousemove') {
+							// use e.native for backwards compatibility
+							opts.onHover.call(me, e.native, me.legendItems[i]);
+							changed = true;
+							break;
+						}
+					}
+				}
+			}
+
+			return changed;
+		}
+	});
+
+	function createNewLegendAndAttach(chart, legendOpts) {
+		var legend = new Chart.Legend({
+			ctx: chart.ctx,
+			options: legendOpts,
+			chart: chart
+		});
+
+		layout.configure(chart, legend, legendOpts);
+		layout.addBox(chart, legend);
+		chart.legend = legend;
+	}
+
+	return {
+		id: 'legend',
+
+		beforeInit: function(chart) {
+			var legendOpts = chart.options.legend;
+
+			if (legendOpts) {
+				createNewLegendAndAttach(chart, legendOpts);
+			}
+		},
+
+		beforeUpdate: function(chart) {
+			var legendOpts = chart.options.legend;
+			var legend = chart.legend;
+
+			if (legendOpts) {
+				legendOpts = helpers.configMerge(Chart.defaults.global.legend, legendOpts);
+
+				if (legend) {
+					layout.configure(chart, legend, legendOpts);
+					legend.options = legendOpts;
+				} else {
+					createNewLegendAndAttach(chart, legendOpts);
+				}
+			} else if (legend) {
+				layout.removeBox(chart, legend);
+				delete chart.legend;
+			}
+		},
+
+		afterEvent: function(chart, e) {
+			var legend = chart.legend;
+			if (legend) {
+				legend.handleEvent(e);
+			}
+		}
+	};
+};
+
+},{}],40:[function(require,module,exports){
+'use strict';
+
+module.exports = function(Chart) {
+
+	var helpers = Chart.helpers;
+	var layout = Chart.layoutService;
+	var noop = helpers.noop;
+
+	Chart.defaults.global.title = {
+		display: false,
+		position: 'top',
+		fullWidth: true,
+		weight: 2000,        // by default greater than legend (1000) to be above
+		fontStyle: 'bold',
+		padding: 10,
+
+		// actual title
+		text: ''
+	};
+
+	Chart.Title = Chart.Element.extend({
+		initialize: function(config) {
+			var me = this;
+			helpers.extend(me, config);
+
+			// Contains hit boxes for each dataset (in dataset order)
+			me.legendHitBoxes = [];
+		},
+
+		// These methods are ordered by lifecycle. Utilities then follow.
+
+		beforeUpdate: noop,
+		update: function(maxWidth, maxHeight, margins) {
+			var me = this;
+
+			// Update Lifecycle - Probably don't want to ever extend or overwrite this function ;)
+			me.beforeUpdate();
+
+			// Absorb the master measurements
+			me.maxWidth = maxWidth;
+			me.maxHeight = maxHeight;
+			me.margins = margins;
+
+			// Dimensions
+			me.beforeSetDimensions();
+			me.setDimensions();
+			me.afterSetDimensions();
+			// Labels
+			me.beforeBuildLabels();
+			me.buildLabels();
+			me.afterBuildLabels();
+
+			// Fit
+			me.beforeFit();
+			me.fit();
+			me.afterFit();
+			//
+			me.afterUpdate();
+
+			return me.minSize;
+
+		},
+		afterUpdate: noop,
+
+		//
+
+		beforeSetDimensions: noop,
+		setDimensions: function() {
+			var me = this;
+			// Set the unconstrained dimension before label rotation
+			if (me.isHorizontal()) {
+				// Reset position before calculating rotation
+				me.width = me.maxWidth;
+				me.left = 0;
+				me.right = me.width;
+			} else {
+				me.height = me.maxHeight;
+
+				// Reset position before calculating rotation
+				me.top = 0;
+				me.bottom = me.height;
+			}
+
+			// Reset padding
+			me.paddingLeft = 0;
+			me.paddingTop = 0;
+			me.paddingRight = 0;
+			me.paddingBottom = 0;
+
+			// Reset minSize
+			me.minSize = {
+				width: 0,
+				height: 0
+			};
+		},
+		afterSetDimensions: noop,
+
+		//
+
+		beforeBuildLabels: noop,
+		buildLabels: noop,
+		afterBuildLabels: noop,
+
+		//
+
+		beforeFit: noop,
+		fit: function() {
+			var me = this,
+				valueOrDefault = helpers.getValueOrDefault,
+				opts = me.options,
+				globalDefaults = Chart.defaults.global,
+				display = opts.display,
+				fontSize = valueOrDefault(opts.fontSize, globalDefaults.defaultFontSize),
+				minSize = me.minSize;
+
+			if (me.isHorizontal()) {
+				minSize.width = me.maxWidth; // fill all the width
+				minSize.height = display ? fontSize + (opts.padding * 2) : 0;
+			} else {
+				minSize.width = display ? fontSize + (opts.padding * 2) : 0;
+				minSize.height = me.maxHeight; // fill all the height
+			}
+
+			me.width = minSize.width;
+			me.height = minSize.height;
+
+		},
+		afterFit: noop,
+
+		// Shared Methods
+		isHorizontal: function() {
+			var pos = this.options.position;
+			return pos === 'top' || pos === 'bottom';
+		},
+
+		// Actually draw the title block on the canvas
+		draw: function() {
+			var me = this,
+				ctx = me.ctx,
+				valueOrDefault = helpers.getValueOrDefault,
+				opts = me.options,
+				globalDefaults = Chart.defaults.global;
+
+			if (opts.display) {
+				var fontSize = valueOrDefault(opts.fontSize, globalDefaults.defaultFontSize),
+					fontStyle = valueOrDefault(opts.fontStyle, globalDefaults.defaultFontStyle),
+					fontFamily = valueOrDefault(opts.fontFamily, globalDefaults.defaultFontFamily),
+					titleFont = helpers.fontString(fontSize, fontStyle, fontFamily),
+					rotation = 0,
+					titleX,
+					titleY,
+					top = me.top,
+					left = me.left,
+					bottom = me.bottom,
+					right = me.right,
+					maxWidth;
+
+				ctx.fillStyle = valueOrDefault(opts.fontColor, globalDefaults.defaultFontColor); // render in correct colour
+				ctx.font = titleFont;
+
+				// Horizontal
+				if (me.isHorizontal()) {
+					titleX = left + ((right - left) / 2); // midpoint of the width
+					titleY = top + ((bottom - top) / 2); // midpoint of the height
+					maxWidth = right - left;
+				} else {
+					titleX = opts.position === 'left' ? left + (fontSize / 2) : right - (fontSize / 2);
+					titleY = top + ((bottom - top) / 2);
+					maxWidth = bottom - top;
+					rotation = Math.PI * (opts.position === 'left' ? -0.5 : 0.5);
+				}
+
+				ctx.save();
+				ctx.translate(titleX, titleY);
+				ctx.rotate(rotation);
+				ctx.textAlign = 'center';
+				ctx.textBaseline = 'middle';
+				ctx.fillText(opts.text, 0, 0, maxWidth);
+				ctx.restore();
+			}
+		}
+	});
+
+	function createNewTitleBlockAndAttach(chart, titleOpts) {
+		var title = new Chart.Title({
+			ctx: chart.ctx,
+			options: titleOpts,
+			chart: chart
+		});
+
+		layout.configure(chart, title, titleOpts);
+		layout.addBox(chart, title);
+		chart.titleBlock = title;
+	}
+
+	return {
+		id: 'title',
+
+		beforeInit: function(chart) {
+			var titleOpts = chart.options.title;
+
+			if (titleOpts) {
+				createNewTitleBlockAndAttach(chart, titleOpts);
+			}
+		},
+
+		beforeUpdate: function(chart) {
+			var titleOpts = chart.options.title;
+			var titleBlock = chart.titleBlock;
+
+			if (titleOpts) {
+				titleOpts = helpers.configMerge(Chart.defaults.global.title, titleOpts);
+
+				if (titleBlock) {
+					layout.configure(chart, titleBlock, titleOpts);
+					titleBlock.options = titleOpts;
+				} else {
+					createNewTitleBlockAndAttach(chart, titleOpts);
+				}
+			} else if (titleBlock) {
+				Chart.layoutService.removeBox(chart, titleBlock);
+				delete chart.titleBlock;
+			}
+		}
+	};
+};
+
+},{}],41:[function(require,module,exports){
+'use strict';
+
+module.exports = function(Chart) {
+
+	var helpers = Chart.helpers;
+	// Default config for a category scale
+	var defaultConfig = {
+		position: 'bottom'
+	};
+
+	var DatasetScale = Chart.Scale.extend({
+		/**
+		* Internal function to get the correct labels. If data.xLabels or data.yLabels are defined, use those
+		* else fall back to data.labels
+		* @private
+		*/
+		getLabels: function() {
+			var data = this.chart.data;
+			return (this.isHorizontal() ? data.xLabels : data.yLabels) || data.labels;
+		},
+
+		determineDataLimits: function() {
+			var me = this;
+			var labels = me.getLabels();
+			me.minIndex = 0;
+			me.maxIndex = labels.length - 1;
+			var findIndex;
+
+			if (me.options.ticks.min !== undefined) {
+				// user specified min value
+				findIndex = helpers.indexOf(labels, me.options.ticks.min);
+				me.minIndex = findIndex !== -1 ? findIndex : me.minIndex;
+			}
+
+			if (me.options.ticks.max !== undefined) {
+				// user specified max value
+				findIndex = helpers.indexOf(labels, me.options.ticks.max);
+				me.maxIndex = findIndex !== -1 ? findIndex : me.maxIndex;
+			}
+
+			me.min = labels[me.minIndex];
+			me.max = labels[me.maxIndex];
+		},
+
+		buildTicks: function() {
+			var me = this;
+			var labels = me.getLabels();
+			// If we are viewing some subset of labels, slice the original array
+			me.ticks = (me.minIndex === 0 && me.maxIndex === labels.length - 1) ? labels : labels.slice(me.minIndex, me.maxIndex + 1);
+		},
+
+		getLabelForIndex: function(index, datasetIndex) {
+			var me = this;
+			var data = me.chart.data;
+			var isHorizontal = me.isHorizontal();
+
+			if (data.yLabels && !isHorizontal) {
+				return me.getRightValue(data.datasets[datasetIndex].data[index]);
+			}
+			return me.ticks[index - me.minIndex];
+		},
+
+		// Used to get data value locations.  Value can either be an index or a numerical value
+		getPixelForValue: function(value, index, datasetIndex, includeOffset) {
+			var me = this;
+			// 1 is added because we need the length but we have the indexes
+			var offsetAmt = Math.max((me.maxIndex + 1 - me.minIndex - ((me.options.gridLines.offsetGridLines) ? 0 : 1)), 1);
+
+			// If value is a data object, then index is the index in the data array,
+			// not the index of the scale. We need to change that.
+			var valueCategory;
+			if (value !== undefined && value !== null) {
+				valueCategory = me.isHorizontal() ? value.x : value.y;
+			}
+			if (valueCategory !== undefined || (value !== undefined && isNaN(index))) {
+				var labels = me.getLabels();
+				value = valueCategory || value;
+				var idx = labels.indexOf(value);
+				index = idx !== -1 ? idx : index;
+			}
+
+			if (me.isHorizontal()) {
+				var valueWidth = me.width / offsetAmt;
+				var widthOffset = (valueWidth * (index - me.minIndex));
+
+				if (me.options.gridLines.offsetGridLines && includeOffset || me.maxIndex === me.minIndex && includeOffset) {
+					widthOffset += (valueWidth / 2);
+				}
+
+				return me.left + Math.round(widthOffset);
+			}
+			var valueHeight = me.height / offsetAmt;
+			var heightOffset = (valueHeight * (index - me.minIndex));
+
+			if (me.options.gridLines.offsetGridLines && includeOffset) {
+				heightOffset += (valueHeight / 2);
+			}
+
+			return me.top + Math.round(heightOffset);
+		},
+		getPixelForTick: function(index, includeOffset) {
+			return this.getPixelForValue(this.ticks[index], index + this.minIndex, null, includeOffset);
+		},
+		getValueForPixel: function(pixel) {
+			var me = this;
+			var value;
+			var offsetAmt = Math.max((me.ticks.length - ((me.options.gridLines.offsetGridLines) ? 0 : 1)), 1);
+			var horz = me.isHorizontal();
+			var valueDimension = (horz ? me.width : me.height) / offsetAmt;
+
+			pixel -= horz ? me.left : me.top;
+
+			if (me.options.gridLines.offsetGridLines) {
+				pixel -= (valueDimension / 2);
+			}
+
+			if (pixel <= 0) {
+				value = 0;
+			} else {
+				value = Math.round(pixel / valueDimension);
+			}
+
+			return value;
+		},
+		getBasePixel: function() {
+			return this.bottom;
+		}
+	});
+
+	Chart.scaleService.registerScaleType('category', DatasetScale, defaultConfig);
+
+};
+
+},{}],42:[function(require,module,exports){
+'use strict';
+
+module.exports = function(Chart) {
+
+	var helpers = Chart.helpers;
+
+	var defaultConfig = {
+		position: 'left',
+		ticks: {
+			callback: Chart.Ticks.formatters.linear
+		}
+	};
+
+	var LinearScale = Chart.LinearScaleBase.extend({
+
+		determineDataLimits: function() {
+			var me = this;
+			var opts = me.options;
+			var chart = me.chart;
+			var data = chart.data;
+			var datasets = data.datasets;
+			var isHorizontal = me.isHorizontal();
+			var DEFAULT_MIN = 0;
+			var DEFAULT_MAX = 1;
+
+			function IDMatches(meta) {
+				return isHorizontal ? meta.xAxisID === me.id : meta.yAxisID === me.id;
+			}
+
+			// First Calculate the range
+			me.min = null;
+			me.max = null;
+
+			var hasStacks = opts.stacked;
+			if (hasStacks === undefined) {
+				helpers.each(datasets, function(dataset, datasetIndex) {
+					if (hasStacks) {
+						return;
+					}
+
+					var meta = chart.getDatasetMeta(datasetIndex);
+					if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta) &&
+						meta.stack !== undefined) {
+						hasStacks = true;
+					}
+				});
+			}
+
+			if (opts.stacked || hasStacks) {
+				var valuesPerStack = {};
+
+				helpers.each(datasets, function(dataset, datasetIndex) {
+					var meta = chart.getDatasetMeta(datasetIndex);
+					var key = [
+						meta.type,
+						// we have a separate stack for stack=undefined datasets when the opts.stacked is undefined
+						((opts.stacked === undefined && meta.stack === undefined) ? datasetIndex : ''),
+						meta.stack
+					].join('.');
+
+					if (valuesPerStack[key] === undefined) {
+						valuesPerStack[key] = {
+							positiveValues: [],
+							negativeValues: []
+						};
+					}
+
+					// Store these per type
+					var positiveValues = valuesPerStack[key].positiveValues;
+					var negativeValues = valuesPerStack[key].negativeValues;
+
+					if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {
+						helpers.each(dataset.data, function(rawValue, index) {
+							var value = +me.getRightValue(rawValue);
+							if (isNaN(value) || meta.data[index].hidden) {
+								return;
+							}
+
+							positiveValues[index] = positiveValues[index] || 0;
+							negativeValues[index] = negativeValues[index] || 0;
+
+							if (opts.relativePoints) {
+								positiveValues[index] = 100;
+							} else if (value < 0) {
+								negativeValues[index] += value;
+							} else {
+								positiveValues[index] += value;
+							}
+						});
+					}
+				});
+
+				helpers.each(valuesPerStack, function(valuesForType) {
+					var values = valuesForType.positiveValues.concat(valuesForType.negativeValues);
+					var minVal = helpers.min(values);
+					var maxVal = helpers.max(values);
+					me.min = me.min === null ? minVal : Math.min(me.min, minVal);
+					me.max = me.max === null ? maxVal : Math.max(me.max, maxVal);
+				});
+
+			} else {
+				helpers.each(datasets, function(dataset, datasetIndex) {
+					var meta = chart.getDatasetMeta(datasetIndex);
+					if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {
+						helpers.each(dataset.data, function(rawValue, index) {
+							var value = +me.getRightValue(rawValue);
+							if (isNaN(value) || meta.data[index].hidden) {
+								return;
+							}
+
+							if (me.min === null) {
+								me.min = value;
+							} else if (value < me.min) {
+								me.min = value;
+							}
+
+							if (me.max === null) {
+								me.max = value;
+							} else if (value > me.max) {
+								me.max = value;
+							}
+						});
+					}
+				});
+			}
+
+			me.min = isFinite(me.min) ? me.min : DEFAULT_MIN;
+			me.max = isFinite(me.max) ? me.max : DEFAULT_MAX;
+
+			// Common base implementation to handle ticks.min, ticks.max, ticks.beginAtZero
+			this.handleTickRangeOptions();
+		},
+		getTickLimit: function() {
+			var maxTicks;
+			var me = this;
+			var tickOpts = me.options.ticks;
+
+			if (me.isHorizontal()) {
+				maxTicks = Math.min(tickOpts.maxTicksLimit ? tickOpts.maxTicksLimit : 11, Math.ceil(me.width / 50));
+			} else {
+				// The factor of 2 used to scale the font size has been experimentally determined.
+				var tickFontSize = helpers.getValueOrDefault(tickOpts.fontSize, Chart.defaults.global.defaultFontSize);
+				maxTicks = Math.min(tickOpts.maxTicksLimit ? tickOpts.maxTicksLimit : 11, Math.ceil(me.height / (2 * tickFontSize)));
+			}
+
+			return maxTicks;
+		},
+		// Called after the ticks are built. We need
+		handleDirectionalChanges: function() {
+			if (!this.isHorizontal()) {
+				// We are in a vertical orientation. The top value is the highest. So reverse the array
+				this.ticks.reverse();
+			}
+		},
+		getLabelForIndex: function(index, datasetIndex) {
+			return +this.getRightValue(this.chart.data.datasets[datasetIndex].data[index]);
+		},
+		// Utils
+		getPixelForValue: function(value) {
+			// This must be called after fit has been run so that
+			// this.left, this.top, this.right, and this.bottom have been defined
+			var me = this;
+			var start = me.start;
+
+			var rightValue = +me.getRightValue(value);
+			var pixel;
+			var range = me.end - start;
+
+			if (me.isHorizontal()) {
+				pixel = me.left + (me.width / range * (rightValue - start));
+				return Math.round(pixel);
+			}
+
+			pixel = me.bottom - (me.height / range * (rightValue - start));
+			return Math.round(pixel);
+		},
+		getValueForPixel: function(pixel) {
+			var me = this;
+			var isHorizontal = me.isHorizontal();
+			var innerDimension = isHorizontal ? me.width : me.height;
+			var offset = (isHorizontal ? pixel - me.left : me.bottom - pixel) / innerDimension;
+			return me.start + ((me.end - me.start) * offset);
+		},
+		getPixelForTick: function(index) {
+			return this.getPixelForValue(this.ticksAsNumbers[index]);
+		}
+	});
+	Chart.scaleService.registerScaleType('linear', LinearScale, defaultConfig);
+
+};
+
+},{}],43:[function(require,module,exports){
+'use strict';
+
+module.exports = function(Chart) {
+
+	var helpers = Chart.helpers,
+		noop = helpers.noop;
+
+	Chart.LinearScaleBase = Chart.Scale.extend({
+		handleTickRangeOptions: function() {
+			var me = this;
+			var opts = me.options;
+			var tickOpts = opts.ticks;
+
+			// If we are forcing it to begin at 0, but 0 will already be rendered on the chart,
+			// do nothing since that would make the chart weird. If the user really wants a weird chart
+			// axis, they can manually override it
+			if (tickOpts.beginAtZero) {
+				var minSign = helpers.sign(me.min);
+				var maxSign = helpers.sign(me.max);
+
+				if (minSign < 0 && maxSign < 0) {
+					// move the top up to 0
+					me.max = 0;
+				} else if (minSign > 0 && maxSign > 0) {
+					// move the bottom down to 0
+					me.min = 0;
+				}
+			}
+
+			if (tickOpts.min !== undefined) {
+				me.min = tickOpts.min;
+			} else if (tickOpts.suggestedMin !== undefined) {
+				if (me.min === null) {
+					me.min = tickOpts.suggestedMin;
+				} else {
+					me.min = Math.min(me.min, tickOpts.suggestedMin);
+				}
+			}
+
+			if (tickOpts.max !== undefined) {
+				me.max = tickOpts.max;
+			} else if (tickOpts.suggestedMax !== undefined) {
+				if (me.max === null) {
+					me.max = tickOpts.suggestedMax;
+				} else {
+					me.max = Math.max(me.max, tickOpts.suggestedMax);
+				}
+			}
+
+			if (me.min === me.max) {
+				me.max++;
+
+				if (!tickOpts.beginAtZero) {
+					me.min--;
+				}
+			}
+		},
+		getTickLimit: noop,
+		handleDirectionalChanges: noop,
+
+		buildTicks: function() {
+			var me = this;
+			var opts = me.options;
+			var tickOpts = opts.ticks;
+
+			// Figure out what the max number of ticks we can support it is based on the size of
+			// the axis area. For now, we say that the minimum tick spacing in pixels must be 50
+			// We also limit the maximum number of ticks to 11 which gives a nice 10 squares on
+			// the graph. Make sure we always have at least 2 ticks
+			var maxTicks = me.getTickLimit();
+			maxTicks = Math.max(2, maxTicks);
+
+			var numericGeneratorOptions = {
+				maxTicks: maxTicks,
+				min: tickOpts.min,
+				max: tickOpts.max,
+				stepSize: helpers.getValueOrDefault(tickOpts.fixedStepSize, tickOpts.stepSize)
+			};
+			var ticks = me.ticks = Chart.Ticks.generators.linear(numericGeneratorOptions, me);
+
+			me.handleDirectionalChanges();
+
+			// At this point, we need to update our max and min given the tick values since we have expanded the
+			// range of the scale
+			me.max = helpers.max(ticks);
+			me.min = helpers.min(ticks);
+
+			if (tickOpts.reverse) {
+				ticks.reverse();
+
+				me.start = me.max;
+				me.end = me.min;
+			} else {
+				me.start = me.min;
+				me.end = me.max;
+			}
+		},
+		convertTicksToLabels: function() {
+			var me = this;
+			me.ticksAsNumbers = me.ticks.slice();
+			me.zeroLineIndex = me.ticks.indexOf(0);
+
+			Chart.Scale.prototype.convertTicksToLabels.call(me);
+		}
+	});
+};
+
+},{}],44:[function(require,module,exports){
+'use strict';
+
+module.exports = function(Chart) {
+
+	var helpers = Chart.helpers;
+
+	var defaultConfig = {
+		position: 'left',
+
+		// label settings
+		ticks: {
+			callback: Chart.Ticks.formatters.logarithmic
+		}
+	};
+
+	var LogarithmicScale = Chart.Scale.extend({
+		determineDataLimits: function() {
+			var me = this;
+			var opts = me.options;
+			var tickOpts = opts.ticks;
+			var chart = me.chart;
+			var data = chart.data;
+			var datasets = data.datasets;
+			var getValueOrDefault = helpers.getValueOrDefault;
+			var isHorizontal = me.isHorizontal();
+			function IDMatches(meta) {
+				return isHorizontal ? meta.xAxisID === me.id : meta.yAxisID === me.id;
+			}
+
+			// Calculate Range
+			me.min = null;
+			me.max = null;
+			me.minNotZero = null;
+
+			var hasStacks = opts.stacked;
+			if (hasStacks === undefined) {
+				helpers.each(datasets, function(dataset, datasetIndex) {
+					if (hasStacks) {
+						return;
+					}
+
+					var meta = chart.getDatasetMeta(datasetIndex);
+					if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta) &&
+						meta.stack !== undefined) {
+						hasStacks = true;
+					}
+				});
+			}
+
+			if (opts.stacked || hasStacks) {
+				var valuesPerStack = {};
+
+				helpers.each(datasets, function(dataset, datasetIndex) {
+					var meta = chart.getDatasetMeta(datasetIndex);
+					var key = [
+						meta.type,
+						// we have a separate stack for stack=undefined datasets when the opts.stacked is undefined
+						((opts.stacked === undefined && meta.stack === undefined) ? datasetIndex : ''),
+						meta.stack
+					].join('.');
+
+					if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {
+						if (valuesPerStack[key] === undefined) {
+							valuesPerStack[key] = [];
+						}
+
+						helpers.each(dataset.data, function(rawValue, index) {
+							var values = valuesPerStack[key];
+							var value = +me.getRightValue(rawValue);
+							if (isNaN(value) || meta.data[index].hidden) {
+								return;
+							}
+
+							values[index] = values[index] || 0;
+
+							if (opts.relativePoints) {
+								values[index] = 100;
+							} else {
+								// Don't need to split positive and negative since the log scale can't handle a 0 crossing
+								values[index] += value;
+							}
+						});
+					}
+				});
+
+				helpers.each(valuesPerStack, function(valuesForType) {
+					var minVal = helpers.min(valuesForType);
+					var maxVal = helpers.max(valuesForType);
+					me.min = me.min === null ? minVal : Math.min(me.min, minVal);
+					me.max = me.max === null ? maxVal : Math.max(me.max, maxVal);
+				});
+
+			} else {
+				helpers.each(datasets, function(dataset, datasetIndex) {
+					var meta = chart.getDatasetMeta(datasetIndex);
+					if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {
+						helpers.each(dataset.data, function(rawValue, index) {
+							var value = +me.getRightValue(rawValue);
+							if (isNaN(value) || meta.data[index].hidden) {
+								return;
+							}
+
+							if (me.min === null) {
+								me.min = value;
+							} else if (value < me.min) {
+								me.min = value;
+							}
+
+							if (me.max === null) {
+								me.max = value;
+							} else if (value > me.max) {
+								me.max = value;
+							}
+
+							if (value !== 0 && (me.minNotZero === null || value < me.minNotZero)) {
+								me.minNotZero = value;
+							}
+						});
+					}
+				});
+			}
+
+			me.min = getValueOrDefault(tickOpts.min, me.min);
+			me.max = getValueOrDefault(tickOpts.max, me.max);
+
+			if (me.min === me.max) {
+				if (me.min !== 0 && me.min !== null) {
+					me.min = Math.pow(10, Math.floor(helpers.log10(me.min)) - 1);
+					me.max = Math.pow(10, Math.floor(helpers.log10(me.max)) + 1);
+				} else {
+					me.min = 1;
+					me.max = 10;
+				}
+			}
+		},
+		buildTicks: function() {
+			var me = this;
+			var opts = me.options;
+			var tickOpts = opts.ticks;
+
+			var generationOptions = {
+				min: tickOpts.min,
+				max: tickOpts.max
+			};
+			var ticks = me.ticks = Chart.Ticks.generators.logarithmic(generationOptions, me);
+
+			if (!me.isHorizontal()) {
+				// We are in a vertical orientation. The top value is the highest. So reverse the array
+				ticks.reverse();
+			}
+
+			// At this point, we need to update our max and min given the tick values since we have expanded the
+			// range of the scale
+			me.max = helpers.max(ticks);
+			me.min = helpers.min(ticks);
+
+			if (tickOpts.reverse) {
+				ticks.reverse();
+
+				me.start = me.max;
+				me.end = me.min;
+			} else {
+				me.start = me.min;
+				me.end = me.max;
+			}
+		},
+		convertTicksToLabels: function() {
+			this.tickValues = this.ticks.slice();
+
+			Chart.Scale.prototype.convertTicksToLabels.call(this);
+		},
+		// Get the correct tooltip label
+		getLabelForIndex: function(index, datasetIndex) {
+			return +this.getRightValue(this.chart.data.datasets[datasetIndex].data[index]);
+		},
+		getPixelForTick: function(index) {
+			return this.getPixelForValue(this.tickValues[index]);
+		},
+		getPixelForValue: function(value) {
+			var me = this;
+			var innerDimension;
+			var pixel;
+
+			var start = me.start;
+			var newVal = +me.getRightValue(value);
+			var range;
+			var opts = me.options;
+			var tickOpts = opts.ticks;
+
+			if (me.isHorizontal()) {
+				range = helpers.log10(me.end) - helpers.log10(start); // todo: if start === 0
+				if (newVal === 0) {
+					pixel = me.left;
+				} else {
+					innerDimension = me.width;
+					pixel = me.left + (innerDimension / range * (helpers.log10(newVal) - helpers.log10(start)));
+				}
+			} else {
+				// Bottom - top since pixels increase downward on a screen
+				innerDimension = me.height;
+				if (start === 0 && !tickOpts.reverse) {
+					range = helpers.log10(me.end) - helpers.log10(me.minNotZero);
+					if (newVal === start) {
+						pixel = me.bottom;
+					} else if (newVal === me.minNotZero) {
+						pixel = me.bottom - innerDimension * 0.02;
+					} else {
+						pixel = me.bottom - innerDimension * 0.02 - (innerDimension * 0.98/ range * (helpers.log10(newVal)-helpers.log10(me.minNotZero)));
+					}
+				} else if (me.end === 0 && tickOpts.reverse) {
+					range = helpers.log10(me.start) - helpers.log10(me.minNotZero);
+					if (newVal === me.end) {
+						pixel = me.top;
+					} else if (newVal === me.minNotZero) {
+						pixel = me.top + innerDimension * 0.02;
+					} else {
+						pixel = me.top + innerDimension * 0.02 + (innerDimension * 0.98/ range * (helpers.log10(newVal)-helpers.log10(me.minNotZero)));
+					}
+				} else if (newVal === 0) {
+					pixel = tickOpts.reverse ? me.top : me.bottom;
+				} else {
+					range = helpers.log10(me.end) - helpers.log10(start);
+					innerDimension = me.height;
+					pixel = me.bottom - (innerDimension / range * (helpers.log10(newVal) - helpers.log10(start)));
+				}
+			}
+			return pixel;
+		},
+		getValueForPixel: function(pixel) {
+			var me = this;
+			var range = helpers.log10(me.end) - helpers.log10(me.start);
+			var value, innerDimension;
+
+			if (me.isHorizontal()) {
+				innerDimension = me.width;
+				value = me.start * Math.pow(10, (pixel - me.left) * range / innerDimension);
+			} else {  // todo: if start === 0
+				innerDimension = me.height;
+				value = Math.pow(10, (me.bottom - pixel) * range / innerDimension) / me.start;
+			}
+			return value;
+		}
+	});
+	Chart.scaleService.registerScaleType('logarithmic', LogarithmicScale, defaultConfig);
+
+};
+
+},{}],45:[function(require,module,exports){
+'use strict';
+
+module.exports = function(Chart) {
+
+	var helpers = Chart.helpers;
+	var globalDefaults = Chart.defaults.global;
+
+	var defaultConfig = {
+		display: true,
+
+		// Boolean - Whether to animate scaling the chart from the centre
+		animate: true,
+		position: 'chartArea',
+
+		angleLines: {
+			display: true,
+			color: 'rgba(0, 0, 0, 0.1)',
+			lineWidth: 1
+		},
+
+		gridLines: {
+			circular: false
+		},
+
+		// label settings
+		ticks: {
+			// Boolean - Show a backdrop to the scale label
+			showLabelBackdrop: true,
+
+			// String - The colour of the label backdrop
+			backdropColor: 'rgba(255,255,255,0.75)',
+
+			// Number - The backdrop padding above & below the label in pixels
+			backdropPaddingY: 2,
+
+			// Number - The backdrop padding to the side of the label in pixels
+			backdropPaddingX: 2,
+
+			callback: Chart.Ticks.formatters.linear
+		},
+
+		pointLabels: {
+			// Boolean - if true, show point labels
+			display: true,
+
+			// Number - Point label font size in pixels
+			fontSize: 10,
+
+			// Function - Used to convert point labels
+			callback: function(label) {
+				return label;
+			}
+		}
+	};
+
+	function getValueCount(scale) {
+		var opts = scale.options;
+		return opts.angleLines.display || opts.pointLabels.display ? scale.chart.data.labels.length : 0;
+	}
+
+	function getPointLabelFontOptions(scale) {
+		var pointLabelOptions = scale.options.pointLabels;
+		var fontSize = helpers.getValueOrDefault(pointLabelOptions.fontSize, globalDefaults.defaultFontSize);
+		var fontStyle = helpers.getValueOrDefault(pointLabelOptions.fontStyle, globalDefaults.defaultFontStyle);
+		var fontFamily = helpers.getValueOrDefault(pointLabelOptions.fontFamily, globalDefaults.defaultFontFamily);
+		var font = helpers.fontString(fontSize, fontStyle, fontFamily);
+
+		return {
+			size: fontSize,
+			style: fontStyle,
+			family: fontFamily,
+			font: font
+		};
+	}
+
+	function measureLabelSize(ctx, fontSize, label) {
+		if (helpers.isArray(label)) {
+			return {
+				w: helpers.longestText(ctx, ctx.font, label),
+				h: (label.length * fontSize) + ((label.length - 1) * 1.5 * fontSize)
+			};
+		}
+
+		return {
+			w: ctx.measureText(label).width,
+			h: fontSize
+		};
+	}
+
+	function determineLimits(angle, pos, size, min, max) {
+		if (angle === min || angle === max) {
+			return {
+				start: pos - (size / 2),
+				end: pos + (size / 2)
+			};
+		} else if (angle < min || angle > max) {
+			return {
+				start: pos - size - 5,
+				end: pos
+			};
+		}
+
+		return {
+			start: pos,
+			end: pos + size + 5
+		};
+	}
+
+	/**
+	 * Helper function to fit a radial linear scale with point labels
+	 */
+	function fitWithPointLabels(scale) {
+		/*
+		 * Right, this is really confusing and there is a lot of maths going on here
+		 * The gist of the problem is here: https://gist.github.com/nnnick/696cc9c55f4b0beb8fe9
+		 *
+		 * Reaction: https://dl.dropboxusercontent.com/u/34601363/toomuchscience.gif
+		 *
+		 * Solution:
+		 *
+		 * We assume the radius of the polygon is half the size of the canvas at first
+		 * at each index we check if the text overlaps.
+		 *
+		 * Where it does, we store that angle and that index.
+		 *
+		 * After finding the largest index and angle we calculate how much we need to remove
+		 * from the shape radius to move the point inwards by that x.
+		 *
+		 * We average the left and right distances to get the maximum shape radius that can fit in the box
+		 * along with labels.
+		 *
+		 * Once we have that, we can find the centre point for the chart, by taking the x text protrusion
+		 * on each side, removing that from the size, halving it and adding the left x protrusion width.
+		 *
+		 * This will mean we have a shape fitted to the canvas, as large as it can be with the labels
+		 * and position it in the most space efficient manner
+		 *
+		 * https://dl.dropboxusercontent.com/u/34601363/yeahscience.gif
+		 */
+
+		var plFont = getPointLabelFontOptions(scale);
+
+		// Get maximum radius of the polygon. Either half the height (minus the text width) or half the width.
+		// Use this to calculate the offset + change. - Make sure L/R protrusion is at least 0 to stop issues with centre points
+		var largestPossibleRadius = Math.min(scale.height / 2, scale.width / 2);
+		var furthestLimits = {
+			r: scale.width,
+			l: 0,
+			t: scale.height,
+			b: 0
+		};
+		var furthestAngles = {};
+		var i;
+		var textSize;
+		var pointPosition;
+
+		scale.ctx.font = plFont.font;
+		scale._pointLabelSizes = [];
+
+		var valueCount = getValueCount(scale);
+		for (i = 0; i < valueCount; i++) {
+			pointPosition = scale.getPointPosition(i, largestPossibleRadius);
+			textSize = measureLabelSize(scale.ctx, plFont.size, scale.pointLabels[i] || '');
+			scale._pointLabelSizes[i] = textSize;
+
+			// Add quarter circle to make degree 0 mean top of circle
+			var angleRadians = scale.getIndexAngle(i);
+			var angle = helpers.toDegrees(angleRadians) % 360;
+			var hLimits = determineLimits(angle, pointPosition.x, textSize.w, 0, 180);
+			var vLimits = determineLimits(angle, pointPosition.y, textSize.h, 90, 270);
+
+			if (hLimits.start < furthestLimits.l) {
+				furthestLimits.l = hLimits.start;
+				furthestAngles.l = angleRadians;
+			}
+
+			if (hLimits.end > furthestLimits.r) {
+				furthestLimits.r = hLimits.end;
+				furthestAngles.r = angleRadians;
+			}
+
+			if (vLimits.start < furthestLimits.t) {
+				furthestLimits.t = vLimits.start;
+				furthestAngles.t = angleRadians;
+			}
+
+			if (vLimits.end > furthestLimits.b) {
+				furthestLimits.b = vLimits.end;
+				furthestAngles.b = angleRadians;
+			}
+		}
+
+		scale.setReductions(largestPossibleRadius, furthestLimits, furthestAngles);
+	}
+
+	/**
+	 * Helper function to fit a radial linear scale with no point labels
+	 */
+	function fit(scale) {
+		var largestPossibleRadius = Math.min(scale.height / 2, scale.width / 2);
+		scale.drawingArea = Math.round(largestPossibleRadius);
+		scale.setCenterPoint(0, 0, 0, 0);
+	}
+
+	function getTextAlignForAngle(angle) {
+		if (angle === 0 || angle === 180) {
+			return 'center';
+		} else if (angle < 180) {
+			return 'left';
+		}
+
+		return 'right';
+	}
+
+	function fillText(ctx, text, position, fontSize) {
+		if (helpers.isArray(text)) {
+			var y = position.y;
+			var spacing = 1.5 * fontSize;
+
+			for (var i = 0; i < text.length; ++i) {
+				ctx.fillText(text[i], position.x, y);
+				y+= spacing;
+			}
+		} else {
+			ctx.fillText(text, position.x, position.y);
+		}
+	}
+
+	function adjustPointPositionForLabelHeight(angle, textSize, position) {
+		if (angle === 90 || angle === 270) {
+			position.y -= (textSize.h / 2);
+		} else if (angle > 270 || angle < 90) {
+			position.y -= textSize.h;
+		}
+	}
+
+	function drawPointLabels(scale) {
+		var ctx = scale.ctx;
+		var getValueOrDefault = helpers.getValueOrDefault;
+		var opts = scale.options;
+		var angleLineOpts = opts.angleLines;
+		var pointLabelOpts = opts.pointLabels;
+
+		ctx.lineWidth = angleLineOpts.lineWidth;
+		ctx.strokeStyle = angleLineOpts.color;
+
+		var outerDistance = scale.getDistanceFromCenterForValue(opts.reverse ? scale.min : scale.max);
+
+		// Point Label Font
+		var plFont = getPointLabelFontOptions(scale);
+
+		ctx.textBaseline = 'top';
+
+		for (var i = getValueCount(scale) - 1; i >= 0; i--) {
+			if (angleLineOpts.display) {
+				var outerPosition = scale.getPointPosition(i, outerDistance);
+				ctx.beginPath();
+				ctx.moveTo(scale.xCenter, scale.yCenter);
+				ctx.lineTo(outerPosition.x, outerPosition.y);
+				ctx.stroke();
+				ctx.closePath();
+			}
+
+			if (pointLabelOpts.display) {
+				// Extra 3px out for some label spacing
+				var pointLabelPosition = scale.getPointPosition(i, outerDistance + 5);
+
+				// Keep this in loop since we may support array properties here
+				var pointLabelFontColor = getValueOrDefault(pointLabelOpts.fontColor, globalDefaults.defaultFontColor);
+				ctx.font = plFont.font;
+				ctx.fillStyle = pointLabelFontColor;
+
+				var angleRadians = scale.getIndexAngle(i);
+				var angle = helpers.toDegrees(angleRadians);
+				ctx.textAlign = getTextAlignForAngle(angle);
+				adjustPointPositionForLabelHeight(angle, scale._pointLabelSizes[i], pointLabelPosition);
+				fillText(ctx, scale.pointLabels[i] || '', pointLabelPosition, plFont.size);
+			}
+		}
+	}
+
+	function drawRadiusLine(scale, gridLineOpts, radius, index) {
+		var ctx = scale.ctx;
+		ctx.strokeStyle = helpers.getValueAtIndexOrDefault(gridLineOpts.color, index - 1);
+		ctx.lineWidth = helpers.getValueAtIndexOrDefault(gridLineOpts.lineWidth, index - 1);
+
+		if (scale.options.gridLines.circular) {
+			// Draw circular arcs between the points
+			ctx.beginPath();
+			ctx.arc(scale.xCenter, scale.yCenter, radius, 0, Math.PI * 2);
+			ctx.closePath();
+			ctx.stroke();
+		} else {
+			// Draw straight lines connecting each index
+			var valueCount = getValueCount(scale);
+
+			if (valueCount === 0) {
+				return;
+			}
+
+			ctx.beginPath();
+			var pointPosition = scale.getPointPosition(0, radius);
+			ctx.moveTo(pointPosition.x, pointPosition.y);
+
+			for (var i = 1; i < valueCount; i++) {
+				pointPosition = scale.getPointPosition(i, radius);
+				ctx.lineTo(pointPosition.x, pointPosition.y);
+			}
+
+			ctx.closePath();
+			ctx.stroke();
+		}
+	}
+
+	function numberOrZero(param) {
+		return helpers.isNumber(param) ? param : 0;
+	}
+
+	var LinearRadialScale = Chart.LinearScaleBase.extend({
+		setDimensions: function() {
+			var me = this;
+			var opts = me.options;
+			var tickOpts = opts.ticks;
+			// Set the unconstrained dimension before label rotation
+			me.width = me.maxWidth;
+			me.height = me.maxHeight;
+			me.xCenter = Math.round(me.width / 2);
+			me.yCenter = Math.round(me.height / 2);
+
+			var minSize = helpers.min([me.height, me.width]);
+			var tickFontSize = helpers.getValueOrDefault(tickOpts.fontSize, globalDefaults.defaultFontSize);
+			me.drawingArea = opts.display ? (minSize / 2) - (tickFontSize / 2 + tickOpts.backdropPaddingY) : (minSize / 2);
+		},
+		determineDataLimits: function() {
+			var me = this;
+			var chart = me.chart;
+			var min = Number.POSITIVE_INFINITY;
+			var max = Number.NEGATIVE_INFINITY;
+
+			helpers.each(chart.data.datasets, function(dataset, datasetIndex) {
+				if (chart.isDatasetVisible(datasetIndex)) {
+					var meta = chart.getDatasetMeta(datasetIndex);
+
+					helpers.each(dataset.data, function(rawValue, index) {
+						var value = +me.getRightValue(rawValue);
+						if (isNaN(value) || meta.data[index].hidden) {
+							return;
+						}
+
+						min = Math.min(value, min);
+						max = Math.max(value, max);
+					});
+				}
+			});
+
+			me.min = (min === Number.POSITIVE_INFINITY ? 0 : min);
+			me.max = (max === Number.NEGATIVE_INFINITY ? 0 : max);
+
+			// Common base implementation to handle ticks.min, ticks.max, ticks.beginAtZero
+			me.handleTickRangeOptions();
+		},
+		getTickLimit: function() {
+			var tickOpts = this.options.ticks;
+			var tickFontSize = helpers.getValueOrDefault(tickOpts.fontSize, globalDefaults.defaultFontSize);
+			return Math.min(tickOpts.maxTicksLimit ? tickOpts.maxTicksLimit : 11, Math.ceil(this.drawingArea / (1.5 * tickFontSize)));
+		},
+		convertTicksToLabels: function() {
+			var me = this;
+			Chart.LinearScaleBase.prototype.convertTicksToLabels.call(me);
+
+			// Point labels
+			me.pointLabels = me.chart.data.labels.map(me.options.pointLabels.callback, me);
+		},
+		getLabelForIndex: function(index, datasetIndex) {
+			return +this.getRightValue(this.chart.data.datasets[datasetIndex].data[index]);
+		},
+		fit: function() {
+			if (this.options.pointLabels.display) {
+				fitWithPointLabels(this);
+			} else {
+				fit(this);
+			}
+		},
+		/**
+		 * Set radius reductions and determine new radius and center point
+		 * @private
+		 */
+		setReductions: function(largestPossibleRadius, furthestLimits, furthestAngles) {
+			var me = this;
+			var radiusReductionLeft = furthestLimits.l / Math.sin(furthestAngles.l);
+			var radiusReductionRight = Math.max(furthestLimits.r - me.width, 0) / Math.sin(furthestAngles.r);
+			var radiusReductionTop = -furthestLimits.t / Math.cos(furthestAngles.t);
+			var radiusReductionBottom = -Math.max(furthestLimits.b - me.height, 0) / Math.cos(furthestAngles.b);
+
+			radiusReductionLeft = numberOrZero(radiusReductionLeft);
+			radiusReductionRight = numberOrZero(radiusReductionRight);
+			radiusReductionTop = numberOrZero(radiusReductionTop);
+			radiusReductionBottom = numberOrZero(radiusReductionBottom);
+
+			me.drawingArea = Math.min(
+				Math.round(largestPossibleRadius - (radiusReductionLeft + radiusReductionRight) / 2),
+				Math.round(largestPossibleRadius - (radiusReductionTop + radiusReductionBottom) / 2));
+			me.setCenterPoint(radiusReductionLeft, radiusReductionRight, radiusReductionTop, radiusReductionBottom);
+		},
+		setCenterPoint: function(leftMovement, rightMovement, topMovement, bottomMovement) {
+			var me = this;
+			var maxRight = me.width - rightMovement - me.drawingArea,
+				maxLeft = leftMovement + me.drawingArea,
+				maxTop = topMovement + me.drawingArea,
+				maxBottom = me.height - bottomMovement - me.drawingArea;
+
+			me.xCenter = Math.round(((maxLeft + maxRight) / 2) + me.left);
+			me.yCenter = Math.round(((maxTop + maxBottom) / 2) + me.top);
+		},
+
+		getIndexAngle: function(index) {
+			var angleMultiplier = (Math.PI * 2) / getValueCount(this);
+			var startAngle = this.chart.options && this.chart.options.startAngle ?
+				this.chart.options.startAngle :
+				0;
+
+			var startAngleRadians = startAngle * Math.PI * 2 / 360;
+
+			// Start from the top instead of right, so remove a quarter of the circle
+			return index * angleMultiplier + startAngleRadians;
+		},
+		getDistanceFromCenterForValue: function(value) {
+			var me = this;
+
+			if (value === null) {
+				return 0; // null always in center
+			}
+
+			// Take into account half font size + the yPadding of the top value
+			var scalingFactor = me.drawingArea / (me.max - me.min);
+			if (me.options.reverse) {
+				return (me.max - value) * scalingFactor;
+			}
+			return (value - me.min) * scalingFactor;
+		},
+		getPointPosition: function(index, distanceFromCenter) {
+			var me = this;
+			var thisAngle = me.getIndexAngle(index) - (Math.PI / 2);
+			return {
+				x: Math.round(Math.cos(thisAngle) * distanceFromCenter) + me.xCenter,
+				y: Math.round(Math.sin(thisAngle) * distanceFromCenter) + me.yCenter
+			};
+		},
+		getPointPositionForValue: function(index, value) {
+			return this.getPointPosition(index, this.getDistanceFromCenterForValue(value));
+		},
+
+		getBasePosition: function() {
+			var me = this;
+			var min = me.min;
+			var max = me.max;
+
+			return me.getPointPositionForValue(0,
+				me.beginAtZero? 0:
+				min < 0 && max < 0? max :
+				min > 0 && max > 0? min :
+				0);
+		},
+
+		draw: function() {
+			var me = this;
+			var opts = me.options;
+			var gridLineOpts = opts.gridLines;
+			var tickOpts = opts.ticks;
+			var getValueOrDefault = helpers.getValueOrDefault;
+
+			if (opts.display) {
+				var ctx = me.ctx;
+
+				// Tick Font
+				var tickFontSize = getValueOrDefault(tickOpts.fontSize, globalDefaults.defaultFontSize);
+				var tickFontStyle = getValueOrDefault(tickOpts.fontStyle, globalDefaults.defaultFontStyle);
+				var tickFontFamily = getValueOrDefault(tickOpts.fontFamily, globalDefaults.defaultFontFamily);
+				var tickLabelFont = helpers.fontString(tickFontSize, tickFontStyle, tickFontFamily);
+
+				helpers.each(me.ticks, function(label, index) {
+					// Don't draw a centre value (if it is minimum)
+					if (index > 0 || opts.reverse) {
+						var yCenterOffset = me.getDistanceFromCenterForValue(me.ticksAsNumbers[index]);
+						var yHeight = me.yCenter - yCenterOffset;
+
+						// Draw circular lines around the scale
+						if (gridLineOpts.display && index !== 0) {
+							drawRadiusLine(me, gridLineOpts, yCenterOffset, index);
+						}
+
+						if (tickOpts.display) {
+							var tickFontColor = getValueOrDefault(tickOpts.fontColor, globalDefaults.defaultFontColor);
+							ctx.font = tickLabelFont;
+
+							if (tickOpts.showLabelBackdrop) {
+								var labelWidth = ctx.measureText(label).width;
+								ctx.fillStyle = tickOpts.backdropColor;
+								ctx.fillRect(
+									me.xCenter - labelWidth / 2 - tickOpts.backdropPaddingX,
+									yHeight - tickFontSize / 2 - tickOpts.backdropPaddingY,
+									labelWidth + tickOpts.backdropPaddingX * 2,
+									tickFontSize + tickOpts.backdropPaddingY * 2
+								);
+							}
+
+							ctx.textAlign = 'center';
+							ctx.textBaseline = 'middle';
+							ctx.fillStyle = tickFontColor;
+							ctx.fillText(label, me.xCenter, yHeight);
+						}
+					}
+				});
+
+				if (opts.angleLines.display || opts.pointLabels.display) {
+					drawPointLabels(me);
+				}
+			}
+		}
+	});
+	Chart.scaleService.registerScaleType('radialLinear', LinearRadialScale, defaultConfig);
+
+};
+
+},{}],46:[function(require,module,exports){
+/* global window: false */
+'use strict';
+
+var moment = require('moment');
+moment = typeof(moment) === 'function' ? moment : window.moment;
+
+module.exports = function(Chart) {
+
+	var helpers = Chart.helpers;
+	var interval = {
+		millisecond: {
+			size: 1,
+			steps: [1, 2, 5, 10, 20, 50, 100, 250, 500]
+		},
+		second: {
+			size: 1000,
+			steps: [1, 2, 5, 10, 30]
+		},
+		minute: {
+			size: 60000,
+			steps: [1, 2, 5, 10, 30]
+		},
+		hour: {
+			size: 3600000,
+			steps: [1, 2, 3, 6, 12]
+		},
+		day: {
+			size: 86400000,
+			steps: [1, 2, 5]
+		},
+		week: {
+			size: 604800000,
+			maxStep: 4
+		},
+		month: {
+			size: 2.628e9,
+			maxStep: 3
+		},
+		quarter: {
+			size: 7.884e9,
+			maxStep: 4
+		},
+		year: {
+			size: 3.154e10,
+			maxStep: false
+		}
+	};
+
+	var defaultConfig = {
+		position: 'bottom',
+
+		time: {
+			parser: false, // false == a pattern string from http://momentjs.com/docs/#/parsing/string-format/ or a custom callback that converts its argument to a moment
+			format: false, // DEPRECATED false == date objects, moment object, callback or a pattern string from http://momentjs.com/docs/#/parsing/string-format/
+			unit: false, // false == automatic or override with week, month, year, etc.
+			round: false, // none, or override with week, month, year, etc.
+			displayFormat: false, // DEPRECATED
+			isoWeekday: false, // override week start day - see http://momentjs.com/docs/#/get-set/iso-weekday/
+			minUnit: 'millisecond',
+
+			// defaults to unit's corresponding unitFormat below or override using pattern string from http://momentjs.com/docs/#/displaying/format/
+			displayFormats: {
+				millisecond: 'h:mm:ss.SSS a', // 11:20:01.123 AM,
+				second: 'h:mm:ss a', // 11:20:01 AM
+				minute: 'h:mm:ss a', // 11:20:01 AM
+				hour: 'MMM D, hA', // Sept 4, 5PM
+				day: 'll', // Sep 4 2015
+				week: 'll', // Week 46, or maybe "[W]WW - YYYY" ?
+				month: 'MMM YYYY', // Sept 2015
+				quarter: '[Q]Q - YYYY', // Q3
+				year: 'YYYY' // 2015
+			},
+		},
+		ticks: {
+			autoSkip: false
+		}
+	};
+
+	/**
+	 * Helper function to parse time to a moment object
+	 * @param axis {TimeAxis} the time axis
+	 * @param label {Date|string|number|Moment} The thing to parse
+	 * @return {Moment} parsed time
+	 */
+	function parseTime(axis, label) {
+		var timeOpts = axis.options.time;
+		if (typeof timeOpts.parser === 'string') {
+			return moment(label, timeOpts.parser);
+		}
+		if (typeof timeOpts.parser === 'function') {
+			return timeOpts.parser(label);
+		}
+		if (typeof label.getMonth === 'function' || typeof label === 'number') {
+			// Date objects
+			return moment(label);
+		}
+		if (label.isValid && label.isValid()) {
+			// Moment support
+			return label;
+		}
+		var format = timeOpts.format;
+		if (typeof format !== 'string' && format.call) {
+			// Custom parsing (return an instance of moment)
+			console.warn('options.time.format is deprecated and replaced by options.time.parser.');
+			return format(label);
+		}
+		// Moment format parsing
+		return moment(label, format);
+	}
+
+	/**
+	 * Figure out which is the best unit for the scale
+	 * @param minUnit {String} minimum unit to use
+	 * @param min {Number} scale minimum
+	 * @param max {Number} scale maximum
+	 * @return {String} the unit to use
+	 */
+	function determineUnit(minUnit, min, max, maxTicks) {
+		var units = Object.keys(interval);
+		var unit;
+		var numUnits = units.length;
+
+		for (var i = units.indexOf(minUnit); i < numUnits; i++) {
+			unit = units[i];
+			var unitDetails = interval[unit];
+			var steps = (unitDetails.steps && unitDetails.steps[unitDetails.steps.length - 1]) || unitDetails.maxStep;
+			if (steps === undefined || Math.ceil((max - min) / (steps * unitDetails.size)) <= maxTicks) {
+				break;
+			}
+		}
+
+		return unit;
+	}
+
+	/**
+	 * Determines how we scale the unit
+	 * @param min {Number} the scale minimum
+	 * @param max {Number} the scale maximum
+	 * @param unit {String} the unit determined by the {@see determineUnit} method
+	 * @return {Number} the axis step size as a multiple of unit
+	 */
+	function determineStepSize(min, max, unit, maxTicks) {
+		// Using our unit, figoure out what we need to scale as
+		var unitDefinition = interval[unit];
+		var unitSizeInMilliSeconds = unitDefinition.size;
+		var sizeInUnits = Math.ceil((max - min) / unitSizeInMilliSeconds);
+		var multiplier = 1;
+		var range = max - min;
+
+		if (unitDefinition.steps) {
+			// Have an array of steps
+			var numSteps = unitDefinition.steps.length;
+			for (var i = 0; i < numSteps && sizeInUnits > maxTicks; i++) {
+				multiplier = unitDefinition.steps[i];
+				sizeInUnits = Math.ceil(range / (unitSizeInMilliSeconds * multiplier));
+			}
+		} else {
+			while (sizeInUnits > maxTicks && maxTicks > 0) {
+				++multiplier;
+				sizeInUnits = Math.ceil(range / (unitSizeInMilliSeconds * multiplier));
+			}
+		}
+
+		return multiplier;
+	}
+
+	/**
+	 * Helper for generating axis labels.
+	 * @param options {ITimeGeneratorOptions} the options for generation
+	 * @param dataRange {IRange} the data range
+	 * @param niceRange {IRange} the pretty range to display
+	 * @return {Number[]} ticks
+	 */
+	function generateTicks(options, dataRange, niceRange) {
+		var ticks = [];
+		if (options.maxTicks) {
+			var stepSize = options.stepSize;
+			ticks.push(options.min !== undefined ? options.min : niceRange.min);
+			var cur = moment(niceRange.min);
+			while (cur.add(stepSize, options.unit).valueOf() < niceRange.max) {
+				ticks.push(cur.valueOf());
+			}
+			var realMax = options.max || niceRange.max;
+			if (ticks[ticks.length - 1] !== realMax) {
+				ticks.push(realMax);
+			}
+		}
+		return ticks;
+	}
+
+	/**
+	 * @function Chart.Ticks.generators.time
+	 * @param options {ITimeGeneratorOptions} the options for generation
+	 * @param dataRange {IRange} the data range
+	 * @return {Number[]} ticks
+	 */
+	Chart.Ticks.generators.time = function(options, dataRange) {
+		var niceMin;
+		var niceMax;
+		var isoWeekday = options.isoWeekday;
+		if (options.unit === 'week' && isoWeekday !== false) {
+			niceMin = moment(dataRange.min).startOf('isoWeek').isoWeekday(isoWeekday).valueOf();
+			niceMax = moment(dataRange.max).startOf('isoWeek').isoWeekday(isoWeekday);
+			if (dataRange.max - niceMax > 0) {
+				niceMax.add(1, 'week');
+			}
+			niceMax = niceMax.valueOf();
+		} else {
+			niceMin = moment(dataRange.min).startOf(options.unit).valueOf();
+			niceMax = moment(dataRange.max).startOf(options.unit);
+			if (dataRange.max - niceMax > 0) {
+				niceMax.add(1, options.unit);
+			}
+			niceMax = niceMax.valueOf();
+		}
+		return generateTicks(options, dataRange, {
+			min: niceMin,
+			max: niceMax
+		});
+	};
+
+	var TimeScale = Chart.Scale.extend({
+		initialize: function() {
+			if (!moment) {
+				throw new Error('Chart.js - Moment.js could not be found! You must include it before Chart.js to use the time scale. Download at https://momentjs.com');
+			}
+
+			Chart.Scale.prototype.initialize.call(this);
+		},
+		determineDataLimits: function() {
+			var me = this;
+			var timeOpts = me.options.time;
+
+			// We store the data range as unix millisecond timestamps so dataMin and dataMax will always be integers.
+			var dataMin = Number.MAX_SAFE_INTEGER;
+			var dataMax = Number.MIN_SAFE_INTEGER;
+
+			var chartData = me.chart.data;
+			var parsedData = {
+				labels: [],
+				datasets: []
+			};
+
+			var timestamp;
+
+			helpers.each(chartData.labels, function(label, labelIndex) {
+				var labelMoment = parseTime(me, label);
+
+				if (labelMoment.isValid()) {
+					// We need to round the time
+					if (timeOpts.round) {
+						labelMoment.startOf(timeOpts.round);
+					}
+
+					timestamp = labelMoment.valueOf();
+					dataMin = Math.min(timestamp, dataMin);
+					dataMax = Math.max(timestamp, dataMax);
+
+					// Store this value for later
+					parsedData.labels[labelIndex] = timestamp;
+				}
+			});
+
+			helpers.each(chartData.datasets, function(dataset, datasetIndex) {
+				var timestamps = [];
+
+				if (typeof dataset.data[0] === 'object' && dataset.data[0] !== null && me.chart.isDatasetVisible(datasetIndex)) {
+					// We have potential point data, so we need to parse this
+					helpers.each(dataset.data, function(value, dataIndex) {
+						var dataMoment = parseTime(me, me.getRightValue(value));
+
+						if (dataMoment.isValid()) {
+							if (timeOpts.round) {
+								dataMoment.startOf(timeOpts.round);
+							}
+
+							timestamp = dataMoment.valueOf();
+							dataMin = Math.min(timestamp, dataMin);
+							dataMax = Math.max(timestamp, dataMax);
+							timestamps[dataIndex] = timestamp;
+						}
+					});
+				} else {
+					// We have no x coordinates, so use the ones from the labels
+					timestamps = parsedData.labels.slice();
+				}
+
+				parsedData.datasets[datasetIndex] = timestamps;
+			});
+
+			me.dataMin = dataMin;
+			me.dataMax = dataMax;
+			me._parsedData = parsedData;
+		},
+		buildTicks: function() {
+			var me = this;
+			var timeOpts = me.options.time;
+
+			var minTimestamp;
+			var maxTimestamp;
+			var dataMin = me.dataMin;
+			var dataMax = me.dataMax;
+
+			if (timeOpts.min) {
+				var minMoment = parseTime(me, timeOpts.min);
+				if (timeOpts.round) {
+					minMoment.round(timeOpts.round);
+				}
+				minTimestamp = minMoment.valueOf();
+			}
+
+			if (timeOpts.max) {
+				maxTimestamp = parseTime(me, timeOpts.max).valueOf();
+			}
+
+			var maxTicks = me.getLabelCapacity(minTimestamp || dataMin);
+			var unit = timeOpts.unit || determineUnit(timeOpts.minUnit, minTimestamp || dataMin, maxTimestamp || dataMax, maxTicks);
+			me.displayFormat = timeOpts.displayFormats[unit];
+
+			var stepSize = timeOpts.stepSize || determineStepSize(minTimestamp || dataMin, maxTimestamp || dataMax, unit, maxTicks);
+			me.ticks = Chart.Ticks.generators.time({
+				maxTicks: maxTicks,
+				min: minTimestamp,
+				max: maxTimestamp,
+				stepSize: stepSize,
+				unit: unit,
+				isoWeekday: timeOpts.isoWeekday
+			}, {
+				min: dataMin,
+				max: dataMax
+			});
+
+			// At this point, we need to update our max and min given the tick values since we have expanded the
+			// range of the scale
+			me.max = helpers.max(me.ticks);
+			me.min = helpers.min(me.ticks);
+		},
+		// Get tooltip label
+		getLabelForIndex: function(index, datasetIndex) {
+			var me = this;
+			var label = me.chart.data.labels && index < me.chart.data.labels.length ? me.chart.data.labels[index] : '';
+			var value = me.chart.data.datasets[datasetIndex].data[index];
+
+			if (value !== null && typeof value === 'object') {
+				label = me.getRightValue(value);
+			}
+
+			// Format nicely
+			if (me.options.time.tooltipFormat) {
+				label = parseTime(me, label).format(me.options.time.tooltipFormat);
+			}
+
+			return label;
+		},
+		// Function to format an individual tick mark
+		tickFormatFunction: function(tick, index, ticks) {
+			var formattedTick = tick.format(this.displayFormat);
+			var tickOpts = this.options.ticks;
+			var callback = helpers.getValueOrDefault(tickOpts.callback, tickOpts.userCallback);
+
+			if (callback) {
+				return callback(formattedTick, index, ticks);
+			}
+			return formattedTick;
+		},
+		convertTicksToLabels: function() {
+			var me = this;
+			me.ticksAsTimestamps = me.ticks;
+			me.ticks = me.ticks.map(function(tick) {
+				return moment(tick);
+			}).map(me.tickFormatFunction, me);
+		},
+		getPixelForOffset: function(offset) {
+			var me = this;
+			var epochWidth = me.max - me.min;
+			var decimal = epochWidth ? (offset - me.min) / epochWidth : 0;
+
+			if (me.isHorizontal()) {
+				var valueOffset = (me.width * decimal);
+				return me.left + Math.round(valueOffset);
+			}
+
+			var heightOffset = (me.height * decimal);
+			return me.top + Math.round(heightOffset);
+		},
+		getPixelForValue: function(value, index, datasetIndex) {
+			var me = this;
+			var offset = null;
+			if (index !== undefined && datasetIndex !== undefined) {
+				offset = me._parsedData.datasets[datasetIndex][index];
+			}
+
+			if (offset === null) {
+				if (!value || !value.isValid) {
+					// not already a moment object
+					value = parseTime(me, me.getRightValue(value));
+				}
+
+				if (value && value.isValid && value.isValid()) {
+					offset = value.valueOf();
+				}
+			}
+
+			if (offset !== null) {
+				return me.getPixelForOffset(offset);
+			}
+		},
+		getPixelForTick: function(index) {
+			return this.getPixelForOffset(this.ticksAsTimestamps[index]);
+		},
+		getValueForPixel: function(pixel) {
+			var me = this;
+			var innerDimension = me.isHorizontal() ? me.width : me.height;
+			var offset = (pixel - (me.isHorizontal() ? me.left : me.top)) / innerDimension;
+			return moment(me.min + (offset * (me.max - me.min)));
+		},
+		// Crude approximation of what the label width might be
+		getLabelWidth: function(label) {
+			var me = this;
+			var ticks = me.options.ticks;
+
+			var tickLabelWidth = me.ctx.measureText(label).width;
+			var cosRotation = Math.cos(helpers.toRadians(ticks.maxRotation));
+			var sinRotation = Math.sin(helpers.toRadians(ticks.maxRotation));
+			var tickFontSize = helpers.getValueOrDefault(ticks.fontSize, Chart.defaults.global.defaultFontSize);
+			return (tickLabelWidth * cosRotation) + (tickFontSize * sinRotation);
+		},
+		getLabelCapacity: function(exampleTime) {
+			var me = this;
+
+			me.displayFormat = me.options.time.displayFormats.millisecond;	// Pick the longest format for guestimation
+			var exampleLabel = me.tickFormatFunction(moment(exampleTime), 0, []);
+			var tickLabelWidth = me.getLabelWidth(exampleLabel);
+
+			var innerWidth = me.isHorizontal() ? me.width : me.height;
+			var labelCapacity = innerWidth / tickLabelWidth;
+			return labelCapacity;
+		}
+	});
+	Chart.scaleService.registerScaleType('time', TimeScale, defaultConfig);
+
+};
+
+},{"moment":57}],47:[function(require,module,exports){
+/* MIT license */
+var colorNames = require('color-name');
+
+module.exports = {
+   getRgba: getRgba,
+   getHsla: getHsla,
+   getRgb: getRgb,
+   getHsl: getHsl,
+   getHwb: getHwb,
+   getAlpha: getAlpha,
+
+   hexString: hexString,
+   rgbString: rgbString,
+   rgbaString: rgbaString,
+   percentString: percentString,
+   percentaString: percentaString,
+   hslString: hslString,
+   hslaString: hslaString,
+   hwbString: hwbString,
+   keyword: keyword
+}
+
+function getRgba(string) {
+   if (!string) {
+      return;
+   }
+   var abbr =  /^#([a-fA-F0-9]{3})$/,
+       hex =  /^#([a-fA-F0-9]{6})$/,
+       rgba = /^rgba?\(\s*([+-]?\d+)\s*,\s*([+-]?\d+)\s*,\s*([+-]?\d+)\s*(?:,\s*([+-]?[\d\.]+)\s*)?\)$/,
+       per = /^rgba?\(\s*([+-]?[\d\.]+)\%\s*,\s*([+-]?[\d\.]+)\%\s*,\s*([+-]?[\d\.]+)\%\s*(?:,\s*([+-]?[\d\.]+)\s*)?\)$/,
+       keyword = /(\w+)/;
+
+   var rgb = [0, 0, 0],
+       a = 1,
+       match = string.match(abbr);
+   if (match) {
+      match = match[1];
+      for (var i = 0; i < rgb.length; i++) {
+         rgb[i] = parseInt(match[i] + match[i], 16);
+      }
+   }
+   else if (match = string.match(hex)) {
+      match = match[1];
+      for (var i = 0; i < rgb.length; i++) {
+         rgb[i] = parseInt(match.slice(i * 2, i * 2 + 2), 16);
+      }
+   }
+   else if (match = string.match(rgba)) {
+      for (var i = 0; i < rgb.length; i++) {
+         rgb[i] = parseInt(match[i + 1]);
+      }
+      a = parseFloat(match[4]);
+   }
+   else if (match = string.match(per)) {
+      for (var i = 0; i < rgb.length; i++) {
+         rgb[i] = Math.round(parseFloat(match[i + 1]) * 2.55);
+      }
+      a = parseFloat(match[4]);
+   }
+   else if (match = string.match(keyword)) {
+      if (match[1] == "transparent") {
+         return [0, 0, 0, 0];
+      }
+      rgb = colorNames[match[1]];
+      if (!rgb) {
+         return;
+      }
+   }
+
+   for (var i = 0; i < rgb.length; i++) {
+      rgb[i] = scale(rgb[i], 0, 255);
+   }
+   if (!a && a != 0) {
+      a = 1;
+   }
+   else {
+      a = scale(a, 0, 1);
+   }
+   rgb[3] = a;
+   return rgb;
+}
+
+function getHsla(string) {
+   if (!string) {
+      return;
+   }
+   var hsl = /^hsla?\(\s*([+-]?\d+)(?:deg)?\s*,\s*([+-]?[\d\.]+)%\s*,\s*([+-]?[\d\.]+)%\s*(?:,\s*([+-]?[\d\.]+)\s*)?\)/;
+   var match = string.match(hsl);
+   if (match) {
+      var alpha = parseFloat(match[4]);
+      var h = scale(parseInt(match[1]), 0, 360),
+          s = scale(parseFloat(match[2]), 0, 100),
+          l = scale(parseFloat(match[3]), 0, 100),
+          a = scale(isNaN(alpha) ? 1 : alpha, 0, 1);
+      return [h, s, l, a];
+   }
+}
+
+function getHwb(string) {
+   if (!string) {
+      return;
+   }
+   var hwb = /^hwb\(\s*([+-]?\d+)(?:deg)?\s*,\s*([+-]?[\d\.]+)%\s*,\s*([+-]?[\d\.]+)%\s*(?:,\s*([+-]?[\d\.]+)\s*)?\)/;
+   var match = string.match(hwb);
+   if (match) {
+    var alpha = parseFloat(match[4]);
+      var h = scale(parseInt(match[1]), 0, 360),
+          w = scale(parseFloat(match[2]), 0, 100),
+          b = scale(parseFloat(match[3]), 0, 100),
+          a = scale(isNaN(alpha) ? 1 : alpha, 0, 1);
+      return [h, w, b, a];
+   }
+}
+
+function getRgb(string) {
+   var rgba = getRgba(string);
+   return rgba && rgba.slice(0, 3);
+}
+
+function getHsl(string) {
+  var hsla = getHsla(string);
+  return hsla && hsla.slice(0, 3);
+}
+
+function getAlpha(string) {
+   var vals = getRgba(string);
+   if (vals) {
+      return vals[3];
+   }
+   else if (vals = getHsla(string)) {
+      return vals[3];
+   }
+   else if (vals = getHwb(string)) {
+      return vals[3];
+   }
+}
+
+// generators
+function hexString(rgb) {
+   return "#" + hexDouble(rgb[0]) + hexDouble(rgb[1])
+              + hexDouble(rgb[2]);
+}
+
+function rgbString(rgba, alpha) {
+   if (alpha < 1 || (rgba[3] && rgba[3] < 1)) {
+      return rgbaString(rgba, alpha);
+   }
+   return "rgb(" + rgba[0] + ", " + rgba[1] + ", " + rgba[2] + ")";
+}
+
+function rgbaString(rgba, alpha) {
+   if (alpha === undefined) {
+      alpha = (rgba[3] !== undefined ? rgba[3] : 1);
+   }
+   return "rgba(" + rgba[0] + ", " + rgba[1] + ", " + rgba[2]
+           + ", " + alpha + ")";
+}
+
+function percentString(rgba, alpha) {
+   if (alpha < 1 || (rgba[3] && rgba[3] < 1)) {
+      return percentaString(rgba, alpha);
+   }
+   var r = Math.round(rgba[0]/255 * 100),
+       g = Math.round(rgba[1]/255 * 100),
+       b = Math.round(rgba[2]/255 * 100);
+
+   return "rgb(" + r + "%, " + g + "%, " + b + "%)";
+}
+
+function percentaString(rgba, alpha) {
+   var r = Math.round(rgba[0]/255 * 100),
+       g = Math.round(rgba[1]/255 * 100),
+       b = Math.round(rgba[2]/255 * 100);
+   return "rgba(" + r + "%, " + g + "%, " + b + "%, " + (alpha || rgba[3] || 1) + ")";
+}
+
+function hslString(hsla, alpha) {
+   if (alpha < 1 || (hsla[3] && hsla[3] < 1)) {
+      return hslaString(hsla, alpha);
+   }
+   return "hsl(" + hsla[0] + ", " + hsla[1] + "%, " + hsla[2] + "%)";
+}
+
+function hslaString(hsla, alpha) {
+   if (alpha === undefined) {
+      alpha = (hsla[3] !== undefined ? hsla[3] : 1);
+   }
+   return "hsla(" + hsla[0] + ", " + hsla[1] + "%, " + hsla[2] + "%, "
+           + alpha + ")";
+}
+
+// hwb is a bit different than rgb(a) & hsl(a) since there is no alpha specific syntax
+// (hwb have alpha optional & 1 is default value)
+function hwbString(hwb, alpha) {
+   if (alpha === undefined) {
+      alpha = (hwb[3] !== undefined ? hwb[3] : 1);
+   }
+   return "hwb(" + hwb[0] + ", " + hwb[1] + "%, " + hwb[2] + "%"
+           + (alpha !== undefined && alpha !== 1 ? ", " + alpha : "") + ")";
+}
+
+function keyword(rgb) {
+  return reverseNames[rgb.slice(0, 3)];
+}
+
+// helpers
+function scale(num, min, max) {
+   return Math.min(Math.max(min, num), max);
+}
+
+function hexDouble(num) {
+  var str = num.toString(16).toUpperCase();
+  return (str.length < 2) ? "0" + str : str;
+}
+
+
+//create a list of reverse color names
+var reverseNames = {};
+for (var name in colorNames) {
+   reverseNames[colorNames[name]] = name;
+}
+
+},{"color-name":51}],48:[function(require,module,exports){
+/* MIT license */
+var convert = require('color-convert');
+var string = require('chartjs-color-string');
+
+var Color = function (obj) {
+	if (obj instanceof Color) {
+		return obj;
+	}
+	if (!(this instanceof Color)) {
+		return new Color(obj);
+	}
+
+	this.valid = false;
+	this.values = {
+		rgb: [0, 0, 0],
+		hsl: [0, 0, 0],
+		hsv: [0, 0, 0],
+		hwb: [0, 0, 0],
+		cmyk: [0, 0, 0, 0],
+		alpha: 1
+	};
+
+	// parse Color() argument
+	var vals;
+	if (typeof obj === 'string') {
+		vals = string.getRgba(obj);
+		if (vals) {
+			this.setValues('rgb', vals);
+		} else if (vals = string.getHsla(obj)) {
+			this.setValues('hsl', vals);
+		} else if (vals = string.getHwb(obj)) {
+			this.setValues('hwb', vals);
+		}
+	} else if (typeof obj === 'object') {
+		vals = obj;
+		if (vals.r !== undefined || vals.red !== undefined) {
+			this.setValues('rgb', vals);
+		} else if (vals.l !== undefined || vals.lightness !== undefined) {
+			this.setValues('hsl', vals);
+		} else if (vals.v !== undefined || vals.value !== undefined) {
+			this.setValues('hsv', vals);
+		} else if (vals.w !== undefined || vals.whiteness !== undefined) {
+			this.setValues('hwb', vals);
+		} else if (vals.c !== undefined || vals.cyan !== undefined) {
+			this.setValues('cmyk', vals);
+		}
+	}
+};
+
+Color.prototype = {
+	isValid: function () {
+		return this.valid;
+	},
+	rgb: function () {
+		return this.setSpace('rgb', arguments);
+	},
+	hsl: function () {
+		return this.setSpace('hsl', arguments);
+	},
+	hsv: function () {
+		return this.setSpace('hsv', arguments);
+	},
+	hwb: function () {
+		return this.setSpace('hwb', arguments);
+	},
+	cmyk: function () {
+		return this.setSpace('cmyk', arguments);
+	},
+
+	rgbArray: function () {
+		return this.values.rgb;
+	},
+	hslArray: function () {
+		return this.values.hsl;
+	},
+	hsvArray: function () {
+		return this.values.hsv;
+	},
+	hwbArray: function () {
+		var values = this.values;
+		if (values.alpha !== 1) {
+			return values.hwb.concat([values.alpha]);
+		}
+		return values.hwb;
+	},
+	cmykArray: function () {
+		return this.values.cmyk;
+	},
+	rgbaArray: function () {
+		var values = this.values;
+		return values.rgb.concat([values.alpha]);
+	},
+	hslaArray: function () {
+		var values = this.values;
+		return values.hsl.concat([values.alpha]);
+	},
+	alpha: function (val) {
+		if (val === undefined) {
+			return this.values.alpha;
+		}
+		this.setValues('alpha', val);
+		return this;
+	},
+
+	red: function (val) {
+		return this.setChannel('rgb', 0, val);
+	},
+	green: function (val) {
+		return this.setChannel('rgb', 1, val);
+	},
+	blue: function (val) {
+		return this.setChannel('rgb', 2, val);
+	},
+	hue: function (val) {
+		if (val) {
+			val %= 360;
+			val = val < 0 ? 360 + val : val;
+		}
+		return this.setChannel('hsl', 0, val);
+	},
+	saturation: function (val) {
+		return this.setChannel('hsl', 1, val);
+	},
+	lightness: function (val) {
+		return this.setChannel('hsl', 2, val);
+	},
+	saturationv: function (val) {
+		return this.setChannel('hsv', 1, val);
+	},
+	whiteness: function (val) {
+		return this.setChannel('hwb', 1, val);
+	},
+	blackness: function (val) {
+		return this.setChannel('hwb', 2, val);
+	},
+	value: function (val) {
+		return this.setChannel('hsv', 2, val);
+	},
+	cyan: function (val) {
+		return this.setChannel('cmyk', 0, val);
+	},
+	magenta: function (val) {
+		return this.setChannel('cmyk', 1, val);
+	},
+	yellow: function (val) {
+		return this.setChannel('cmyk', 2, val);
+	},
+	black: function (val) {
+		return this.setChannel('cmyk', 3, val);
+	},
+
+	hexString: function () {
+		return string.hexString(this.values.rgb);
+	},
+	rgbString: function () {
+		return string.rgbString(this.values.rgb, this.values.alpha);
+	},
+	rgbaString: function () {
+		return string.rgbaString(this.values.rgb, this.values.alpha);
+	},
+	percentString: function () {
+		return string.percentString(this.values.rgb, this.values.alpha);
+	},
+	hslString: function () {
+		return string.hslString(this.values.hsl, this.values.alpha);
+	},
+	hslaString: function () {
+		return string.hslaString(this.values.hsl, this.values.alpha);
+	},
+	hwbString: function () {
+		return string.hwbString(this.values.hwb, this.values.alpha);
+	},
+	keyword: function () {
+		return string.keyword(this.values.rgb, this.values.alpha);
+	},
+
+	rgbNumber: function () {
+		var rgb = this.values.rgb;
+		return (rgb[0] << 16) | (rgb[1] << 8) | rgb[2];
+	},
+
+	luminosity: function () {
+		// http://www.w3.org/TR/WCAG20/#relativeluminancedef
+		var rgb = this.values.rgb;
+		var lum = [];
+		for (var i = 0; i < rgb.length; i++) {
+			var chan = rgb[i] / 255;
+			lum[i] = (chan <= 0.03928) ? chan / 12.92 : Math.pow(((chan + 0.055) / 1.055), 2.4);
+		}
+		return 0.2126 * lum[0] + 0.7152 * lum[1] + 0.0722 * lum[2];
+	},
+
+	contrast: function (color2) {
+		// http://www.w3.org/TR/WCAG20/#contrast-ratiodef
+		var lum1 = this.luminosity();
+		var lum2 = color2.luminosity();
+		if (lum1 > lum2) {
+			return (lum1 + 0.05) / (lum2 + 0.05);
+		}
+		return (lum2 + 0.05) / (lum1 + 0.05);
+	},
+
+	level: function (color2) {
+		var contrastRatio = this.contrast(color2);
+		if (contrastRatio >= 7.1) {
+			return 'AAA';
+		}
+
+		return (contrastRatio >= 4.5) ? 'AA' : '';
+	},
+
+	dark: function () {
+		// YIQ equation from http://24ways.org/2010/calculating-color-contrast
+		var rgb = this.values.rgb;
+		var yiq = (rgb[0] * 299 + rgb[1] * 587 + rgb[2] * 114) / 1000;
+		return yiq < 128;
+	},
+
+	light: function () {
+		return !this.dark();
+	},
+
+	negate: function () {
+		var rgb = [];
+		for (var i = 0; i < 3; i++) {
+			rgb[i] = 255 - this.values.rgb[i];
+		}
+		this.setValues('rgb', rgb);
+		return this;
+	},
+
+	lighten: function (ratio) {
+		var hsl = this.values.hsl;
+		hsl[2] += hsl[2] * ratio;
+		this.setValues('hsl', hsl);
+		return this;
+	},
+
+	darken: function (ratio) {
+		var hsl = this.values.hsl;
+		hsl[2] -= hsl[2] * ratio;
+		this.setValues('hsl', hsl);
+		return this;
+	},
+
+	saturate: function (ratio) {
+		var hsl = this.values.hsl;
+		hsl[1] += hsl[1] * ratio;
+		this.setValues('hsl', hsl);
+		return this;
+	},
+
+	desaturate: function (ratio) {
+		var hsl = this.values.hsl;
+		hsl[1] -= hsl[1] * ratio;
+		this.setValues('hsl', hsl);
+		return this;
+	},
+
+	whiten: function (ratio) {
+		var hwb = this.values.hwb;
+		hwb[1] += hwb[1] * ratio;
+		this.setValues('hwb', hwb);
+		return this;
+	},
+
+	blacken: function (ratio) {
+		var hwb = this.values.hwb;
+		hwb[2] += hwb[2] * ratio;
+		this.setValues('hwb', hwb);
+		return this;
+	},
+
+	greyscale: function () {
+		var rgb = this.values.rgb;
+		// http://en.wikipedia.org/wiki/Grayscale#Converting_color_to_grayscale
+		var val = rgb[0] * 0.3 + rgb[1] * 0.59 + rgb[2] * 0.11;
+		this.setValues('rgb', [val, val, val]);
+		return this;
+	},
+
+	clearer: function (ratio) {
+		var alpha = this.values.alpha;
+		this.setValues('alpha', alpha - (alpha * ratio));
+		return this;
+	},
+
+	opaquer: function (ratio) {
+		var alpha = this.values.alpha;
+		this.setValues('alpha', alpha + (alpha * ratio));
+		return this;
+	},
+
+	rotate: function (degrees) {
+		var hsl = this.values.hsl;
+		var hue = (hsl[0] + degrees) % 360;
+		hsl[0] = hue < 0 ? 360 + hue : hue;
+		this.setValues('hsl', hsl);
+		return this;
+	},
+
+	/**
+	 * Ported from sass implementation in C
+	 * https://github.com/sass/libsass/blob/0e6b4a2850092356aa3ece07c6b249f0221caced/functions.cpp#L209
+	 */
+	mix: function (mixinColor, weight) {
+		var color1 = this;
+		var color2 = mixinColor;
+		var p = weight === undefined ? 0.5 : weight;
+
+		var w = 2 * p - 1;
+		var a = color1.alpha() - color2.alpha();
+
+		var w1 = (((w * a === -1) ? w : (w + a) / (1 + w * a)) + 1) / 2.0;
+		var w2 = 1 - w1;
+
+		return this
+			.rgb(
+				w1 * color1.red() + w2 * color2.red(),
+				w1 * color1.green() + w2 * color2.green(),
+				w1 * color1.blue() + w2 * color2.blue()
+			)
+			.alpha(color1.alpha() * p + color2.alpha() * (1 - p));
+	},
+
+	toJSON: function () {
+		return this.rgb();
+	},
+
+	clone: function () {
+		// NOTE(SB): using node-clone creates a dependency to Buffer when using browserify,
+		// making the final build way to big to embed in Chart.js. So let's do it manually,
+		// assuming that values to clone are 1 dimension arrays containing only numbers,
+		// except 'alpha' which is a number.
+		var result = new Color();
+		var source = this.values;
+		var target = result.values;
+		var value, type;
+
+		for (var prop in source) {
+			if (source.hasOwnProperty(prop)) {
+				value = source[prop];
+				type = ({}).toString.call(value);
+				if (type === '[object Array]') {
+					target[prop] = value.slice(0);
+				} else if (type === '[object Number]') {
+					target[prop] = value;
+				} else {
+					console.error('unexpected color value:', value);
+				}
+			}
+		}
+
+		return result;
+	}
+};
+
+Color.prototype.spaces = {
+	rgb: ['red', 'green', 'blue'],
+	hsl: ['hue', 'saturation', 'lightness'],
+	hsv: ['hue', 'saturation', 'value'],
+	hwb: ['hue', 'whiteness', 'blackness'],
+	cmyk: ['cyan', 'magenta', 'yellow', 'black']
+};
+
+Color.prototype.maxes = {
+	rgb: [255, 255, 255],
+	hsl: [360, 100, 100],
+	hsv: [360, 100, 100],
+	hwb: [360, 100, 100],
+	cmyk: [100, 100, 100, 100]
+};
+
+Color.prototype.getValues = function (space) {
+	var values = this.values;
+	var vals = {};
+
+	for (var i = 0; i < space.length; i++) {
+		vals[space.charAt(i)] = values[space][i];
+	}
+
+	if (values.alpha !== 1) {
+		vals.a = values.alpha;
+	}
+
+	// {r: 255, g: 255, b: 255, a: 0.4}
+	return vals;
+};
+
+Color.prototype.setValues = function (space, vals) {
+	var values = this.values;
+	var spaces = this.spaces;
+	var maxes = this.maxes;
+	var alpha = 1;
+	var i;
+
+	this.valid = true;
+
+	if (space === 'alpha') {
+		alpha = vals;
+	} else if (vals.length) {
+		// [10, 10, 10]
+		values[space] = vals.slice(0, space.length);
+		alpha = vals[space.length];
+	} else if (vals[space.charAt(0)] !== undefined) {
+		// {r: 10, g: 10, b: 10}
+		for (i = 0; i < space.length; i++) {
+			values[space][i] = vals[space.charAt(i)];
+		}
+
+		alpha = vals.a;
+	} else if (vals[spaces[space][0]] !== undefined) {
+		// {red: 10, green: 10, blue: 10}
+		var chans = spaces[space];
+
+		for (i = 0; i < space.length; i++) {
+			values[space][i] = vals[chans[i]];
+		}
+
+		alpha = vals.alpha;
+	}
+
+	values.alpha = Math.max(0, Math.min(1, (alpha === undefined ? values.alpha : alpha)));
+
+	if (space === 'alpha') {
+		return false;
+	}
+
+	var capped;
+
+	// cap values of the space prior converting all values
+	for (i = 0; i < space.length; i++) {
+		capped = Math.max(0, Math.min(maxes[space][i], values[space][i]));
+		values[space][i] = Math.round(capped);
+	}
+
+	// convert to all the other color spaces
+	for (var sname in spaces) {
+		if (sname !== space) {
+			values[sname] = convert[space][sname](values[space]);
+		}
+	}
+
+	return true;
+};
+
+Color.prototype.setSpace = function (space, args) {
+	var vals = args[0];
+
+	if (vals === undefined) {
+		// color.rgb()
+		return this.getValues(space);
+	}
+
+	// color.rgb(10, 10, 10)
+	if (typeof vals === 'number') {
+		vals = Array.prototype.slice.call(args);
+	}
+
+	this.setValues(space, vals);
+	return this;
+};
+
+Color.prototype.setChannel = function (space, index, val) {
+	var svalues = this.values[space];
+	if (val === undefined) {
+		// color.red()
+		return svalues[index];
+	} else if (val === svalues[index]) {
+		// color.red(color.red())
+		return this;
+	}
+
+	// color.red(100)
+	svalues[index] = val;
+	this.setValues(space, svalues);
+
+	return this;
+};
+
+if (typeof window !== 'undefined') {
+	window.Color = Color;
+}
+
+module.exports = Color;
+
+},{"chartjs-color-string":47,"color-convert":50}],49:[function(require,module,exports){
+/* MIT license */
+
+module.exports = {
+  rgb2hsl: rgb2hsl,
+  rgb2hsv: rgb2hsv,
+  rgb2hwb: rgb2hwb,
+  rgb2cmyk: rgb2cmyk,
+  rgb2keyword: rgb2keyword,
+  rgb2xyz: rgb2xyz,
+  rgb2lab: rgb2lab,
+  rgb2lch: rgb2lch,
+
+  hsl2rgb: hsl2rgb,
+  hsl2hsv: hsl2hsv,
+  hsl2hwb: hsl2hwb,
+  hsl2cmyk: hsl2cmyk,
+  hsl2keyword: hsl2keyword,
+
+  hsv2rgb: hsv2rgb,
+  hsv2hsl: hsv2hsl,
+  hsv2hwb: hsv2hwb,
+  hsv2cmyk: hsv2cmyk,
+  hsv2keyword: hsv2keyword,
+
+  hwb2rgb: hwb2rgb,
+  hwb2hsl: hwb2hsl,
+  hwb2hsv: hwb2hsv,
+  hwb2cmyk: hwb2cmyk,
+  hwb2keyword: hwb2keyword,
+
+  cmyk2rgb: cmyk2rgb,
+  cmyk2hsl: cmyk2hsl,
+  cmyk2hsv: cmyk2hsv,
+  cmyk2hwb: cmyk2hwb,
+  cmyk2keyword: cmyk2keyword,
+
+  keyword2rgb: keyword2rgb,
+  keyword2hsl: keyword2hsl,
+  keyword2hsv: keyword2hsv,
+  keyword2hwb: keyword2hwb,
+  keyword2cmyk: keyword2cmyk,
+  keyword2lab: keyword2lab,
+  keyword2xyz: keyword2xyz,
+
+  xyz2rgb: xyz2rgb,
+  xyz2lab: xyz2lab,
+  xyz2lch: xyz2lch,
+
+  lab2xyz: lab2xyz,
+  lab2rgb: lab2rgb,
+  lab2lch: lab2lch,
+
+  lch2lab: lch2lab,
+  lch2xyz: lch2xyz,
+  lch2rgb: lch2rgb
+}
+
+
+function rgb2hsl(rgb) {
+  var r = rgb[0]/255,
+      g = rgb[1]/255,
+      b = rgb[2]/255,
+      min = Math.min(r, g, b),
+      max = Math.max(r, g, b),
+      delta = max - min,
+      h, s, l;
+
+  if (max == min)
+    h = 0;
+  else if (r == max)
+    h = (g - b) / delta;
+  else if (g == max)
+    h = 2 + (b - r) / delta;
+  else if (b == max)
+    h = 4 + (r - g)/ delta;
+
+  h = Math.min(h * 60, 360);
+
+  if (h < 0)
+    h += 360;
+
+  l = (min + max) / 2;
+
+  if (max == min)
+    s = 0;
+  else if (l <= 0.5)
+    s = delta / (max + min);
+  else
+    s = delta / (2 - max - min);
+
+  return [h, s * 100, l * 100];
+}
+
+function rgb2hsv(rgb) {
+  var r = rgb[0],
+      g = rgb[1],
+      b = rgb[2],
+      min = Math.min(r, g, b),
+      max = Math.max(r, g, b),
+      delta = max - min,
+      h, s, v;
+
+  if (max == 0)
+    s = 0;
+  else
+    s = (delta/max * 1000)/10;
+
+  if (max == min)
+    h = 0;
+  else if (r == max)
+    h = (g - b) / delta;
+  else if (g == max)
+    h = 2 + (b - r) / delta;
+  else if (b == max)
+    h = 4 + (r - g) / delta;
+
+  h = Math.min(h * 60, 360);
+
+  if (h < 0)
+    h += 360;
+
+  v = ((max / 255) * 1000) / 10;
+
+  return [h, s, v];
+}
+
+function rgb2hwb(rgb) {
+  var r = rgb[0],
+      g = rgb[1],
+      b = rgb[2],
+      h = rgb2hsl(rgb)[0],
+      w = 1/255 * Math.min(r, Math.min(g, b)),
+      b = 1 - 1/255 * Math.max(r, Math.max(g, b));
+
+  return [h, w * 100, b * 100];
+}
+
+function rgb2cmyk(rgb) {
+  var r = rgb[0] / 255,
+      g = rgb[1] / 255,
+      b = rgb[2] / 255,
+      c, m, y, k;
+
+  k = Math.min(1 - r, 1 - g, 1 - b);
+  c = (1 - r - k) / (1 - k) || 0;
+  m = (1 - g - k) / (1 - k) || 0;
+  y = (1 - b - k) / (1 - k) || 0;
+  return [c * 100, m * 100, y * 100, k * 100];
+}
+
+function rgb2keyword(rgb) {
+  return reverseKeywords[JSON.stringify(rgb)];
+}
+
+function rgb2xyz(rgb) {
+  var r = rgb[0] / 255,
+      g = rgb[1] / 255,
+      b = rgb[2] / 255;
+
+  // assume sRGB
+  r = r > 0.04045 ? Math.pow(((r + 0.055) / 1.055), 2.4) : (r / 12.92);
+  g = g > 0.04045 ? Math.pow(((g + 0.055) / 1.055), 2.4) : (g / 12.92);
+  b = b > 0.04045 ? Math.pow(((b + 0.055) / 1.055), 2.4) : (b / 12.92);
+
+  var x = (r * 0.4124) + (g * 0.3576) + (b * 0.1805);
+  var y = (r * 0.2126) + (g * 0.7152) + (b * 0.0722);
+  var z = (r * 0.0193) + (g * 0.1192) + (b * 0.9505);
+
+  return [x * 100, y *100, z * 100];
+}
+
+function rgb2lab(rgb) {
+  var xyz = rgb2xyz(rgb),
+        x = xyz[0],
+        y = xyz[1],
+        z = xyz[2],
+        l, a, b;
+
+  x /= 95.047;
+  y /= 100;
+  z /= 108.883;
+
+  x = x > 0.008856 ? Math.pow(x, 1/3) : (7.787 * x) + (16 / 116);
+  y = y > 0.008856 ? Math.pow(y, 1/3) : (7.787 * y) + (16 / 116);
+  z = z > 0.008856 ? Math.pow(z, 1/3) : (7.787 * z) + (16 / 116);
+
+  l = (116 * y) - 16;
+  a = 500 * (x - y);
+  b = 200 * (y - z);
+
+  return [l, a, b];
+}
+
+function rgb2lch(args) {
+  return lab2lch(rgb2lab(args));
+}
+
+function hsl2rgb(hsl) {
+  var h = hsl[0] / 360,
+      s = hsl[1] / 100,
+      l = hsl[2] / 100,
+      t1, t2, t3, rgb, val;
+
+  if (s == 0) {
+    val = l * 255;
+    return [val, val, val];
+  }
+
+  if (l < 0.5)
+    t2 = l * (1 + s);
+  else
+    t2 = l + s - l * s;
+  t1 = 2 * l - t2;
+
+  rgb = [0, 0, 0];
+  for (var i = 0; i < 3; i++) {
+    t3 = h + 1 / 3 * - (i - 1);
+    t3 < 0 && t3++;
+    t3 > 1 && t3--;
+
+    if (6 * t3 < 1)
+      val = t1 + (t2 - t1) * 6 * t3;
+    else if (2 * t3 < 1)
+      val = t2;
+    else if (3 * t3 < 2)
+      val = t1 + (t2 - t1) * (2 / 3 - t3) * 6;
+    else
+      val = t1;
+
+    rgb[i] = val * 255;
+  }
+
+  return rgb;
+}
+
+function hsl2hsv(hsl) {
+  var h = hsl[0],
+      s = hsl[1] / 100,
+      l = hsl[2] / 100,
+      sv, v;
+
+  if(l === 0) {
+      // no need to do calc on black
+      // also avoids divide by 0 error
+      return [0, 0, 0];
+  }
+
+  l *= 2;
+  s *= (l <= 1) ? l : 2 - l;
+  v = (l + s) / 2;
+  sv = (2 * s) / (l + s);
+  return [h, sv * 100, v * 100];
+}
+
+function hsl2hwb(args) {
+  return rgb2hwb(hsl2rgb(args));
+}
+
+function hsl2cmyk(args) {
+  return rgb2cmyk(hsl2rgb(args));
+}
+
+function hsl2keyword(args) {
+  return rgb2keyword(hsl2rgb(args));
+}
+
+
+function hsv2rgb(hsv) {
+  var h = hsv[0] / 60,
+      s = hsv[1] / 100,
+      v = hsv[2] / 100,
+      hi = Math.floor(h) % 6;
+
+  var f = h - Math.floor(h),
+      p = 255 * v * (1 - s),
+      q = 255 * v * (1 - (s * f)),
+      t = 255 * v * (1 - (s * (1 - f))),
+      v = 255 * v;
+
+  switch(hi) {
+    case 0:
+      return [v, t, p];
+    case 1:
+      return [q, v, p];
+    case 2:
+      return [p, v, t];
+    case 3:
+      return [p, q, v];
+    case 4:
+      return [t, p, v];
+    case 5:
+      return [v, p, q];
+  }
+}
+
+function hsv2hsl(hsv) {
+  var h = hsv[0],
+      s = hsv[1] / 100,
+      v = hsv[2] / 100,
+      sl, l;
+
+  l = (2 - s) * v;
+  sl = s * v;
+  sl /= (l <= 1) ? l : 2 - l;
+  sl = sl || 0;
+  l /= 2;
+  return [h, sl * 100, l * 100];
+}
+
+function hsv2hwb(args) {
+  return rgb2hwb(hsv2rgb(args))
+}
+
+function hsv2cmyk(args) {
+  return rgb2cmyk(hsv2rgb(args));
+}
+
+function hsv2keyword(args) {
+  return rgb2keyword(hsv2rgb(args));
+}
+
+// http://dev.w3.org/csswg/css-color/#hwb-to-rgb
+function hwb2rgb(hwb) {
+  var h = hwb[0] / 360,
+      wh = hwb[1] / 100,
+      bl = hwb[2] / 100,
+      ratio = wh + bl,
+      i, v, f, n;
+
+  // wh + bl cant be > 1
+  if (ratio > 1) {
+    wh /= ratio;
+    bl /= ratio;
+  }
+
+  i = Math.floor(6 * h);
+  v = 1 - bl;
+  f = 6 * h - i;
+  if ((i & 0x01) != 0) {
+    f = 1 - f;
+  }
+  n = wh + f * (v - wh);  // linear interpolation
+
+  switch (i) {
+    default:
+    case 6:
+    case 0: r = v; g = n; b = wh; break;
+    case 1: r = n; g = v; b = wh; break;
+    case 2: r = wh; g = v; b = n; break;
+    case 3: r = wh; g = n; b = v; break;
+    case 4: r = n; g = wh; b = v; break;
+    case 5: r = v; g = wh; b = n; break;
+  }
+
+  return [r * 255, g * 255, b * 255];
+}
+
+function hwb2hsl(args) {
+  return rgb2hsl(hwb2rgb(args));
+}
+
+function hwb2hsv(args) {
+  return rgb2hsv(hwb2rgb(args));
+}
+
+function hwb2cmyk(args) {
+  return rgb2cmyk(hwb2rgb(args));
+}
+
+function hwb2keyword(args) {
+  return rgb2keyword(hwb2rgb(args));
+}
+
+function cmyk2rgb(cmyk) {
+  var c = cmyk[0] / 100,
+      m = cmyk[1] / 100,
+      y = cmyk[2] / 100,
+      k = cmyk[3] / 100,
+      r, g, b;
+
+  r = 1 - Math.min(1, c * (1 - k) + k);
+  g = 1 - Math.min(1, m * (1 - k) + k);
+  b = 1 - Math.min(1, y * (1 - k) + k);
+  return [r * 255, g * 255, b * 255];
+}
+
+function cmyk2hsl(args) {
+  return rgb2hsl(cmyk2rgb(args));
+}
+
+function cmyk2hsv(args) {
+  return rgb2hsv(cmyk2rgb(args));
+}
+
+function cmyk2hwb(args) {
+  return rgb2hwb(cmyk2rgb(args));
+}
+
+function cmyk2keyword(args) {
+  return rgb2keyword(cmyk2rgb(args));
+}
+
+
+function xyz2rgb(xyz) {
+  var x = xyz[0] / 100,
+      y = xyz[1] / 100,
+      z = xyz[2] / 100,
+      r, g, b;
+
+  r = (x * 3.2406) + (y * -1.5372) + (z * -0.4986);
+  g = (x * -0.9689) + (y * 1.8758) + (z * 0.0415);
+  b = (x * 0.0557) + (y * -0.2040) + (z * 1.0570);
+
+  // assume sRGB
+  r = r > 0.0031308 ? ((1.055 * Math.pow(r, 1.0 / 2.4)) - 0.055)
+    : r = (r * 12.92);
+
+  g = g > 0.0031308 ? ((1.055 * Math.pow(g, 1.0 / 2.4)) - 0.055)
+    : g = (g * 12.92);
+
+  b = b > 0.0031308 ? ((1.055 * Math.pow(b, 1.0 / 2.4)) - 0.055)
+    : b = (b * 12.92);
+
+  r = Math.min(Math.max(0, r), 1);
+  g = Math.min(Math.max(0, g), 1);
+  b = Math.min(Math.max(0, b), 1);
+
+  return [r * 255, g * 255, b * 255];
+}
+
+function xyz2lab(xyz) {
+  var x = xyz[0],
+      y = xyz[1],
+      z = xyz[2],
+      l, a, b;
+
+  x /= 95.047;
+  y /= 100;
+  z /= 108.883;
+
+  x = x > 0.008856 ? Math.pow(x, 1/3) : (7.787 * x) + (16 / 116);
+  y = y > 0.008856 ? Math.pow(y, 1/3) : (7.787 * y) + (16 / 116);
+  z = z > 0.008856 ? Math.pow(z, 1/3) : (7.787 * z) + (16 / 116);
+
+  l = (116 * y) - 16;
+  a = 500 * (x - y);
+  b = 200 * (y - z);
+
+  return [l, a, b];
+}
+
+function xyz2lch(args) {
+  return lab2lch(xyz2lab(args));
+}
+
+function lab2xyz(lab) {
+  var l = lab[0],
+      a = lab[1],
+      b = lab[2],
+      x, y, z, y2;
+
+  if (l <= 8) {
+    y = (l * 100) / 903.3;
+    y2 = (7.787 * (y / 100)) + (16 / 116);
+  } else {
+    y = 100 * Math.pow((l + 16) / 116, 3);
+    y2 = Math.pow(y / 100, 1/3);
+  }
+
+  x = x / 95.047 <= 0.008856 ? x = (95.047 * ((a / 500) + y2 - (16 / 116))) / 7.787 : 95.047 * Math.pow((a / 500) + y2, 3);
+
+  z = z / 108.883 <= 0.008859 ? z = (108.883 * (y2 - (b / 200) - (16 / 116))) / 7.787 : 108.883 * Math.pow(y2 - (b / 200), 3);
+
+  return [x, y, z];
+}
+
+function lab2lch(lab) {
+  var l = lab[0],
+      a = lab[1],
+      b = lab[2],
+      hr, h, c;
+
+  hr = Math.atan2(b, a);
+  h = hr * 360 / 2 / Math.PI;
+  if (h < 0) {
+    h += 360;
+  }
+  c = Math.sqrt(a * a + b * b);
+  return [l, c, h];
+}
+
+function lab2rgb(args) {
+  return xyz2rgb(lab2xyz(args));
+}
+
+function lch2lab(lch) {
+  var l = lch[0],
+      c = lch[1],
+      h = lch[2],
+      a, b, hr;
+
+  hr = h / 360 * 2 * Math.PI;
+  a = c * Math.cos(hr);
+  b = c * Math.sin(hr);
+  return [l, a, b];
+}
+
+function lch2xyz(args) {
+  return lab2xyz(lch2lab(args));
+}
+
+function lch2rgb(args) {
+  return lab2rgb(lch2lab(args));
+}
+
+function keyword2rgb(keyword) {
+  return cssKeywords[keyword];
+}
+
+function keyword2hsl(args) {
+  return rgb2hsl(keyword2rgb(args));
+}
+
+function keyword2hsv(args) {
+  return rgb2hsv(keyword2rgb(args));
+}
+
+function keyword2hwb(args) {
+  return rgb2hwb(keyword2rgb(args));
+}
+
+function keyword2cmyk(args) {
+  return rgb2cmyk(keyword2rgb(args));
+}
+
+function keyword2lab(args) {
+  return rgb2lab(keyword2rgb(args));
+}
+
+function keyword2xyz(args) {
+  return rgb2xyz(keyword2rgb(args));
+}
+
+var cssKeywords = {
+  aliceblue:  [240,248,255],
+  antiquewhite: [250,235,215],
+  aqua: [0,255,255],
+  aquamarine: [127,255,212],
+  azure:  [240,255,255],
+  beige:  [245,245,220],
+  bisque: [255,228,196],
+  black:  [0,0,0],
+  blanchedalmond: [255,235,205],
+  blue: [0,0,255],
+  blueviolet: [138,43,226],
+  brown:  [165,42,42],
+  burlywood:  [222,184,135],
+  cadetblue:  [95,158,160],
+  chartreuse: [127,255,0],
+  chocolate:  [210,105,30],
+  coral:  [255,127,80],
+  cornflowerblue: [100,149,237],
+  cornsilk: [255,248,220],
+  crimson:  [220,20,60],
+  cyan: [0,255,255],
+  darkblue: [0,0,139],
+  darkcyan: [0,139,139],
+  darkgoldenrod:  [184,134,11],
+  darkgray: [169,169,169],
+  darkgreen:  [0,100,0],
+  darkgrey: [169,169,169],
+  darkkhaki:  [189,183,107],
+  darkmagenta:  [139,0,139],
+  darkolivegreen: [85,107,47],
+  darkorange: [255,140,0],
+  darkorchid: [153,50,204],
+  darkred:  [139,0,0],
+  darksalmon: [233,150,122],
+  darkseagreen: [143,188,143],
+  darkslateblue:  [72,61,139],
+  darkslategray:  [47,79,79],
+  darkslategrey:  [47,79,79],
+  darkturquoise:  [0,206,209],
+  darkviolet: [148,0,211],
+  deeppink: [255,20,147],
+  deepskyblue:  [0,191,255],
+  dimgray:  [105,105,105],
+  dimgrey:  [105,105,105],
+  dodgerblue: [30,144,255],
+  firebrick:  [178,34,34],
+  floralwhite:  [255,250,240],
+  forestgreen:  [34,139,34],
+  fuchsia:  [255,0,255],
+  gainsboro:  [220,220,220],
+  ghostwhite: [248,248,255],
+  gold: [255,215,0],
+  goldenrod:  [218,165,32],
+  gray: [128,128,128],
+  green:  [0,128,0],
+  greenyellow:  [173,255,47],
+  grey: [128,128,128],
+  honeydew: [240,255,240],
+  hotpink:  [255,105,180],
+  indianred:  [205,92,92],
+  indigo: [75,0,130],
+  ivory:  [255,255,240],
+  khaki:  [240,230,140],
+  lavender: [230,230,250],
+  lavenderblush:  [255,240,245],
+  lawngreen:  [124,252,0],
+  lemonchiffon: [255,250,205],
+  lightblue:  [173,216,230],
+  lightcoral: [240,128,128],
+  lightcyan:  [224,255,255],
+  lightgoldenrodyellow: [250,250,210],
+  lightgray:  [211,211,211],
+  lightgreen: [144,238,144],
+  lightgrey:  [211,211,211],
+  lightpink:  [255,182,193],
+  lightsalmon:  [255,160,122],
+  lightseagreen:  [32,178,170],
+  lightskyblue: [135,206,250],
+  lightslategray: [119,136,153],
+  lightslategrey: [119,136,153],
+  lightsteelblue: [176,196,222],
+  lightyellow:  [255,255,224],
+  lime: [0,255,0],
+  limegreen:  [50,205,50],
+  linen:  [250,240,230],
+  magenta:  [255,0,255],
+  maroon: [128,0,0],
+  mediumaquamarine: [102,205,170],
+  mediumblue: [0,0,205],
+  mediumorchid: [186,85,211],
+  mediumpurple: [147,112,219],
+  mediumseagreen: [60,179,113],
+  mediumslateblue:  [123,104,238],
+  mediumspringgreen:  [0,250,154],
+  mediumturquoise:  [72,209,204],
+  mediumvioletred:  [199,21,133],
+  midnightblue: [25,25,112],
+  mintcream:  [245,255,250],
+  mistyrose:  [255,228,225],
+  moccasin: [255,228,181],
+  navajowhite:  [255,222,173],
+  navy: [0,0,128],
+  oldlace:  [253,245,230],
+  olive:  [128,128,0],
+  olivedrab:  [107,142,35],
+  orange: [255,165,0],
+  orangered:  [255,69,0],
+  orchid: [218,112,214],
+  palegoldenrod:  [238,232,170],
+  palegreen:  [152,251,152],
+  paleturquoise:  [175,238,238],
+  palevioletred:  [219,112,147],
+  papayawhip: [255,239,213],
+  peachpuff:  [255,218,185],
+  peru: [205,133,63],
+  pink: [255,192,203],
+  plum: [221,160,221],
+  powderblue: [176,224,230],
+  purple: [128,0,128],
+  rebeccapurple: [102, 51, 153],
+  red:  [255,0,0],
+  rosybrown:  [188,143,143],
+  royalblue:  [65,105,225],
+  saddlebrown:  [139,69,19],
+  salmon: [250,128,114],
+  sandybrown: [244,164,96],
+  seagreen: [46,139,87],
+  seashell: [255,245,238],
+  sienna: [160,82,45],
+  silver: [192,192,192],
+  skyblue:  [135,206,235],
+  slateblue:  [106,90,205],
+  slategray:  [112,128,144],
+  slategrey:  [112,128,144],
+  snow: [255,250,250],
+  springgreen:  [0,255,127],
+  steelblue:  [70,130,180],
+  tan:  [210,180,140],
+  teal: [0,128,128],
+  thistle:  [216,191,216],
+  tomato: [255,99,71],
+  turquoise:  [64,224,208],
+  violet: [238,130,238],
+  wheat:  [245,222,179],
+  white:  [255,255,255],
+  whitesmoke: [245,245,245],
+  yellow: [255,255,0],
+  yellowgreen:  [154,205,50]
+};
+
+var reverseKeywords = {};
+for (var key in cssKeywords) {
+  reverseKeywords[JSON.stringify(cssKeywords[key])] = key;
+}
+
+},{}],50:[function(require,module,exports){
+var conversions = require("./conversions");
+
+var convert = function() {
+   return new Converter();
+}
+
+for (var func in conversions) {
+  // export Raw versions
+  convert[func + "Raw"] =  (function(func) {
+    // accept array or plain args
+    return function(arg) {
+      if (typeof arg == "number")
+        arg = Array.prototype.slice.call(arguments);
+      return conversions[func](arg);
+    }
+  })(func);
+
+  var pair = /(\w+)2(\w+)/.exec(func),
+      from = pair[1],
+      to = pair[2];
+
+  // export rgb2hsl and ["rgb"]["hsl"]
+  convert[from] = convert[from] || {};
+
+  convert[from][to] = convert[func] = (function(func) { 
+    return function(arg) {
+      if (typeof arg == "number")
+        arg = Array.prototype.slice.call(arguments);
+      
+      var val = conversions[func](arg);
+      if (typeof val == "string" || val === undefined)
+        return val; // keyword
+
+      for (var i = 0; i < val.length; i++)
+        val[i] = Math.round(val[i]);
+      return val;
+    }
+  })(func);
+}
+
+
+/* Converter does lazy conversion and caching */
+var Converter = function() {
+   this.convs = {};
+};
+
+/* Either get the values for a space or
+  set the values for a space, depending on args */
+Converter.prototype.routeSpace = function(space, args) {
+   var values = args[0];
+   if (values === undefined) {
+      // color.rgb()
+      return this.getValues(space);
+   }
+   // color.rgb(10, 10, 10)
+   if (typeof values == "number") {
+      values = Array.prototype.slice.call(args);        
+   }
+
+   return this.setValues(space, values);
+};
+  
+/* Set the values for a space, invalidating cache */
+Converter.prototype.setValues = function(space, values) {
+   this.space = space;
+   this.convs = {};
+   this.convs[space] = values;
+   return this;
+};
+
+/* Get the values for a space. If there's already
+  a conversion for the space, fetch it, otherwise
+  compute it */
+Converter.prototype.getValues = function(space) {
+   var vals = this.convs[space];
+   if (!vals) {
+      var fspace = this.space,
+          from = this.convs[fspace];
+      vals = convert[fspace][space](from);
+
+      this.convs[space] = vals;
+   }
+  return vals;
+};
+
+["rgb", "hsl", "hsv", "cmyk", "keyword"].forEach(function(space) {
+   Converter.prototype[space] = function(vals) {
+      return this.routeSpace(space, arguments);
+   }
+});
+
+module.exports = convert;
+},{"./conversions":49}],51:[function(require,module,exports){
+module.exports = {
+	"aliceblue": [240, 248, 255],
+	"antiquewhite": [250, 235, 215],
+	"aqua": [0, 255, 255],
+	"aquamarine": [127, 255, 212],
+	"azure": [240, 255, 255],
+	"beige": [245, 245, 220],
+	"bisque": [255, 228, 196],
+	"black": [0, 0, 0],
+	"blanchedalmond": [255, 235, 205],
+	"blue": [0, 0, 255],
+	"blueviolet": [138, 43, 226],
+	"brown": [165, 42, 42],
+	"burlywood": [222, 184, 135],
+	"cadetblue": [95, 158, 160],
+	"chartreuse": [127, 255, 0],
+	"chocolate": [210, 105, 30],
+	"coral": [255, 127, 80],
+	"cornflowerblue": [100, 149, 237],
+	"cornsilk": [255, 248, 220],
+	"crimson": [220, 20, 60],
+	"cyan": [0, 255, 255],
+	"darkblue": [0, 0, 139],
+	"darkcyan": [0, 139, 139],
+	"darkgoldenrod": [184, 134, 11],
+	"darkgray": [169, 169, 169],
+	"darkgreen": [0, 100, 0],
+	"darkgrey": [169, 169, 169],
+	"darkkhaki": [189, 183, 107],
+	"darkmagenta": [139, 0, 139],
+	"darkolivegreen": [85, 107, 47],
+	"darkorange": [255, 140, 0],
+	"darkorchid": [153, 50, 204],
+	"darkred": [139, 0, 0],
+	"darksalmon": [233, 150, 122],
+	"darkseagreen": [143, 188, 143],
+	"darkslateblue": [72, 61, 139],
+	"darkslategray": [47, 79, 79],
+	"darkslategrey": [47, 79, 79],
+	"darkturquoise": [0, 206, 209],
+	"darkviolet": [148, 0, 211],
+	"deeppink": [255, 20, 147],
+	"deepskyblue": [0, 191, 255],
+	"dimgray": [105, 105, 105],
+	"dimgrey": [105, 105, 105],
+	"dodgerblue": [30, 144, 255],
+	"firebrick": [178, 34, 34],
+	"floralwhite": [255, 250, 240],
+	"forestgreen": [34, 139, 34],
+	"fuchsia": [255, 0, 255],
+	"gainsboro": [220, 220, 220],
+	"ghostwhite": [248, 248, 255],
+	"gold": [255, 215, 0],
+	"goldenrod": [218, 165, 32],
+	"gray": [128, 128, 128],
+	"green": [0, 128, 0],
+	"greenyellow": [173, 255, 47],
+	"grey": [128, 128, 128],
+	"honeydew": [240, 255, 240],
+	"hotpink": [255, 105, 180],
+	"indianred": [205, 92, 92],
+	"indigo": [75, 0, 130],
+	"ivory": [255, 255, 240],
+	"khaki": [240, 230, 140],
+	"lavender": [230, 230, 250],
+	"lavenderblush": [255, 240, 245],
+	"lawngreen": [124, 252, 0],
+	"lemonchiffon": [255, 250, 205],
+	"lightblue": [173, 216, 230],
+	"lightcoral": [240, 128, 128],
+	"lightcyan": [224, 255, 255],
+	"lightgoldenrodyellow": [250, 250, 210],
+	"lightgray": [211, 211, 211],
+	"lightgreen": [144, 238, 144],
+	"lightgrey": [211, 211, 211],
+	"lightpink": [255, 182, 193],
+	"lightsalmon": [255, 160, 122],
+	"lightseagreen": [32, 178, 170],
+	"lightskyblue": [135, 206, 250],
+	"lightslategray": [119, 136, 153],
+	"lightslategrey": [119, 136, 153],
+	"lightsteelblue": [176, 196, 222],
+	"lightyellow": [255, 255, 224],
+	"lime": [0, 255, 0],
+	"limegreen": [50, 205, 50],
+	"linen": [250, 240, 230],
+	"magenta": [255, 0, 255],
+	"maroon": [128, 0, 0],
+	"mediumaquamarine": [102, 205, 170],
+	"mediumblue": [0, 0, 205],
+	"mediumorchid": [186, 85, 211],
+	"mediumpurple": [147, 112, 219],
+	"mediumseagreen": [60, 179, 113],
+	"mediumslateblue": [123, 104, 238],
+	"mediumspringgreen": [0, 250, 154],
+	"mediumturquoise": [72, 209, 204],
+	"mediumvioletred": [199, 21, 133],
+	"midnightblue": [25, 25, 112],
+	"mintcream": [245, 255, 250],
+	"mistyrose": [255, 228, 225],
+	"moccasin": [255, 228, 181],
+	"navajowhite": [255, 222, 173],
+	"navy": [0, 0, 128],
+	"oldlace": [253, 245, 230],
+	"olive": [128, 128, 0],
+	"olivedrab": [107, 142, 35],
+	"orange": [255, 165, 0],
+	"orangered": [255, 69, 0],
+	"orchid": [218, 112, 214],
+	"palegoldenrod": [238, 232, 170],
+	"palegreen": [152, 251, 152],
+	"paleturquoise": [175, 238, 238],
+	"palevioletred": [219, 112, 147],
+	"papayawhip": [255, 239, 213],
+	"peachpuff": [255, 218, 185],
+	"peru": [205, 133, 63],
+	"pink": [255, 192, 203],
+	"plum": [221, 160, 221],
+	"powderblue": [176, 224, 230],
+	"purple": [128, 0, 128],
+	"rebeccapurple": [102, 51, 153],
+	"red": [255, 0, 0],
+	"rosybrown": [188, 143, 143],
+	"royalblue": [65, 105, 225],
+	"saddlebrown": [139, 69, 19],
+	"salmon": [250, 128, 114],
+	"sandybrown": [244, 164, 96],
+	"seagreen": [46, 139, 87],
+	"seashell": [255, 245, 238],
+	"sienna": [160, 82, 45],
+	"silver": [192, 192, 192],
+	"skyblue": [135, 206, 235],
+	"slateblue": [106, 90, 205],
+	"slategray": [112, 128, 144],
+	"slategrey": [112, 128, 144],
+	"snow": [255, 250, 250],
+	"springgreen": [0, 255, 127],
+	"steelblue": [70, 130, 180],
+	"tan": [210, 180, 140],
+	"teal": [0, 128, 128],
+	"thistle": [216, 191, 216],
+	"tomato": [255, 99, 71],
+	"turquoise": [64, 224, 208],
+	"violet": [238, 130, 238],
+	"wheat": [245, 222, 179],
+	"white": [255, 255, 255],
+	"whitesmoke": [245, 245, 245],
+	"yellow": [255, 255, 0],
+	"yellowgreen": [154, 205, 50]
+};
+},{}],52:[function(require,module,exports){
 var core  = require('../../modules/_core')
   , $JSON = core.JSON || (core.JSON = {stringify: JSON.stringify});
 module.exports = function stringify(it){ // eslint-disable-line no-unused-vars
   return $JSON.stringify.apply($JSON, arguments);
 };
-},{"../../modules/_core":5}],5:[function(require,module,exports){
+},{"../../modules/_core":53}],53:[function(require,module,exports){
 var core = module.exports = {version: '2.4.0'};
 if(typeof __e == 'number')__e = core; // eslint-disable-line no-undef
-},{}],6:[function(require,module,exports){
+},{}],54:[function(require,module,exports){
 (function() {
   var base64map
       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/',
@@ -219,7 +12963,7 @@ if(typeof __e == 'number')__e = core; // eslint-disable-line no-undef
   module.exports = crypt;
 })();
 
-},{}],7:[function(require,module,exports){
+},{}],55:[function(require,module,exports){
 /*!
  * Determine if an object is a Buffer
  *
@@ -242,7 +12986,7 @@ function isSlowBuffer (obj) {
   return typeof obj.readFloatLE === 'function' && typeof obj.slice === 'function' && isBuffer(obj.slice(0, 0))
 }
 
-},{}],8:[function(require,module,exports){
+},{}],56:[function(require,module,exports){
 (function(){
   var crypt = require('crypt'),
       utf8 = require('charenc').utf8,
@@ -404,7 +13148,7 @@ function isSlowBuffer (obj) {
 
 })();
 
-},{"charenc":3,"crypt":6,"is-buffer":7}],9:[function(require,module,exports){
+},{"charenc":3,"crypt":54,"is-buffer":55}],57:[function(require,module,exports){
 //! moment.js
 //! version : 2.18.1
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
@@ -4869,7 +17613,7 @@ return hooks;
 
 })));
 
-},{}],10:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 /*!
  * Muse UI v2.0.3 (https://github.com/myronliu347/vue-carbon)
  * (c) 2017 Myron Liu 
@@ -4879,7 +17623,7 @@ return hooks;
  * Programatically add the following
  */
 for(a=97;a<123;a++)n[String.fromCharCode(a)]=a-32;for(var a=48;a<58;a++)n[a-48]=a;for(a=1;a<13;a++)n["f"+a]=a+111;for(a=0;a<10;a++)n["numpad "+a]=a+96;var r=e.names=e.title={};for(a in n)r[n[a]]=a;for(var s in i)n[s]=i[s]},function(t,e,n){"use strict";function i(t){var e=arguments.length>1&&void 0!==arguments[1]?arguments[1]:"ampm",n=arguments.length>2&&void 0!==arguments[2]&&arguments[2];if(!t)return"";var i=t.getHours(),a=t.getMinutes().toString();if("ampm"===e){var r=i<12;i%=12;var s=r?" am":" pm";return i=(i||12).toString(),a.length<2&&(a="0"+a),n&&"12"===i&&"00"===a?" pm"===s?"12 noon":"12 midnight":i+("00"===a?"":":"+a)+s}return i=i.toString(),i.length<2&&(i="0"+i),a.length<2&&(a="0"+a),i+":"+a}function a(t){var e=arguments.length>1&&void 0!==arguments[1]?arguments[1]:"ampm",n=(arguments.length>2&&void 0!==arguments[2]&&arguments[2],new Date);if(!t)return n;var i="",a=-1;"ampm"===e&&(a=t.indexOf("am"),a===-1&&(a=t.indexOf("midnight")),a!==-1?i="am":(i="pm",(a=t.indexOf("pm"))===-1&&(a=t.indexOf("noon")))),a!==-1&&(t=t.substring(0,a).trim());var r=t.split(":"),s=Number(r[0].trim());"pm"===i&&(s+=12),s>=24&&(s=0);var o=r.length>1?Number(r[1]):0;return n.setMinutes(o),n.setHours(s),n}function r(t){return 57.29577951308232*t}function s(t){var e=t.target,n=e.getBoundingClientRect();return{offsetX:t.clientX-n.left,offsetY:t.clientY-n.top}}function o(t){return"hour"===t.type&&(t.value<1||t.value>12)}e.b=i,e.a=a,e.d=r,e.c=s,e.e=o},function(t,e,n){var i=n(28);t.exports=function(t){if(!i(t))throw TypeError(t+" is not an object!");return t}},function(t,e,n){var i=n(7),a=n(4),r=n(244),s=n(15),o="prototype",l=function(t,e,n){var u,c,d,f=t&l.F,h=t&l.G,p=t&l.S,m=t&l.P,v=t&l.B,y=t&l.W,g=h?a:a[e]||(a[e]={}),b=g[o],x=h?i:p?i[e]:(i[e]||{})[o];h&&(n=e);for(u in n)(c=!f&&x&&void 0!==x[u])&&u in g||(d=c?x[u]:n[u],g[u]=h&&"function"!=typeof x[u]?n[u]:v&&c?r(d,i):y&&x[u]==d?function(t){var e=function(e,n,i){if(this instanceof t){switch(arguments.length){case 0:return new t;case 1:return new t(e);case 2:return new t(e,n)}return new t(e,n,i)}return t.apply(this,arguments)};return e[o]=t[o],e}(d):m&&"function"==typeof d?r(Function.call,d):d,m&&((g.virtual||(g.virtual={}))[u]=d,t&l.R&&b&&!b[u]&&s(b,u,d)))};l.F=1,l.G=2,l.S=4,l.P=8,l.B=16,l.W=32,l.U=64,l.R=128,t.exports=l},function(t,e){t.exports={}},function(t,e,n){"use strict";var i=n(396),a=n.n(i);n.d(e,"a",function(){return a.a})},function(t,e,n){"use strict";var i=n(405),a=n.n(i);n.d(e,"a",function(){return a.a})},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(80),a=n.n(i);n.d(e,"menu",function(){return a.a});var r=n(81),s=n.n(r);n.d(e,"menuItem",function(){return s.a})},function(t,e,n){"use strict";function i(t){var e=a(t);return e.setMonth(e.getMonth()+1),e.setDate(e.getDate()-1),e.getDate()}function a(t){return new Date(t.getFullYear(),t.getMonth(),1)}function r(t,e){for(var n=[],a=i(t),r=[],s=[],o=1;o<=a;o++)n.push(new Date(t.getFullYear(),t.getMonth(),o));var l=function(t){for(var e=7-t.length,n=0;n<e;++n)t[r.length?"push":"unshift"](null);r.push(t)};return n.forEach(function(t){s.length>0&&t.getDay()===e&&(l(s),s=[]),s.push(t),n.indexOf(t)===n.length-1&&l(s)}),r}function s(t,e){var n=u(t);return n.setDate(t.getDate()+e),n}function o(t,e){var n=u(t);return n.setMonth(t.getMonth()+e),n}function l(t,e){var n=u(t);return n.setFullYear(t.getFullYear()+e),n}function u(t){return new Date(t.getTime())}function c(t){var e=u(t);return e.setHours(0,0,0,0),e}function d(t,e){var n=c(t),i=c(e);return n.getTime()<i.getTime()}function f(t,e){var n=c(t),i=c(e);return n.getTime()>i.getTime()}function h(t,e,n){return!d(t,e)&&!f(t,n)}function p(t,e){return t&&e&&t.getFullYear()===e.getFullYear()&&t.getMonth()===e.getMonth()&&t.getDate()===e.getDate()}function m(t,e){var n=void 0;return n=12*(t.getFullYear()-e.getFullYear()),n+=t.getMonth(),n-=e.getMonth()}function v(t,e){e=e||"yyyy-MM-dd",t=t||new Date;var n=e;return n=n.replace(/yyyy|YYYY/,t.getFullYear()),n=n.replace(/yy|YY/,t.getYear()%100>9?(t.getYear()%100).toString():"0"+t.getYear()%100),n=n.replace(/MM/,x(t.getMonth()+1)),n=n.replace(/M/g,t.getMonth()+1),n=n.replace(/w|W/g,C.dayAbbreviation[t.getDay()]),n=n.replace(/dd|DD/,x(t.getDate())),n=n.replace(/d|D/g,t.getDate()),n=n.replace(/hh|HH/,x(t.getHours())),n=n.replace(/h|H/g,t.getHours()),n=n.replace(/mm/,x(t.getMinutes())),n=n.replace(/m/g,t.getMinutes()),n=n.replace(/ss|SS/,x(t.getSeconds())),n=n.replace(/s|S/g,t.getSeconds())}function y(t,e){for(var n,i,a=0,r=0,s="",o="",l=new Date,u=l.getFullYear(),c=l.getMonth()+1,d=1,f=l.getHours(),h=l.getMinutes(),p=l.getSeconds(),m="";r<e.length;){for(s=e.charAt(r),o="";e.charAt(r)===s&&r<e.length;)o+=e.charAt(r++);if("yyyy"===o||"YYYY"===o||"yy"===o||"YY"===o||"y"===o||"Y"===o){if("yyyy"!==o&&"YYYY"!==o||(n=4,i=4),"yy"!==o&&"YY"!==o||(n=2,i=2),"y"!==o&&"Y"!==o||(n=2,i=4),null==(u=g(t,a,n,i)))return 0;a+=u.length,2===u.length&&(u=u>70?u-0+1900:u-0+2e3)}else if("MMM"===o||"NNN"===o){c=0;for(var v=0;v<S.length;v++){var y=S[v];if(t.substring(a,a+y.length).toLowerCase()===y.toLowerCase()&&("MMM"===o||"NNN"===o&&v>11)){c=v+1,c>12&&(c-=12),a+=y.length;break}}if(c<1||c>12)return 0}else if("EE"===o||"E"===o)for(var b=0;b<w.length;b++){var x=w[b];if(t.substring(a,a+x.length).toLowerCase()===x.toLowerCase()){a+=x.length;break}}else if("MM"===o||"M"===o){if(null==(c=g(t,a,o.length,2))||c<1||c>12)return 0;a+=c.length}else if("dd"===o||"d"===o||"DD"===o||"D"===o){if(null===(d=g(t,a,o.length,2))||d<1||d>31)return 0;a+=d.length}else if("hh"===o||"h"===o){if(null==(f=g(t,a,o.length,2))||f<1||f>12)return 0;a+=f.length}else if("HH"===o||"H"===o){if(null==(f=g(t,a,o.length,2))||f<0||f>23)return 0;a+=f.length}else if("KK"===o||"K"===o){if(null==(f=g(t,a,o.length,2))||f<0||f>11)return 0;a+=f.length}else if("kk"===o||"k"===o){if(null==(f=g(t,a,o.length,2))||f<1||f>24)return 0;a+=f.length,f--}else if("mm"===o||"m"===o){if(null==(h=g(t,a,o.length,2))||h<0||h>59)return 0;a+=h.length}else if("ss"===o||"s"===o||"SS"===o||"s"===o){if(null==(p=g(t,a,o.length,2))||p<0||p>59)return 0;a+=p.length}else if("u"===o){var C=g(t,a,o.length,3);if(null==C||C<0||C>999)return 0;a+=C.length}else if("a"===o){if("am"===t.substring(a,a+2).toLowerCase())m="AM";else{if("pm"!==t.substring(a,a+2).toLowerCase())return 0;m="PM"}a+=2}else{if(t.substring(a,a+o.length)!==o)return 0;a+=o.length}}if(2===c)if(u%4==0&&u%100!=0||u%400==0){if(d>29)return 0}else if(d>28)return 0;return(4===c||6===c||9===c||11===c)&&d>30?0:(f<12&&"PM"===m?f=f-0+12:f>11&&"AM"===m&&(f-=12),new Date(u,c-1,d,f,h,p))}function g(t,e,n,i){for(var a=i;a>=n;a--){var r=t.substring(e,e+a);if(r.length<n)return null;if(b(r))return r}return null}function b(t){return new RegExp(/^\d+$/).test(t)}function x(t){return t>9?t:"0"+t}n.d(e,"a",function(){return _}),e.j=r,e.i=s,e.g=o,e.d=l,e.e=u,e.h=c,e.l=h,e.k=p,e.f=m,e.c=v,e.b=y;var C={dayAbbreviation:["日","一","二","三","四","五","六"],dayList:["星期日","星期一","星期二","星期三","星期四","星期五","星期六"],monthList:["01","02","03","04","05","06","07","08","09","10","11","12"],monthLongList:["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"]},_={formatDisplay:function(t){var e=t.getDate();return C.monthList[t.getMonth()]+"-"+(e>9?e:"0"+e)+" "+C.dayList[t.getDay()]},formatMonth:function(t){return t.getFullYear()+" "+C.monthLongList[t.getMonth()]},getWeekDayArray:function(t){for(var e=[],n=[],i=C.dayAbbreviation,a=0;a<i.length;a++)a<t?n.push(i[a]):e.push(i[a]);return e.concat(n)}},S=["January","February","March","April","May","June","July","August","September","October","November","December","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],w=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sun","Mon","Tue","Wed","Thu","Fri","Sat"]},function(t,e,n){"use strict";var i=n(38),a=n(27);e.a={props:{open:{type:Boolean,default:!1},overlay:{type:Boolean,default:!0},overlayOpacity:{type:Number,default:.4},overlayColor:{type:String,default:"#000"},escPressClose:{type:Boolean,default:!0},appendBody:{type:Boolean,default:!0}},data:function(){return{overlayZIndex:n.i(a.a)(),zIndex:n.i(a.a)()}},methods:{overlayClick:function(t){this.overlay&&this.$emit("close","overlay")},escPress:function(t){this.escPressClose&&this.$emit("close","esc")},clickOutSide:function(t){this.$emit("clickOutSide",t)},setZIndex:function(){var t=this.$el;this.zIndex||(this.zIndex=n.i(a.a)()),t&&(t.style.zIndex=this.zIndex)},bindClickOutSide:function(){var t=this;this._handleClickOutSide||(this._handleClickOutSide=function(e){var n=t.popupEl();n&&n.contains(e.target)||t.clickOutSide(e)}),setTimeout(function(){window.addEventListener("click",t._handleClickOutSide)},0)},unBindClickOutSide:function(){window.removeEventListener("click",this._handleClickOutSide)},resetZIndex:function(){this.overlayZIndex=n.i(a.a)(),this.zIndex=n.i(a.a)()},popupEl:function(){return this.appendBody?this.$refs.popup:this.$el},appendPopupElToBody:function(){var t=this;this.appendBody&&this.$nextTick(function(){var e=t.popupEl();if(!e)return void console.warn("必须有一个 ref=‘popup’ 的元素");document.body.appendChild(e)})}},mounted:function(){this.open&&(i.a.open(this),this.bindClickOutSide(),this.appendPopupElToBody())},updated:function(){this.overlay||this.setZIndex()},beforeDestroy:function(){if(i.a.close(this),this.unBindClickOutSide(),this.appendBody){var t=this.popupEl();if(!t)return;document.body.removeChild(t)}},watch:{open:function(t,e){t!==e&&(t?(this.bindClickOutSide(),this.resetZIndex(),i.a.open(this),this.appendPopupElToBody()):(this.unBindClickOutSide(),i.a.close(this)))}}}},function(t,e,n){"use strict";n.d(e,"a",function(){return a});var i=20141223,a=function(){return i++}},function(t,e){t.exports=function(t){return"object"==typeof t?null!==t:"function"==typeof t}},function(t,e){e.f={}.propertyIsEnumerable},function(t,e){t.exports=function(t,e){return{enumerable:!(1&t),configurable:!(2&t),writable:!(4&t),value:e}}},function(t,e){var n=0,i=Math.random();t.exports=function(t){return"Symbol(".concat(void 0===t?"":t,")_",(++n+i).toString(36))}},function(t,e,n){n(293);var i=n(0)(n(174),n(471),null,null);t.exports=i.exports},function(t,e,n){"use strict";var i=n(392),a=n.n(i);n.d(e,"a",function(){return a.a})},function(t,e,n){"use strict";var i=n(450),a=n.n(i);n.d(e,"a",function(){return a.a})},function(t,e,n){"use strict";function i(t){return t&&t.__esModule?t:{default:t}}e.__esModule=!0;var a=n(66),r=i(a);e.default=r.default||function(t){for(var e=1;e<arguments.length;e++){var n=arguments[e];for(var i in n)Object.prototype.hasOwnProperty.call(n,i)&&(t[i]=n[i])}return t}},function(e,n){e.exports=t},function(t,e,n){"use strict";var i="@@clickoutsideContext";e.a={bind:function(t,e,n){var a=function(a){n.context&&!t.contains(a.target)&&(e.expression?n.context[t[i].methodName](a):t[i].bindingFn(a))};t[i]={documentHandler:a,methodName:e.expression,bindingFn:e.value},setTimeout(function(){document.addEventListener("click",a)},0)},update:function(t,e){t[i].methodName=e.expression,t[i].bindingFn=e.value},unbind:function(t){document.removeEventListener("click",t[i].documentHandler)}}},function(t,e,n){"use strict";var i=n(36),a=n.n(i),r=n(17),s=n.n(r),o=n(62),l=n.n(o),u=a.a.extend(l.a),c={instances:[],overlay:!1,open:function(t){t&&this.instances.indexOf(t)===-1&&(!this.overlay&&t.overlay&&this.showOverlay(t),this.instances.push(t),this.changeOverlayStyle())},close:function(t){var e=this,n=this.instances.indexOf(t);n!==-1&&a.a.nextTick(function(){e.instances.splice(n,1),0===e.instances.length&&e.closeOverlay(),e.changeOverlayStyle()})},showOverlay:function(t){var e=this.overlay=new u({el:document.createElement("div")});e.fixed=!0,e.color=t.overlayColor,e.opacity=t.overlayOpacity,e.zIndex=t.overlayZIndex,e.onClick=this.handleOverlayClick.bind(this),document.body.appendChild(e.$el),this.preventScrolling(),a.a.nextTick(function(){e.show=!0})},preventScrolling:function(){if(!this.locked){var t=document.getElementsByTagName("body")[0],e=document.getElementsByTagName("html")[0];this.bodyOverflow=t.style.overflow,this.htmlOverflow=e.style.overflow,t.style.overflow="hidden",e.style.overflow="hidden",this.locked=!0}},allowScrolling:function(){var t=document.getElementsByTagName("body")[0],e=document.getElementsByTagName("html")[0];t.style.overflow=this.bodyOverflow||"",e.style.overflow=this.htmlOverflow||"",this.bodyOverflow=null,this.htmlOverflow=null,this.locked=!1},closeOverlay:function(){if(this.overlay){this.allowScrolling();var t=this.overlay;t.show=!1,this.overlay=null,setTimeout(function(){t.$el.remove(),t.$destroy()},450)}},changeOverlayStyle:function(){var t=this.instances[this.instances.length-1];this.overlay&&0!==this.instances.length&&t.overlay&&(this.overlay.color=t.overlayColor,this.overlay.opacity=t.overlayOpacity,this.overlay.zIndex=t.overlayZIndex)},handleOverlayClick:function(){if(0!==this.instances.length){var t=this.instances[this.instances.length-1];t.overlayClick&&t.overlayClick()}}};"undefined"!=typeof window&&window.addEventListener("keydown",function(t){if(0!==c.instances.length&&"esc"===s()(t)){var e=c.instances[c.instances.length-1];e.escPress&&e.escPress()}}),e.a=c},function(t,e,n){"use strict";n.d(e,"a",function(){return i}),n.d(e,"b",function(){return a});var i=function(t){var e=t.getBoundingClientRect(),n=document.body,i=t.clientTop||n.clientTop||0,a=t.clientLeft||n.clientLeft||0,r=window.pageYOffset||t.scrollTop,s=window.pageXOffset||t.scrollLeft;return{top:e.top+r-i,left:e.left+s-a}},a=function(t,e){var n=["msTransitionEnd","mozTransitionEnd","oTransitionEnd","webkitTransitionEnd","transitionend"],i={handleEvent:function(a){n.forEach(function(e){t.removeEventListener(e,i,!1)}),e.apply(t,arguments)}};n.forEach(function(e){t.addEventListener(e,i,!1)})}},function(t,e){var n={}.toString;t.exports=function(t){return n.call(t).slice(8,-1)}},function(t,e){t.exports=function(t){if(void 0==t)throw TypeError("Can't call method on  "+t);return t}},function(t,e){t.exports="constructor,hasOwnProperty,isPrototypeOf,propertyIsEnumerable,toLocaleString,toString,valueOf".split(",")},function(t,e){t.exports=!0},function(t,e){e.f=Object.getOwnPropertySymbols},function(t,e,n){var i=n(11).f,a=n(10),r=n(6)("toStringTag");t.exports=function(t,e,n){t&&!a(t=n?t:t.prototype,r)&&i(t,r,{configurable:!0,value:e})}},function(t,e,n){var i=n(47)("keys"),a=n(31);t.exports=function(t){return i[t]||(i[t]=a(t))}},function(t,e,n){var i=n(7),a="__core-js_shared__",r=i[a]||(i[a]={});t.exports=function(t){return r[t]||(r[t]={})}},function(t,e){var n=Math.ceil,i=Math.floor;t.exports=function(t){return isNaN(t=+t)?0:(t>0?i:n)(t)}},function(t,e,n){var i=n(41);t.exports=function(t){return Object(i(t))}},function(t,e,n){var i=n(28);t.exports=function(t,e){if(!i(t))return t;var n,a;if(e&&"function"==typeof(n=t.toString)&&!i(a=n.call(t)))return a;if("function"==typeof(n=t.valueOf)&&!i(a=n.call(t)))return a;if(!e&&"function"==typeof(n=t.toString)&&!i(a=n.call(t)))return a;throw TypeError("Can't convert object to primitive value")}},function(t,e,n){var i=n(7),a=n(4),r=n(43),s=n(52),o=n(11).f;t.exports=function(t){var e=a.Symbol||(a.Symbol=r?{}:i.Symbol||{});"_"==t.charAt(0)||t in e||o(e,t,{value:s.f(t)})}},function(t,e,n){e.f=n(6)},function(t,e,n){"use strict";var i=n(258)(!0);n(71)(String,"String",function(t){this._t=String(t),this._i=0},function(){var t,e=this._t,n=this._i;return n>=e.length?{value:void 0,done:!0}:(t=i(e,n),this._i+=t.length,{value:t,done:!1})})},function(t,e,n){n(264);for(var i=n(7),a=n(15),r=n(21),s=n(6)("toStringTag"),o=["NodeList","DOMTokenList","MediaList","StyleSheetList","CSSRuleList"],l=0;l<5;l++){var u=o[l],c=i[u],d=c&&c.prototype;d&&!d[s]&&a(d,s,u),r[u]=r.Array}},function(t,e,n){n(339);var i=n(0)(n(170),n(513),null,null);t.exports=i.exports},function(t,e,n){"use strict";var i=n(379),a=n.n(i);n.d(e,"a",function(){return a.a})},function(t,e,n){"use strict";function i(t){t&&n.i(a.b)(i,t)}var a=n(1);n.i(a.b)(i,{disableTouchRipple:!1,disableFocusRipple:!1}),e.a=i},function(t,e,n){"use strict";var i=n(395),a=n.n(i);n.d(e,"a",function(){return a.a})},function(t,e,n){"use strict";var i=n(413),a=n.n(i);n.d(e,"a",function(){return a.a})},function(t,e,n){"use strict";var i=n(421),a=n.n(i);n.d(e,"a",function(){return a.a})},function(t,e,n){t.exports={default:n(238),__esModule:!0}},function(t,e,n){n(311);var i=n(0)(n(173),n(489),null,null);t.exports=i.exports},function(t,e,n){"use strict";e.a={mounted:function(){this.$bindResize()},methods:{$bindResize:function(){var t=this;this._handleResize=function(e){t.onResize&&t.onResize()},"undefined"!=typeof window&&window.addEventListener("resize",this._handleResize)},$unBindResize:function(){this._handleResize&&window.removeEventListener("resize",this._handleResize)}},beforeDestroy:function(){this.$unBindResize()}}},function(t,e,n){"use strict";e.a={props:{scroller:{default:function(){return window}}},mounted:function(){this.$bindScroll()},methods:{$bindScroll:function(){var t=this;this.scroller&&(this._handleScroll=function(e){t.onScroll&&t.onScroll()},this.scroller.addEventListener("scroll",this._handleScroll))},$unbindScroll:function(t){t=t||this.scroller,this._handleScroll&&t.removeEventListener("scroll",this._handleScroll)}},beforeDestroy:function(){this.$unbindScroll()},watch:{scroller:function(t,e){t!==e&&(this.$unbindScroll(e),this.$bindScroll(t))}}}},function(t,e,n){"use strict";var i=n(230),a=n.n(i),r=n(231),s=n.n(r),o="undefined"!=typeof window&&("ontouchstart"in window||window.DocumentTouch&&document instanceof window.DocumentTouch),l=function(){function t(e){a()(this,t),this.el=e,this.startPos={},this.endPos={},this.starts=[],this.drags=[],this.ends=[],o?this.el.addEventListener("touchstart",this,!1):this.el.addEventListener("mousedown",this,!1)}return s()(t,[{key:"handleEvent",value:function(t){switch(t.type){case"touchstart":this.touchStart(t);break;case"touchmove":this.touchMove(t);break;case"touchcancel":case"touchend":this.touchEnd(t);break;case"mousedown":this.mouseStart(t);break;case"mousemove":this.mouseMove(t);break;case"mouseleave":case"mouseup":this.mouseEnd(t)}}},{key:"touchStart",value:function(t){var e=this,n=t.touches[0];this.startPos={x:n.pageX,y:n.pageY,time:(new Date).getTime()},this.endPos={},this.el.addEventListener("touchmove",this,!1),this.el.addEventListener("touchend",this,!1),this.starts.map(function(n){n.call(e,e.startPos,t)})}},{key:"touchMove",value:function(t){var e=this;if(!(t.touches.length>1||t.scale&&1!==t.scale)){var n=t.touches[0];this.endPos={x:n.pageX-this.startPos.x,y:n.pageY-this.startPos.y,time:(new Date).getTime()-this.startPos.time},this.drags.map(function(n){n.call(e,e.endPos,t)})}}},{key:"touchEnd",value:function(t){var e=this;this.endPos.time=(new Date).getTime()-this.startPos.time,this.el.removeEventListener("touchmove",this,!1),this.el.removeEventListener("touchend",this,!1),this.ends.map(function(n){n.call(e,e.endPos,t)})}},{key:"mouseStart",value:function(t){var e=this;this.startPos={x:t.clientX,y:t.clientY,time:(new Date).getTime()},this.endPos={},this.el.addEventListener("mousemove",this,!1),this.el.addEventListener("mouseup",this,!1),this.starts.map(function(n){n.call(e,e.startPos,t)})}},{key:"mouseMove",value:function(t){var e=this;this.endPos={x:t.clientX-this.startPos.x,y:t.clientY-this.startPos.y},this.drags.map(function(n){n.call(e,e.endPos,t)})}},{key:"mouseEnd",value:function(t){var e=this;this.el.removeEventListener("mousemove",this,!1),this.el.removeEventListener("mouseup",this,!1),this.endPos.time=(new Date).getTime()-this.startPos.time,this.ends.map(function(n){n.call(e,e.endPos,t)})}},{key:"start",value:function(t){return this.starts.push(t),this}},{key:"end",value:function(t){return this.ends.push(t),this}},{key:"drag",value:function(t){return this.drags.push(t),this}},{key:"reset",value:function(t){var e=t.touches?t.touches[0]:{};this.startPos={x:e.pageX||t.clientX,y:e.pageY||t.clientY,time:(new Date).getTime()},this.endPos={x:0,y:0}}},{key:"destory",value:function(){o?this.el.removeEventListener("touchstart",this,!1):this.el.removeEventListener("mousedown",this,!1)}}]),t}();e.a=l},function(t,e,n){t.exports={default:n(236),__esModule:!0}},function(t,e,n){var i=n(40),a=n(6)("toStringTag"),r="Arguments"==i(function(){return arguments}()),s=function(t,e){try{return t[e]}catch(t){}};t.exports=function(t){var e,n,o;return void 0===t?"Undefined":null===t?"Null":"string"==typeof(n=s(e=Object(t),a))?n:r?i(e):"Object"==(o=i(e))&&"function"==typeof e.callee?"Arguments":o}},function(t,e,n){var i=n(28),a=n(7).document,r=i(a)&&i(a.createElement);t.exports=function(t){return r?a.createElement(t):{}}},function(t,e,n){t.exports=!n(9)&&!n(14)(function(){return 7!=Object.defineProperty(n(68)("div"),"a",{get:function(){return 7}}).a})},function(t,e,n){var i=n(40);t.exports=Object("z").propertyIsEnumerable(0)?Object:function(t){return"String"==i(t)?t.split(""):Object(t)}},function(t,e,n){"use strict";var i=n(43),a=n(20),r=n(75),s=n(15),o=n(10),l=n(21),u=n(248),c=n(45),d=n(256),f=n(6)("iterator"),h=!([].keys&&"next"in[].keys()),p="keys",m="values",v=function(){return this};t.exports=function(t,e,n,y,g,b,x){u(n,e,y);var C,_,S,w=function(t){if(!h&&t in T)return T[t];switch(t){case p:return function(){return new n(this,t)};case m:return function(){return new n(this,t)}}return function(){return new n(this,t)}},k=e+" Iterator",$=g==m,O=!1,T=t.prototype,M=T[f]||T["@@iterator"]||g&&T[g],D=M||w(g),F=g?$?w("entries"):D:void 0,P="Array"==e?T.entries||M:M;if(P&&(S=d(P.call(new t)))!==Object.prototype&&(c(S,k,!0),i||o(S,f)||s(S,f,v)),$&&M&&M.name!==m&&(O=!0,D=function(){return M.call(this)}),i&&!x||!h&&!O&&T[f]||s(T,f,D),l[e]=D,l[k]=v,g)if(C={values:$?D:w(m),keys:b?D:w(p),entries:F},x)for(_ in C)_ in T||r(T,_,C[_]);else a(a.P+a.F*(h||O),e,C);return C}},function(t,e,n){var i=n(19),a=n(253),r=n(42),s=n(46)("IE_PROTO"),o=function(){},l="prototype",u=function(){var t,e=n(68)("iframe"),i=r.length,a="<",s=">";for(e.style.display="none",n(246).appendChild(e),e.src="javascript:",t=e.contentWindow.document,t.open(),t.write(a+"script"+s+"document.F=Object"+a+"/script"+s),t.close(),u=t.F;i--;)delete u[l][r[i]];return u()};t.exports=Object.create||function(t,e){var n;return null!==t?(o[l]=i(t),n=new o,o[l]=null,n[s]=t):n=u(),void 0===e?n:a(n,e)}},function(t,e,n){var i=n(74),a=n(42).concat("length","prototype");e.f=Object.getOwnPropertyNames||function(t){return i(t,a)}},function(t,e,n){var i=n(10),a=n(12),r=n(243)(!1),s=n(46)("IE_PROTO");t.exports=function(t,e){var n,o=a(t),l=0,u=[];for(n in o)n!=s&&i(o,n)&&u.push(n);for(;e.length>l;)i(o,n=e[l++])&&(~r(u,n)||u.push(n));return u}},function(t,e,n){t.exports=n(15)},function(t,e,n){(function(e){function n(t){if("string"==typeof t)return t;if(a(t))return v?v.call(t):"";var e=t+"";return"0"==e&&1/t==-o?"-0":e}function i(t){return!!t&&"object"==typeof t}function a(t){return"symbol"==typeof t||i(t)&&h.call(t)==l}function r(t){return null==t?"":n(t)}function s(t){return r(t).toLowerCase()}var o=1/0,l="[object Symbol]",u="object"==typeof e&&e&&e.Object===Object&&e,c="object"==typeof self&&self&&self.Object===Object&&self,d=u||c||Function("return this")(),f=Object.prototype,h=f.toString,p=d.Symbol,m=p?p.prototype:void 0,v=m?m.toString:void 0;t.exports=s}).call(e,n(541))},function(t,e,n){n(277);var i=n(0)(n(171),n(455),null,null);t.exports=i.exports},function(t,e,n){n(332);var i=n(0)(n(172),n(507),null,null);t.exports=i.exports},function(t,e,n){n(342);var i=n(0)(n(176),n(516),null,null);t.exports=i.exports},function(t,e,n){n(299);var i=n(0)(n(178),n(478),null,null);t.exports=i.exports},function(t,e,n){n(290);var i=n(0)(n(179),n(469),null,null);t.exports=i.exports},function(t,e,n){n(359);var i=n(0)(n(197),n(534),null,null);t.exports=i.exports},function(t,e,n){n(357);var i=n(0)(n(203),n(532),null,null);t.exports=i.exports},function(t,e,n){n(355);var i=n(0)(n(205),n(530),null,null);t.exports=i.exports},function(t,e,n){n(314);var i=n(0)(n(218),n(492),null,null);t.exports=i.exports},function(t,e,n){n(327);var i=n(0)(n(219),null,null,null);t.exports=i.exports},function(t,e,n){"use strict";var i=n(366),a=n.n(i);n.d(e,"a",function(){return a.a})},function(t,e,n){"use strict";var i=n(367),a=n.n(i);n.d(e,"a",function(){return a.a})},function(t,e,n){"use strict";var i=n(368),a=n.n(i);n.d(e,"a",function(){return a.a})},function(t,e,n){"use strict";var i=n(369),a=n.n(i);n.d(e,"a",function(){return a.a})},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(370),a=n.n(i);n.d(e,"bottomNav",function(){return a.a});var r=n(371),s=n.n(r);n.d(e,"bottomNavItem",function(){return s.a})},function(t,e,n){"use strict";var i=n(372),a=n.n(i);n.d(e,"a",function(){return a.a})},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(373),a=n.n(i);n.d(e,"card",function(){return a.a});var r=n(375),s=n.n(r);n.d(e,"cardHeader",function(){return s.a});var o=n(376),l=n.n(o);n.d(e,"cardMedia",function(){return l.a});var u=n(378),c=n.n(u);n.d(e,"cardTitle",function(){return c.a});var d=n(377),f=n.n(d);n.d(e,"cardText",function(){return f.a});var h=n(374),p=n.n(h);n.d(e,"cardActions",function(){return p.a})},function(t,e,n){"use strict";var i=n(380),a=n.n(i);n.d(e,"a",function(){return a.a})},function(t,e,n){"use strict";var i=n(381),a=n.n(i);n.d(e,"a",function(){return a.a})},function(t,e,n){"use strict";var i=n(382),a=n.n(i);n.d(e,"a",function(){return a.a})},function(t,e,n){"use strict";var i=n(388),a=n.n(i);n.d(e,"a",function(){return a.a})},function(t,e,n){"use strict";var i=n(393),a=n.n(i);n.d(e,"a",function(){return a.a})},function(t,e,n){"use strict";var i=n(394),a=n.n(i);n.d(e,"a",function(){return a.a})},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(397),a=n.n(i);n.d(e,"flexbox",function(){return a.a});var r=n(398),s=n.n(r);n.d(e,"flexboxItem",function(){return s.a})},function(t,e,n){"use strict";var i=n(399),a=n.n(i);n.d(e,"a",function(){return a.a})},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(272),a=(n.n(i),n(401)),r=n.n(a);n.d(e,"row",function(){return r.a});var s=n(400),o=n.n(s);n.d(e,"col",function(){return o.a})},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(402),a=n.n(i);n.d(e,"gridList",function(){return a.a});var r=n(403),s=n.n(r);n.d(e,"gridTile",function(){return s.a})},function(t,e,n){"use strict";var i=n(406),a=n.n(i);n.d(e,"a",function(){return a.a})},function(t,e,n){"use strict";var i=n(407),a=n.n(i);n.d(e,"a",function(){return a.a})},function(t,e,n){"use strict";var i=n(409),a=n.n(i);n.d(e,"a",function(){return a.a})},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(79),a=n.n(i);n.d(e,"list",function(){return a.a});var r=n(410),s=n.n(r);n.d(e,"listItem",function(){return s.a})},function(t,e,n){"use strict";var i=n(412),a=n.n(i);n.d(e,"a",function(){return a.a})},function(t,e,n){"use strict";var i=n(415),a=n.n(i);n.d(e,"a",function(){return a.a})},function(t,e,n){"use strict";var i=n(417),a=n.n(i);n.d(e,"a",function(){return a.a})},function(t,e,n){"use strict";var i=n(418),a=n.n(i);n.d(e,"a",function(){return a.a})},function(t,e,n){"use strict";var i=n(419),a=n.n(i);n.d(e,"a",function(){return a.a})},function(t,e,n){"use strict";var i=n(420),a=n.n(i);n.d(e,"a",function(){return a.a})},function(t,e,n){"use strict";var i=n(422),a=n.n(i);n.d(e,"a",function(){return a.a})},function(t,e,n){"use strict";var i=n(423),a=n.n(i);n.d(e,"a",function(){return a.a})},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(424),a=n.n(i);n.d(e,"step",function(){return a.a});var r=n(425),s=n.n(r);n.d(e,"stepButton",function(){return s.a});var o=n(427),l=n.n(o);n.d(e,"stepContent",function(){return l.a});var u=n(82),c=n.n(u);n.d(e,"stepLabel",function(){return c.a});var d=n(428),f=n.n(d);n.d(e,"stepper",function(){return f.a})},function(t,e,n){"use strict";var i=n(429),a=n.n(i);n.d(e,"a",function(){return a.a})},function(t,e,n){"use strict";var i=n(430),a=n.n(i);n.d(e,"a",function(){return a.a})},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(431),a=n.n(i);n.d(e,"table",function(){return a.a});var r=n(434),s=n.n(r);n.d(e,"thead",function(){return s.a});var o=n(432),l=n.n(o);n.d(e,"tbody",function(){return l.a});var u=n(433),c=n.n(u);n.d(e,"tfoot",function(){return c.a});var d=n(435),f=n.n(d);n.d(e,"tr",function(){return f.a});var h=n(84),p=n.n(h);n.d(e,"th",function(){return p.a});var m=n(83),v=n.n(m);n.d(e,"td",function(){return v.a})},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(437),a=n.n(i);n.d(e,"tabs",function(){return a.a});var r=n(436),s=n.n(r);n.d(e,"tab",function(){return s.a})},function(t,e,n){"use strict";var i=n(447),a=n.n(i);n.d(e,"a",function(){return a.a})},function(t,e,n){"use strict";var i=n(449),a=n.n(i);n.d(e,"a",function(){return a.a})},function(t,e){},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(76),a=n.n(i);n.d(e,"levenshteinDistance",function(){return r}),n.d(e,"noFilter",function(){return s}),n.d(e,"caseSensitiveFilter",function(){return o}),n.d(e,"caseInsensitiveFilter",function(){return l}),n.d(e,"levenshteinDistanceFilter",function(){return u}),n.d(e,"fuzzyFilter",function(){return c});var r=function(t,e){for(var n=[],i=void 0,a=void 0,r=0;r<=e.length;r++)for(var s=0;s<=t.length;s++)a=r&&s?t.charAt(s-1)===e.charAt(r-1)?i:Math.min(n[s],n[s-1],i)+1:r+s,i=n[s],n[s]=a;return n.pop()},s=function(){return!0},o=function(t,e){return""!==t&&e.indexOf(t)!==-1},l=function(t,e){return a()(e).indexOf(t.toLowerCase())!==-1},u=function(t){if(void 0===t)return r;if("number"!=typeof t)throw"Error: levenshteinDistanceFilter is a filter generator, not a filter!";return function(e,n){return r(e,n)<t}},c=function(t,e){var n=a()(e);t=a()(t);for(var i=0,r=0;r<e.length;r++)n[r]===t[i]&&(i+=1);return i===t.length}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0}),n.d(e,"red50",function(){return i}),n.d(e,"red100",function(){return a}),n.d(e,"red200",function(){return r}),n.d(e,"red300",function(){return s}),n.d(e,"red400",function(){return o}),n.d(e,"red500",function(){return l}),n.d(e,"red600",function(){return u}),n.d(e,"red700",function(){return c}),n.d(e,"red800",function(){return d}),n.d(e,"red900",function(){return f}),n.d(e,"redA100",function(){return h}),n.d(e,"redA200",function(){return p}),n.d(e,"redA400",function(){return m}),n.d(e,"redA700",function(){return v}),n.d(e,"red",function(){return y}),n.d(e,"pink50",function(){return g}),n.d(e,"pink100",function(){return b}),n.d(e,"pink200",function(){return x}),n.d(e,"pink300",function(){return C}),n.d(e,"pink400",function(){return _}),n.d(e,"pink500",function(){return S}),n.d(e,"pink600",function(){return w}),n.d(e,"pink700",function(){return k}),n.d(e,"pink800",function(){return $}),n.d(e,"pink900",function(){return O}),n.d(e,"pinkA100",function(){return T}),n.d(e,"pinkA200",function(){return M}),n.d(e,"pinkA400",function(){return D}),n.d(e,"pinkA700",function(){return F}),n.d(e,"pink",function(){return P}),n.d(e,"purple50",function(){return A}),n.d(e,"purple100",function(){return E}),n.d(e,"purple200",function(){return j}),n.d(e,"purple300",function(){return B}),n.d(e,"purple400",function(){return I}),n.d(e,"purple500",function(){return R}),n.d(e,"purple600",function(){return L}),n.d(e,"purple700",function(){return z}),n.d(e,"purple800",function(){return H}),n.d(e,"purple900",function(){return N}),n.d(e,"purpleA100",function(){return V}),n.d(e,"purpleA200",function(){return W}),n.d(e,"purpleA400",function(){return Y}),n.d(e,"purpleA700",function(){return K}),n.d(e,"purple",function(){return G}),n.d(e,"deepPurple50",function(){return X}),n.d(e,"deepPurple100",function(){return U}),n.d(e,"deepPurple200",function(){return q}),n.d(e,"deepPurple300",function(){return Z}),n.d(e,"deepPurple400",function(){return J}),n.d(e,"deepPurple500",function(){return Q}),n.d(e,"deepPurple600",function(){return tt}),n.d(e,"deepPurple700",function(){return et}),n.d(e,"deepPurple800",function(){return nt}),n.d(e,"deepPurple900",function(){return it}),n.d(e,"deepPurpleA100",function(){return at}),n.d(e,"deepPurpleA200",function(){return rt}),n.d(e,"deepPurpleA400",function(){return st}),n.d(e,"deepPurpleA700",function(){return ot}),n.d(e,"deepPurple",function(){return lt}),n.d(e,"indigo50",function(){return ut}),n.d(e,"indigo100",function(){return ct}),n.d(e,"indigo200",function(){return dt}),n.d(e,"indigo300",function(){return ft}),n.d(e,"indigo400",function(){return ht}),n.d(e,"indigo500",function(){return pt}),n.d(e,"indigo600",function(){return mt}),n.d(e,"indigo700",function(){return vt}),n.d(e,"indigo800",function(){return yt}),n.d(e,"indigo900",function(){return gt}),n.d(e,"indigoA100",function(){return bt}),n.d(e,"indigoA200",function(){return xt}),n.d(e,"indigoA400",function(){return Ct}),n.d(e,"indigoA700",function(){return _t}),n.d(e,"indigo",function(){return St}),n.d(e,"blue50",function(){return wt}),n.d(e,"blue100",function(){return kt}),n.d(e,"blue200",function(){return $t}),n.d(e,"blue300",function(){return Ot}),n.d(e,"blue400",function(){return Tt}),n.d(e,"blue500",function(){return Mt}),n.d(e,"blue600",function(){return Dt}),n.d(e,"blue700",function(){return Ft}),n.d(e,"blue800",function(){return Pt}),n.d(e,"blue900",function(){return At}),n.d(e,"blueA100",function(){return Et}),n.d(e,"blueA200",function(){return jt}),n.d(e,"blueA400",function(){return Bt}),n.d(e,"blueA700",function(){return It}),n.d(e,"blue",function(){return Rt}),n.d(e,"lightBlue50",function(){return Lt}),n.d(e,"lightBlue100",function(){return zt}),n.d(e,"lightBlue200",function(){return Ht}),n.d(e,"lightBlue300",function(){return Nt}),n.d(e,"lightBlue400",function(){return Vt}),n.d(e,"lightBlue500",function(){return Wt}),n.d(e,"lightBlue600",function(){return Yt}),n.d(e,"lightBlue700",function(){return Kt}),n.d(e,"lightBlue800",function(){return Gt}),n.d(e,"lightBlue900",function(){return Xt}),n.d(e,"lightBlueA100",function(){return Ut}),n.d(e,"lightBlueA200",function(){return qt}),n.d(e,"lightBlueA400",function(){return Zt}),n.d(e,"lightBlueA700",function(){return Jt}),n.d(e,"lightBlue",function(){return Qt}),n.d(e,"cyan50",function(){return te}),n.d(e,"cyan100",function(){return ee}),n.d(e,"cyan200",function(){return ne}),n.d(e,"cyan300",function(){return ie}),n.d(e,"cyan400",function(){return ae}),n.d(e,"cyan500",function(){return re}),n.d(e,"cyan600",function(){return se}),n.d(e,"cyan700",function(){return oe}),n.d(e,"cyan800",function(){return le}),n.d(e,"cyan900",function(){return ue}),n.d(e,"cyanA100",function(){return ce}),n.d(e,"cyanA200",function(){return de}),n.d(e,"cyanA400",function(){return fe}),n.d(e,"cyanA700",function(){return he}),n.d(e,"cyan",function(){return pe}),n.d(e,"teal50",function(){return me}),n.d(e,"teal100",function(){return ve}),n.d(e,"teal200",function(){return ye}),n.d(e,"teal300",function(){return ge}),n.d(e,"teal400",function(){return be}),n.d(e,"teal500",function(){return xe}),n.d(e,"teal600",function(){return Ce}),n.d(e,"teal700",function(){return _e}),n.d(e,"teal800",function(){return Se}),n.d(e,"teal900",function(){return we}),n.d(e,"tealA100",function(){return ke}),n.d(e,"tealA200",function(){return $e}),n.d(e,"tealA400",function(){return Oe}),n.d(e,"tealA700",function(){return Te}),n.d(e,"teal",function(){return Me}),n.d(e,"green50",function(){return De}),n.d(e,"green100",function(){return Fe}),n.d(e,"green200",function(){return Pe}),n.d(e,"green300",function(){return Ae}),n.d(e,"green400",function(){return Ee}),n.d(e,"green500",function(){return je}),n.d(e,"green600",function(){return Be}),n.d(e,"green700",function(){return Ie}),n.d(e,"green800",function(){return Re}),n.d(e,"green900",function(){return Le}),n.d(e,"greenA100",function(){return ze}),n.d(e,"greenA200",function(){return He}),n.d(e,"greenA400",function(){return Ne}),n.d(e,"greenA700",function(){return Ve}),n.d(e,"green",function(){return We}),n.d(e,"lightGreen50",function(){return Ye}),n.d(e,"lightGreen100",function(){return Ke}),n.d(e,"lightGreen200",function(){return Ge}),n.d(e,"lightGreen300",function(){return Xe}),n.d(e,"lightGreen400",function(){return Ue}),n.d(e,"lightGreen500",function(){return qe}),n.d(e,"lightGreen600",function(){return Ze}),n.d(e,"lightGreen700",function(){return Je}),n.d(e,"lightGreen800",function(){return Qe}),n.d(e,"lightGreen900",function(){return tn}),n.d(e,"lightGreenA100",function(){return en}),n.d(e,"lightGreenA200",function(){return nn}),n.d(e,"lightGreenA400",function(){return an}),n.d(e,"lightGreenA700",function(){return rn}),n.d(e,"lightGreen",function(){return sn}),n.d(e,"lime50",function(){return on}),n.d(e,"lime100",function(){return ln}),n.d(e,"lime200",function(){return un}),n.d(e,"lime300",function(){return cn}),n.d(e,"lime400",function(){return dn}),n.d(e,"lime500",function(){return fn}),n.d(e,"lime600",function(){return hn}),n.d(e,"lime700",function(){return pn}),n.d(e,"lime800",function(){return mn}),n.d(e,"lime900",function(){return vn}),n.d(e,"limeA100",function(){return yn}),n.d(e,"limeA200",function(){return gn}),n.d(e,"limeA400",function(){return bn}),n.d(e,"limeA700",function(){return xn}),n.d(e,"lime",function(){return Cn}),n.d(e,"yellow50",function(){return _n}),n.d(e,"yellow100",function(){return Sn}),n.d(e,"yellow200",function(){return wn}),n.d(e,"yellow300",function(){return kn}),n.d(e,"yellow400",function(){return $n}),n.d(e,"yellow500",function(){return On}),n.d(e,"yellow600",function(){return Tn}),n.d(e,"yellow700",function(){return Mn}),n.d(e,"yellow800",function(){return Dn}),n.d(e,"yellow900",function(){return Fn}),n.d(e,"yellowA100",function(){return Pn}),n.d(e,"yellowA200",function(){return An}),n.d(e,"yellowA400",function(){return En}),n.d(e,"yellowA700",function(){return jn}),n.d(e,"yellow",function(){return Bn}),n.d(e,"amber50",function(){return In}),n.d(e,"amber100",function(){return Rn}),n.d(e,"amber200",function(){return Ln}),n.d(e,"amber300",function(){return zn});n.d(e,"amber400",function(){return Hn}),n.d(e,"amber500",function(){return Nn}),n.d(e,"amber600",function(){return Vn}),n.d(e,"amber700",function(){return Wn}),n.d(e,"amber800",function(){return Yn}),n.d(e,"amber900",function(){return Kn}),n.d(e,"amberA100",function(){return Gn}),n.d(e,"amberA200",function(){return Xn}),n.d(e,"amberA400",function(){return Un}),n.d(e,"amberA700",function(){return qn}),n.d(e,"amber",function(){return Zn}),n.d(e,"orange50",function(){return Jn}),n.d(e,"orange100",function(){return Qn}),n.d(e,"orange200",function(){return ti}),n.d(e,"orange300",function(){return ei}),n.d(e,"orange400",function(){return ni}),n.d(e,"orange500",function(){return ii}),n.d(e,"orange600",function(){return ai}),n.d(e,"orange700",function(){return ri}),n.d(e,"orange800",function(){return si}),n.d(e,"orange900",function(){return oi}),n.d(e,"orangeA100",function(){return li}),n.d(e,"orangeA200",function(){return ui}),n.d(e,"orangeA400",function(){return ci}),n.d(e,"orangeA700",function(){return di}),n.d(e,"orange",function(){return fi}),n.d(e,"deepOrange50",function(){return hi}),n.d(e,"deepOrange100",function(){return pi}),n.d(e,"deepOrange200",function(){return mi}),n.d(e,"deepOrange300",function(){return vi}),n.d(e,"deepOrange400",function(){return yi}),n.d(e,"deepOrange500",function(){return gi}),n.d(e,"deepOrange600",function(){return bi}),n.d(e,"deepOrange700",function(){return xi}),n.d(e,"deepOrange800",function(){return Ci}),n.d(e,"deepOrange900",function(){return _i}),n.d(e,"deepOrangeA100",function(){return Si}),n.d(e,"deepOrangeA200",function(){return wi}),n.d(e,"deepOrangeA400",function(){return ki}),n.d(e,"deepOrangeA700",function(){return $i}),n.d(e,"deepOrange",function(){return Oi}),n.d(e,"brown50",function(){return Ti}),n.d(e,"brown100",function(){return Mi}),n.d(e,"brown200",function(){return Di}),n.d(e,"brown300",function(){return Fi}),n.d(e,"brown400",function(){return Pi}),n.d(e,"brown500",function(){return Ai}),n.d(e,"brown600",function(){return Ei}),n.d(e,"brown700",function(){return ji}),n.d(e,"brown800",function(){return Bi}),n.d(e,"brown900",function(){return Ii}),n.d(e,"brown",function(){return Ri}),n.d(e,"blueGrey50",function(){return Li}),n.d(e,"blueGrey100",function(){return zi}),n.d(e,"blueGrey200",function(){return Hi}),n.d(e,"blueGrey300",function(){return Ni}),n.d(e,"blueGrey400",function(){return Vi}),n.d(e,"blueGrey500",function(){return Wi}),n.d(e,"blueGrey600",function(){return Yi}),n.d(e,"blueGrey700",function(){return Ki}),n.d(e,"blueGrey800",function(){return Gi}),n.d(e,"blueGrey900",function(){return Xi}),n.d(e,"blueGrey",function(){return Ui}),n.d(e,"grey50",function(){return qi}),n.d(e,"grey100",function(){return Zi}),n.d(e,"grey200",function(){return Ji}),n.d(e,"grey300",function(){return Qi}),n.d(e,"grey400",function(){return ta}),n.d(e,"grey500",function(){return ea}),n.d(e,"grey600",function(){return na}),n.d(e,"grey700",function(){return ia}),n.d(e,"grey800",function(){return aa}),n.d(e,"grey900",function(){return ra}),n.d(e,"grey",function(){return sa}),n.d(e,"black",function(){return oa}),n.d(e,"white",function(){return la}),n.d(e,"transparent",function(){return ua}),n.d(e,"fullBlack",function(){return ca}),n.d(e,"darkBlack",function(){return da}),n.d(e,"lightBlack",function(){return fa}),n.d(e,"minBlack",function(){return ha}),n.d(e,"faintBlack",function(){return pa}),n.d(e,"fullWhite",function(){return ma}),n.d(e,"darkWhite",function(){return va}),n.d(e,"lightWhite",function(){return ya});var i="#ffebee",a="#ffcdd2",r="#ef9a9a",s="#e57373",o="#ef5350",l="#f44336",u="#e53935",c="#d32f2f",d="#c62828",f="#b71c1c",h="#ff8a80",p="#ff5252",m="#ff1744",v="#d50000",y=l,g="#fce4ec",b="#f8bbd0",x="#f48fb1",C="#f06292",_="#ec407a",S="#e91e63",w="#d81b60",k="#c2185b",$="#ad1457",O="#880e4f",T="#ff80ab",M="#ff4081",D="#f50057",F="#c51162",P=S,A="#f3e5f5",E="#e1bee7",j="#ce93d8",B="#ba68c8",I="#ab47bc",R="#9c27b0",L="#8e24aa",z="#7b1fa2",H="#6a1b9a",N="#4a148c",V="#ea80fc",W="#e040fb",Y="#d500f9",K="#aa00ff",G=R,X="#ede7f6",U="#d1c4e9",q="#b39ddb",Z="#9575cd",J="#7e57c2",Q="#673ab7",tt="#5e35b1",et="#512da8",nt="#4527a0",it="#311b92",at="#b388ff",rt="#7c4dff",st="#651fff",ot="#6200ea",lt=Q,ut="#e8eaf6",ct="#c5cae9",dt="#9fa8da",ft="#7986cb",ht="#5c6bc0",pt="#3f51b5",mt="#3949ab",vt="#303f9f",yt="#283593",gt="#1a237e",bt="#8c9eff",xt="#536dfe",Ct="#3d5afe",_t="#304ffe",St=pt,wt="#e3f2fd",kt="#bbdefb",$t="#90caf9",Ot="#64b5f6",Tt="#42a5f5",Mt="#2196f3",Dt="#1e88e5",Ft="#1976d2",Pt="#1565c0",At="#0d47a1",Et="#82b1ff",jt="#448aff",Bt="#2979ff",It="#2962ff",Rt=Mt,Lt="#e1f5fe",zt="#b3e5fc",Ht="#81d4fa",Nt="#4fc3f7",Vt="#29b6f6",Wt="#03a9f4",Yt="#039be5",Kt="#0288d1",Gt="#0277bd",Xt="#01579b",Ut="#80d8ff",qt="#40c4ff",Zt="#00b0ff",Jt="#0091ea",Qt=Wt,te="#e0f7fa",ee="#b2ebf2",ne="#80deea",ie="#4dd0e1",ae="#26c6da",re="#00bcd4",se="#00acc1",oe="#0097a7",le="#00838f",ue="#006064",ce="#84ffff",de="#18ffff",fe="#00e5ff",he="#00b8d4",pe=re,me="#e0f2f1",ve="#b2dfdb",ye="#80cbc4",ge="#4db6ac",be="#26a69a",xe="#009688",Ce="#00897b",_e="#00796b",Se="#00695c",we="#004d40",ke="#a7ffeb",$e="#64ffda",Oe="#1de9b6",Te="#00bfa5",Me=xe,De="#e8f5e9",Fe="#c8e6c9",Pe="#a5d6a7",Ae="#81c784",Ee="#66bb6a",je="#4caf50",Be="#43a047",Ie="#388e3c",Re="#2e7d32",Le="#1b5e20",ze="#b9f6ca",He="#69f0ae",Ne="#00e676",Ve="#00c853",We=je,Ye="#f1f8e9",Ke="#dcedc8",Ge="#c5e1a5",Xe="#aed581",Ue="#9ccc65",qe="#8bc34a",Ze="#7cb342",Je="#689f38",Qe="#558b2f",tn="#33691e",en="#ccff90",nn="#b2ff59",an="#76ff03",rn="#64dd17",sn=qe,on="#f9fbe7",ln="#f0f4c3",un="#e6ee9c",cn="#dce775",dn="#d4e157",fn="#cddc39",hn="#c0ca33",pn="#afb42b",mn="#9e9d24",vn="#827717",yn="#f4ff81",gn="#eeff41",bn="#c6ff00",xn="#aeea00",Cn=fn,_n="#fffde7",Sn="#fff9c4",wn="#fff59d",kn="#fff176",$n="#ffee58",On="#ffeb3b",Tn="#fdd835",Mn="#fbc02d",Dn="#f9a825",Fn="#f57f17",Pn="#ffff8d",An="#ffff00",En="#ffea00",jn="#ffd600",Bn=On,In="#fff8e1",Rn="#ffecb3",Ln="#ffe082",zn="#ffd54f",Hn="#ffca28",Nn="#ffc107",Vn="#ffb300",Wn="#ffa000",Yn="#ff8f00",Kn="#ff6f00",Gn="#ffe57f",Xn="#ffd740",Un="#ffc400",qn="#ffab00",Zn=Nn,Jn="#fff3e0",Qn="#ffe0b2",ti="#ffcc80",ei="#ffb74d",ni="#ffa726",ii="#ff9800",ai="#fb8c00",ri="#f57c00",si="#ef6c00",oi="#e65100",li="#ffd180",ui="#ffab40",ci="#ff9100",di="#ff6d00",fi=ii,hi="#fbe9e7",pi="#ffccbc",mi="#ffab91",vi="#ff8a65",yi="#ff7043",gi="#ff5722",bi="#f4511e",xi="#e64a19",Ci="#d84315",_i="#bf360c",Si="#ff9e80",wi="#ff6e40",ki="#ff3d00",$i="#dd2c00",Oi=gi,Ti="#efebe9",Mi="#d7ccc8",Di="#bcaaa4",Fi="#a1887f",Pi="#8d6e63",Ai="#795548",Ei="#6d4c41",ji="#5d4037",Bi="#4e342e",Ii="#3e2723",Ri=Ai,Li="#eceff1",zi="#cfd8dc",Hi="#b0bec5",Ni="#90a4ae",Vi="#78909c",Wi="#607d8b",Yi="#546e7a",Ki="#455a64",Gi="#37474f",Xi="#263238",Ui=Wi,qi="#fafafa",Zi="#f5f5f5",Ji="#eeeeee",Qi="#e0e0e0",ta="#bdbdbd",ea="#9e9e9e",na="#757575",ia="#616161",aa="#424242",ra="#212121",sa=ea,oa="#000000",la="#ffffff",ua="rgba(0, 0, 0, 0)",ca="rgba(0, 0, 0, 1)",da="rgba(0, 0, 0, 0.87)",fa="rgba(0, 0, 0, 0.54)",ha="rgba(0, 0, 0, 0.26)",pa="rgba(0, 0, 0, 0.12)",ma="rgba(255, 255, 255, 1)",va="rgba(255, 255, 255, 0.87)",ya="rgba(255, 255, 255, 0.54)"},function(t,e,n){"use strict";var i,a=n(76),r=n.n(a),s="undefined"!=typeof document?document.documentElement.style:{},o=!1;i="undefined"!=typeof window&&window.opera&&"[object Opera]"===Object.prototype.toString.call(window.opera)?"presto":"MozAppearance"in s?"gecko":"WebkitAppearance"in s?"webkit":"undefined"!=typeof navigator&&"string"==typeof navigator.cpuClass?"trident":"node";var l={trident:"-ms-",gecko:"-moz-",webkit:"-webkit-",presto:"-o-"}[i],u={trident:"ms",gecko:"Moz",webkit:"Webkit",presto:"O"}[i],c="undefined"!=typeof document?document.createElement("div"):{},d=u+"Perspective",f=u+"Transform",h=l+"transform",p=u+"Transition",m=l+"transition",v=r()(u)+"TransitionEnd";c.style&&void 0!==c.style[d]&&(o=!0);var y=function(t){var e={left:0,top:0};if(null===t||null===t.style)return e;var n=t.style[f],i=/translate\(\s*(-?\d+(\.?\d+?)?)px,\s*(-?\d+(\.\d+)?)px\)\s*translateZ\(0px\)/g.exec(n);return i&&(e.left=+i[1],e.top=+i[3]),e},g=function(t,e,n){if((null!==e||null!==n)&&null!==t&&null!==t.style&&(t.style[f]||0!==e||0!==n)){if(null===e||null===n){var i=y(t);null===e&&(e=i.left),null===n&&(n=i.top)}b(t),t.style[f]+=o?" translate("+(e?e+"px":"0px")+","+(n?n+"px":"0px")+") translateZ(0px)":" translate("+(e?e+"px":"0px")+","+(n?n+"px":"0px")+")"}},b=function(t){if(null!==t&&null!==t.style){var e=t.style[f];e&&(e=e.replace(/translate\(\s*(-?\d+(\.?\d+?)?)px,\s*(-?\d+(\.\d+)?)px\)\s*translateZ\(0px\)/g,""),t.style[f]=e)}};e.a={transformProperty:f,transformStyleName:h,transitionProperty:p,transitionStyleName:m,transitionEndProperty:v,getElementTranslate:y,translateElement:g,cancelTranslateElement:b}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0}),e.default={name:"mu-appbar",props:{title:{type:String,default:""},titleClass:{type:[String,Array,Object]},zDepth:{type:Number,default:1}}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(35),a=n.n(i),r=n(233),s=n.n(r),o=n(8),l=n(13),u=n(24),c=n(124),d=n(17),f=n.n(d);e.default={name:"mu-auto-complete",props:{anchorOrigin:{type:Object,default:function(){return{vertical:"bottom",horizontal:"left"}}},targetOrigin:{type:Object,default:function(){return{vertical:"top",horizontal:"left"}}},scroller:{},dataSource:{type:Array,default:function(){return[]}},dataSourceConfig:{type:Object,default:function(){return{text:"text",value:"value"}}},disableFocusRipple:{type:Boolean,default:!0},filter:{type:[String,Function],default:"caseSensitiveFilter"},maxSearchResults:{type:Number},openOnFocus:{type:Boolean,default:!1},menuCloseDelay:{type:Number,default:300},label:{type:String},labelFloat:{type:Boolean,default:!1},labelClass:{type:[String,Array,Object]},labelFocusClass:{type:[String,Array,Object]},disabled:{type:Boolean,default:!1},hintText:{type:String},hintTextClass:{type:[String,Array,Object]},helpText:{type:String},helpTextClass:{type:[String,Array,Object]},errorText:{type:String},errorColor:{type:String},icon:{type:String},iconClass:{type:[String,Array,Object]},inputClass:{type:[String,Array,Object]},fullWidth:{type:Boolean,default:!1},menuWidth:{type:Number},maxHeight:{type:Number},underlineShow:{type:Boolean,default:!0},underlineClass:{type:[String,Array,Object]},underlineFocusClass:{type:[String,Array,Object]},value:{type:String}},data:function(){return{anchorEl:null,focusTextField:!0,open:!1,searchText:this.value,inputWidth:null}},computed:{list:function t(){var e="string"==typeof this.filter?c[this.filter]:this.filter,n=this.dataSourceConfig,i=this.maxSearchResults,r=this.searchText;if(!e)return void console.warn("not found filter:"+this.filter);var t=[];return this.dataSource.every(function(o,l){switch(void 0===o?"undefined":s()(o)){case"string":e(r||"",o,o)&&t.push({text:o,value:o,index:l});break;case"object":if(o&&"string"==typeof o[n.text]){var u=o[n.text];if(!e(r||"",u,o))break;var c=o[n.value];t.push(a()({},o,{text:u,value:c,index:l}))}}return!(i&&i>0&&t.length===i)}),t}},methods:{handleFocus:function(t){!this.open&&this.openOnFocus&&(this.open=!0),this.focusTextField=!0,this.$emit("focus",t)},handleBlur:function(t){this.focusTextField&&!this.timerTouchTapCloseId&&this.close(),this.$emit("blur",t)},handleClose:function(t){this.focusTextField&&"overflow"!==t||this.close()},handleMouseDown:function(t){t.preventDefault()},handleItemClick:function(t){var e=this,n=this.list,i=this.dataSource,a=this.setSearchText,r=this.$refs.menu.$children.indexOf(t),s=n[r].index,o=i[s],l=this.chosenRequestText(o);this.timerTouchTapCloseId=setTimeout(function(){e.timerTouchTapCloseId=null,a(l),e.close(),e.$emit("select",o,s),e.$emit("change",l)},this.menuCloseDelay)},chosenRequestText:function(t){return"string"==typeof t?t:t[this.dataSourceConfig.text]},handleInput:function(){this.notInput?this.notInput=!1:this.open=!0},blur:function(){this.$refs.textField.$el.blur()},focus:function(){this.$refs.textField.focus()},close:function(){this.open=!1},handleKeyDown:function(t){switch(this.$emit("keydown",t),f()(t)){case"enter":if(!this.open)return;var e=this.searchText;this.$emit("change",e,-1),this.close();break;case"esc":this.close();break;case"down":t.preventDefault(),this.open=!0,this.focusTextField=!1}},setSearchText:function(t){this.notInput=!0,this.searchText=t},setInputWidth:function(){this.$el&&(this.inputWidth=this.$el.offsetWidth)}},mounted:function(){this.anchorEl=this.$refs.textField.$el,this.setInputWidth()},updated:function(){this.setInputWidth()},watch:{value:function(t){t!==this.searchText&&this.setSearchText(t)},searchText:function(t){this.$emit("input",t)}},components:{popover:o.a,"text-field":l.a,"mu-menu":u.menu,"menu-item":u.menuItem}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(2),a=n(1);e.default={name:"mu-avatar",props:{backgroundColor:{type:String,default:""},color:{type:String,default:""},icon:{type:String,default:""},iconClass:{type:[String,Object,Array]},src:{type:String,default:""},imgClass:{type:[String,Object,Array]},size:{type:Number},iconSize:{type:Number}},computed:{avatarStyle:function(){return{width:this.size?this.size+"px":"",height:this.size?this.size+"px":"",color:n.i(a.d)(this.color),"background-color":n.i(a.d)(this.backgroundColor)}}},methods:{handleClick:function(){this.$emit("click")}},created:function(){this._isAvatar=!0},components:{icon:i.a}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(1);e.default={name:"mu-badge",props:{content:{type:String,default:""},color:{type:String,default:""},primary:{type:Boolean,default:!1},secondary:{type:Boolean,default:!1},circle:{type:Boolean,default:!1},badgeClass:{type:[String,Object,Array]}},computed:{badgeStyle:function(){return{"background-color":n.i(i.d)(this.color)}},badgeInternalClass:function(){var t=this.circle,e=this.primary,a=this.secondary,r=this.badgeClass,s=this.$slots&&this.$slots.default&&this.$slots.default.length>0,o=[];return t&&o.push("mu-badge-circle"),e&&o.push("mu-badge-primary"),a&&o.push("mu-badge-secondary"),s&&o.push("mu-badge-float"),o.concat(n.i(i.f)(r))}}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(3);e.default={name:"mu-bottom-nav",props:{shift:{type:Boolean,default:!1},value:{}},methods:{handleItemClick:function(t,e){t!==this.value&&this.$emit("change",t),this.$emit("itemClick",e),this.$emit("item-click",e)},setChildrenInstance:function(){var t=this;this.$slots.default.forEach(function(e){e&&e.child&&e.child.isBottomNavItem&&(e.child.bottomNav=t)})}},mounted:function(){this.setChildrenInstance()},updated:function(){var t=this;this.$slots.default.forEach(function(e){e&&e.child&&e.child.isBottomNavItem&&(e.child.bottomNav=t)})},render:function(t){return t(i.a,{class:["mu-bottom-nav",this.shift?"mu-bottom-nav-shift":void 0],props:{disableTouchRipple:!this.shift,centerRipple:!1,wrapperClass:"mu-bottom-nav-shift-wrapper",containerElement:"div",rippleOpacity:.3}},this.$slots.default)}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(3),a=n(5),r=n(2),s=n(1);e.default={name:"mu-bottom-nav-item",mixins:[a.a],props:{icon:{type:String,default:""},iconClass:{type:[String,Object,Array]},title:{type:String,default:""},titleClass:{type:[String,Object,Array]},href:{type:String},value:{}},data:function(){return{bottomNav:null}},created:function(){this.isBottomNavItem=!0},computed:{active:function(){return this.bottomNav&&n.i(s.c)(this.value)&&this.bottomNav.value===this.value},shift:function(){return this.bottomNav&&this.bottomNav.shift}},methods:{handleClick:function(){this.bottomNav&&this.bottomNav.handleItemClick&&this.bottomNav.handleItemClick(this.value)}},mounted:function(){for(var t=this.$parent.$children,e=0;e<t.length;e++)if(t[e].$el===this.$el){this.index=e;break}},components:{"abstract-button":i.a,icon:r.a}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(26);e.default={name:"mu-bottom-sheet",mixins:[i.a],props:{sheetClass:{type:[String,Object,Array]}},methods:{show:function(){this.$emit("show")},hide:function(){this.$emit("hide")}}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0}),e.default={name:"mu-card"}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0}),e.default={name:"mu-card-actions"}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0}),e.default={name:"mu-card-header",props:{title:{type:String},titleClass:{type:[String,Array,Object]},subTitle:{type:String},subTitleClass:{type:[String,Array,Object]}}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0}),e.default={name:"mu-card-media",props:{title:{type:String},titleClass:{type:[String,Array,Object]},subTitle:{type:String},subTitleClass:{type:[String,Array,Object]}}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0}),e.default={name:"mu-card-text"}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0}),e.default={name:"mu-card-title",props:{title:{type:String},titleClass:{type:[String,Array,Object]},subTitle:{type:String},subTitleClass:{type:[String,Array,Object]}}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(2),a=n(32),r=n.n(a);e.default={name:"mu-checkbox",props:{name:{type:String},value:{},nativeValue:{type:String},label:{type:String,default:""},labelLeft:{type:Boolean,default:!1},labelClass:{type:[String,Object,Array]},disabled:{type:Boolean,default:!1},uncheckIcon:{type:String,default:""},checkedIcon:{type:String,default:""},iconClass:{type:[String,Object,Array]}},data:function(){return{inputValue:this.value}},watch:{value:function(t){this.inputValue=t},inputValue:function(t){this.$emit("input",t)}},methods:{handleClick:function(){},handleMouseDown:function(t){this.disabled||0===t.button&&this.$children[0].start(t)},handleMouseUp:function(){this.disabled||this.$children[0].end()},handleMouseLeave:function(){this.disabled||this.$children[0].end()},handleTouchStart:function(t){this.disabled||this.$children[0].start(t)},handleTouchEnd:function(){this.disabled||this.$children[0].end()},handleChange:function(){this.$emit("change",this.inputValue)}},components:{icon:i.a,"touch-ripple":r.a}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(1);e.default={name:"mu-chip",props:{showDelete:{type:Boolean,default:!1},disabled:{type:Boolean,default:!1},deleteIconClass:{type:[Array,String,Object]},backgroundColor:{type:String},color:{type:String}},data:function(){return{focus:!1,hover:!1}},computed:{classNames:function(){return this.disabled?null:this.focus?["hover","active"]:this.hover?["hover"]:null},style:function(){return{"background-color":n.i(i.d)(this.backgroundColor),color:n.i(i.d)(this.color)}}},methods:{onMouseenter:function(){n.i(i.g)()&&(this.hover=!0)},onMouseleave:function(){n.i(i.g)()&&(this.hover=!1)},onMousedown:function(){this.focus=!0},onMouseup:function(){this.focus=!1},onTouchstart:function(){this.focus=!0},onTouchend:function(){this.focus=!1},handleDelete:function(){this.$emit("delete")},handleClick:function(t){this.disabled||this.$emit("click",t)}}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(55),a=n.n(i),r=n(1);e.default={name:"mu-circular-progress",props:{max:{type:Number,default:100},min:{type:Number,default:0},mode:{type:String,default:"indeterminate",validator:function(t){return["indeterminate","determinate"].indexOf(t)!==-1}},value:{type:Number,default:0},color:{type:String},size:{type:Number,default:24},strokeWidth:{type:Number,default:3}},computed:{radius:function(){return(this.size-this.strokeWidth)/2},circularSvgStyle:function(){return{width:this.size,height:this.size}},circularPathStyle:function(){var t=this.getRelativeValue();return{stroke:n.i(r.d)(this.color),"stroke-dasharray":this.getArcLength(t)+", "+this.getArcLength(1)}}},methods:{getArcLength:function(t){return t*Math.PI*(this.size-this.strokeWidth)},getRelativeValue:function(){var t=this.value,e=this.min,n=this.max;return Math.min(Math.max(e,t),n)/(n-e)}},components:{circular:a.a}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0}),e.default={name:"mu-content-block"}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(387),a=n.n(i),r=n(385),s=n.n(r),o=n(22),l=n(384),u=n.n(l),c=n(25),d=n(386),f=n.n(d),h=n(17),p=n.n(h);e.default={props:{dateTimeFormat:{type:Object,default:function(){return c.a}},autoOk:{type:Boolean,default:!1},okLabel:{type:String,default:"确定"},cancelLabel:{type:String,default:"取消"},disableYearSelection:{type:Boolean,default:!1},firstDayOfWeek:{type:Number,default:1},initialDate:{type:Date,default:function(){return new Date}},maxDate:{type:Date,default:function(){return c.d(new Date,100)}},minDate:{type:Date,default:function(){return c.d(new Date,-100)}},mode:{type:String,default:"portrait",validator:function(t){return t&&["portrait","landscape"].indexOf(t)!==-1}},shouldDisableDate:{type:Function}},data:function(){var t=c.e(this.initialDate);return t.setDate(1),{weekTexts:this.dateTimeFormat.getWeekDayArray(this.firstDayOfWeek),displayDates:[t],selectedDate:this.initialDate,slideType:"next",displayMonthDay:!0}},computed:{prevMonth:function(){return this.displayDates&&c.f(this.displayDates[0],this.minDate)>0},nextMonth:function(){return this.displayDates&&c.f(this.displayDates[0],this.maxDate)<0}},methods:{handleMonthChange:function(t){var e=c.g(this.displayDates[0],t);this.changeDislayDate(e)},handleYearChange:function(t){if(this.selectedDate.getFullYear()!==t){var e=c.h(this.selectedDate);e.setFullYear(t),this.setSelected(e)}},handleSelected:function(t){this.setSelected(t),this.autoOk&&this.handleOk()},handleCancel:function(){this.$emit("dismiss")},handleOk:function(){var t=this.selectedDate,e=this.maxDate,n=this.minDate;t.getTime()>e.getTime()&&(this.selectedDate=new Date(e.getTime())),t.getTime()<n.getTime()&&(this.selectedDate=new Date(n.getTime())),this.$emit("accept",this.selectedDate)},setSelected:function(t){this.selectedDate=t,this.changeDislayDate(t)},changeDislayDate:function(t){var e=this.displayDates[0];if(t.getFullYear()!==e.getFullYear()||t.getMonth()!==e.getMonth()){this.slideType=t.getTime()>e.getTime()?"next":"prev";var n=c.e(t);n.setDate(1),this.displayDates.push(n),this.displayDates.splice(0,1)}},selectYear:function(){this.displayMonthDay=!1},selectMonth:function(){this.displayMonthDay=!0},addSelectedDays:function(t){this.setSelected(c.i(this.selectedDate,t))},addSelectedMonths:function(t){this.setSelected(c.g(this.selectedDate,t))},addSelectedYears:function(t){this.setSelected(c.d(this.selectedDate,t))},handleKeyDown:function(t){switch(p()(t)){case"up":t.altKey&&t.shiftKey?this.addSelectedYears(-1):t.shiftKey?this.addSelectedMonths(-1):this.addSelectedDays(-7);break;case"down":t.altKey&&t.shiftKey?this.addSelectedYears(1):t.shiftKey?this.addSelectedMonths(1):this.addSelectedDays(7);break;case"right":t.altKey&&t.shiftKey?this.addSelectedYears(1):t.shiftKey?this.addSelectedMonths(1):this.addSelectedDays(1);break;case"left":t.altKey&&t.shiftKey?this.addSelectedYears(-1):t.shiftKey?this.addSelectedMonths(-1):this.addSelectedDays(-1)}}},mounted:function(){var t=this;this.handleWindowKeyDown=function(e){t.handleKeyDown(e)},"undefined"!=typeof window&&window.addEventListener("keydown",this.handleWindowKeyDown)},beforeDestory:function(){window.removeEventListener("keydown",this.handleWindowKeyDown)},watch:{initialDate:function(t){this.selectedDate=t}},components:{"date-display":a.a,"calendar-toolbar":s.a,"flat-button":o.a,"calendar-month":u.a,"calendar-year":f.a}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(390),a=n.n(i),r=n(25);e.default={props:{displayDate:{type:Date},firstDayOfWeek:{type:Number,default:1},maxDate:{type:Date},minDate:{type:Date},selectedDate:{type:Date},shouldDisableDate:{type:Function}},data:function(){return{weeksArray:r.j(this.displayDate||new Date,this.firstDayOfWeek)}},methods:{equalsDate:function(t){return r.k(t,this.selectedDate)},isDisableDate:function(t){if(null===t)return!1;var e=!1;return this.maxDate&&this.minDate&&(e=!r.l(t,this.minDate,this.maxDate)),!e&&this.shouldDisableDate&&(e=this.shouldDisableDate(t)),e},handleClick:function(t){t&&this.$emit("selected",t)}},watch:{displayDate:function(t){return r.j(t||new Date,this.firstDayOfWeek)}},components:{"day-button":a.a}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(23);e.default={props:{dateTimeFormat:{type:Object},displayDates:{type:Array},nextMonth:{type:Boolean,default:!0},prevMonth:{type:Boolean,default:!0},slideType:{type:String}},methods:{prev:function(){this.$emit("monthChange",-1)},next:function(){this.$emit("monthChange",1)}},components:{"icon-button":i.a}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(391),a=n.n(i);e.default={props:{maxDate:{type:Date},minDate:{type:Date},selectedDate:{type:Date}},computed:{years:function t(){for(var e=this.minDate.getFullYear(),n=this.maxDate.getFullYear(),t=[],i=e;i<=n;i++)t.push(i);return t}},methods:{handleClick:function(t){this.$emit("change",t)},scrollToSelectedYear:function(t){var e=this.$refs.container,n=e.clientHeight,i=t.clientHeight||32,a=t.offsetTop+i/2-n/2;e.scrollTop=a}},components:{"year-button":a.a}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0}),e.default={props:{dateTimeFormat:{type:Object},disableYearSelection:{type:Boolean,default:!1},monthDaySelected:{type:Boolean,default:!0},selectedDate:{type:Date}},data:function(){return{displayDates:[this.selectedDate],slideType:"next"}},computed:{selectedYear:function(){return!this.monthDaySelected},displayClass:function(){return{"selected-year":this.selectedYear}}},methods:{replaceSelected:function(t){var e=this.displayDates[0];this.slideType=t.getTime()>e.getTime()?"next":"prev",this.displayDates.push(t),this.displayDates.splice(0,1)},handleSelectYear:function(){this.disableYearSelection||this.$emit("selectYear")},handleSelectMonth:function(){this.$emit("selectMonth")}},watch:{selectedDate:function(t){this.replaceSelected(t)}}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(25),a=n(13),r=n(389),s=n.n(r);e.default={name:"mu-date-picker",props:{dateTimeFormat:{type:Object,default:function(){return i.a}},autoOk:{type:Boolean,default:!1},cancelLabel:{type:String},okLabel:{type:String},container:{type:String,default:"dialog",validator:function(t){return t&&["dialog","inline"].indexOf(t)!==-1}},disableYearSelection:{type:Boolean},firstDayOfWeek:{type:Number},mode:{type:String,default:"portrait",validator:function(t){return t&&["portrait","landscape"].indexOf(t)!==-1}},shouldDisableDate:{type:Function},format:{type:String,default:"YYYY-MM-DD"},maxDate:{type:[String,Date]},minDate:{type:[String,Date]},name:{type:String},label:{type:String},labelFloat:{type:Boolean,default:!1},labelClass:{type:[String,Array,Object]},labelFocusClass:{type:[String,Array,Object]},disabled:{type:Boolean,default:!1},hintText:{type:String},hintTextClass:{type:[String,Array,Object]},helpText:{type:String},helpTextClass:{type:[String,Array,Object]},errorText:{type:String},errorColor:{type:String},icon:{type:String},iconClass:{type:[String,Array,Object]},inputClass:{type:[String,Array,Object]},fullWidth:{type:Boolean,default:!1},underlineShow:{type:Boolean,default:!0},underlineClass:{type:[String,Array,Object]},underlineFocusClass:{type:[String,Array,Object]},value:{type:String}},computed:{maxLimitDate:function(){return this.maxDate?"string"==typeof this.maxDate?i.b(this.maxDate,this.format):this.maxDate:void 0},minLimitDate:function(){return this.minDate?"string"==typeof this.minDate?i.b(this.minDate,this.format):this.minDate:void 0}},data:function(){return{inputValue:this.value,dialogDate:null}},methods:{handleClick:function(){var t=this;this.disabled||setTimeout(function(){t.openDialog()},0)},handleFocus:function(t){t.target.blur(),this.$emit("focus",t)},openDialog:function(){this.disabled||(this.dialogDate=this.inputValue?i.b(this.inputValue,this.format):new Date,this.$refs.dialog.open=!0)},handleAccept:function(t){var e=i.c(t,this.format);this.inputValue!==e&&(this.inputValue=e,this.$emit("change",e))}},watch:{value:function(t){this.inputValue=t},inputValue:function(t){this.$emit("input",t)}},components:{"text-field":a.a,"date-picker-dialog":s.a}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(25),a=n(8),r=n(33),s=n(383),o=n.n(s);e.default={props:{dateTimeFormat:{type:Object,default:i.a},autoOk:{type:Boolean},cancelLabel:{type:String},okLabel:{type:String},container:{type:String,default:"dialog",validator:function(t){return t&&["dialog","inline"].indexOf(t)!==-1}},disableYearSelection:{type:Boolean},firstDayOfWeek:{type:Number},initialDate:{type:Date,default:function(){return new Date}},maxDate:{type:Date},minDate:{type:Date},mode:{type:String,default:"portrait",validator:function(t){return t&&["portrait","landscape"].indexOf(t)!==-1}},shouldDisableDate:{type:Function}},data:function(){return{open:!1,showCalendar:!1,trigger:null}},mounted:function(){this.trigger=this.$el},methods:{handleAccept:function(t){this.$emit("accept",t),this.open=!1},handleDismiss:function(){this.dismiss()},handleClose:function(t){this.dismiss()},dismiss:function(){this.open=!1,this.$emit("dismiss")},hideCanlendar:function(){this.showCalendar=!1}},watch:{open:function(t){t&&(this.showCalendar=!0)}},render:function(t){var e=this.showCalendar?t(o.a,{props:{autoOk:this.autoOk,dateTimeFormat:this.dateTimeFormat,okLabel:this.okLabel,cancelLabel:this.cancelLabel,disableYearSelection:this.disableYearSelection,shouldDisableDate:this.shouldDisableDate,firstDayOfWeek:this.firstDayOfWeek,initialDate:this.initialDate,maxDate:this.maxDate,minDate:this.minDate,mode:this.mode},on:{accept:this.handleAccept,dismiss:this.handleDismiss}}):"";return t("div",{style:{}},["dialog"===this.container?t(r.a,{props:{open:this.open,dialogClass:["mu-date-picker-dialog",this.mode]},on:{close:this.handleClose,hide:this.hideCanlendar}},[e]):t(a.a,{props:{trigger:this.trigger,overlay:!1,open:this.open},on:{close:this.handleClose,hide:this.hideCanlendar}},[e])])}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(1);e.default={props:{selected:{type:Boolean,default:!1},date:{type:Date},disabled:{type:Boolean,default:!1}},data:function(){return{hover:!1}},computed:{isNow:function(){var t=new Date;return this.date&&this.date.getYear()===t.getYear()&&this.date.getMonth()===t.getMonth()&&this.date.getDate()===t.getDate()},dayButtonClass:function(){return{selected:this.selected,hover:this.hover,"mu-day-button":!0,disabled:this.disabled,now:this.isNow}}},methods:{handleHover:function(){n.i(i.g)()&&!this.disabled&&(this.hover=!0)},handleHoverExit:function(){this.hover=!1},handleClick:function(t){this.$emit("click",t)}},render:function(t){return this.date?t("button",{class:this.dayButtonClass,on:{mouseenter:this.handleHover,mouseleave:this.handleHoverExit,click:this.handleClick},domProps:{disabled:this.disabled}},[t("div",{class:"mu-day-button-bg"}),t("span",{class:"mu-day-button-text",domProps:{innerHTML:this.date.getDate()}})]):t("span",{class:"mu-day-empty"})}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(1);e.default={props:{year:{type:[String,Number]},selected:{type:Boolean,default:!1}},data:function(){return{hover:!1}},mounted:function(){this.selected&&this.$parent.scrollToSelectedYear(this.$el)},methods:{handleHover:function(){n.i(i.g)()&&(this.hover=!0)},handleHoverExit:function(){this.hover=!1},handleClick:function(t){this.$emit("click",t)}},watch:{selected:function(t){t&&this.$parent.scrollToSelectedYear(this.$el)}}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(26),a=n(38),r=n(1);e.default={mixins:[i.a],name:"mu-dialog",props:{dialogClass:{type:[String,Array,Object]},title:{type:String},titleClass:{type:[String,Array,Object]},bodyClass:{type:[String,Array,Object]},actionsContainerClass:{type:[String,Array,Object]},scrollable:{type:Boolean,default:!1}},computed:{bodyStyle:function(){return{"overflow-x":"hidden","overflow-y":this.scrollable?"auto":"hidden","-webkit-overflow-scrolling":"touch"}},showTitle:function(){return this.title||this.$slots&&this.$slots.title&&this.$slots.title.length>0},showFooter:function(){return this.$slots&&this.$slots.actions&&this.$slots.actions.length>0},headerClass:function(){var t=this.scrollable,e=[];return t&&e.push("scrollable"),e.concat(n.i(r.f)(this.titleClass))},footerClass:function(){var t=this.scrollable,e=[];return t&&e.push("scrollable"),e.concat(n.i(r.f)(this.actionsContainerClass))}},mounted:function(){this.setMaxDialogContentHeight()},updated:function(){var t=this;setTimeout(function(){t.setMaxDialogContentHeight()},0)},methods:{handleWrapperClick:function(t){this.$refs.popup===t.target&&a.a.handleOverlayClick()},setMaxDialogContentHeight:function(){var t=this.$refs.dialog;if(t){if(!this.scrollable)return void(t.style.maxHeight="");var e=window.innerHeight-128;this.$refs.footer&&(e-=this.$refs.footer.offsetHeight),this.$refs.title&&(e-=this.$refs.title.offsetHeight),t.style.maxHeight=e+"px"}},show:function(){this.$emit("show")},hide:function(){this.$emit("hide")}}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0}),e.default={name:"mu-divider",props:{inset:{type:Boolean,default:!1},shallowInset:{type:Boolean,default:!1}}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(59),a=n(38),r=n(27),s=n(1),o=["msTransitionEnd","mozTransitionEnd","oTransitionEnd","webkitTransitionEnd","transitionend"];e.default={name:"mu-drawer",props:{right:{type:Boolean,default:!1},open:{type:Boolean,default:!1},docked:{type:Boolean,default:!0},width:{type:[Number,String]},zDepth:{type:Number,default:2}},data:function(){return{overlayZIndex:n.i(r.a)(),zIndex:n.i(r.a)()}},computed:{drawerStyle:function(){return{width:n.i(s.e)(this.width),"z-index":this.docked?"":this.zIndex}},overlay:function(){return!this.docked}},methods:{overlayClick:function(){this.$emit("close","overlay")},bindTransition:function(){var t=this;this.handleTransition=function(e){"transform"===e.propertyName&&t.$emit(t.open?"show":"hide")},o.forEach(function(e){t.$el.addEventListener(e,t.handleTransition)})},unBindTransition:function(){var t=this;this.handleTransition&&o.forEach(function(e){t.$el.removeEventListener(e,t.handleTransition)})},resetZIndex:function(){this.overlayZIndex=n.i(r.a)(),this.zIndex=n.i(r.a)()}},watch:{open:function(t){t&&!this.docked?a.a.open(this):a.a.close(this)},docked:function(t,e){t&&!e&&a.a.close(this)}},mounted:function(){this.open&&!this.docked&&a.a.open(this),this.bindTransition()},beforeDestroy:function(){a.a.close(this),this.unBindTransition()},components:{paper:i.a}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(8),a=n(24),r=n(1),s=n(63);e.default={name:"mu-dropDown-menu",mixins:[s.a],props:{value:{},maxHeight:{type:Number},autoWidth:{type:Boolean,default:!1},multiple:{type:Boolean,default:!1},disabled:{type:Boolean,default:!1},labelClass:{type:[String,Array,Object]},menuClass:{type:[String,Array,Object]},menuListClass:{type:[String,Array,Object]},underlineClass:{type:[String,Array,Object]},iconClass:{type:[String,Array,Object]},openImmediately:{type:Boolean,default:!1},anchorOrigin:{type:Object,default:function(){return{vertical:"top",horizontal:"left"}}},anchorEl:{type:Object},scroller:{}},data:function(){return{openMenu:!1,trigger:null,menuWidth:null,label:""}},mounted:function(){this.trigger=this.anchorEl||this.$el,this.openMenu=this.openImmediately,this.label=this.getText(),this.setMenuWidth()},methods:{handleClose:function(){this.$emit("close"),this.openMenu=!1},handleOpen:function(){this.$emit("open"),this.openMenu=!0},itemClick:function(){this.multiple||this.handleClose()},change:function(t){this.$emit("change",t)},setMenuWidth:function(){this.$el&&(this.menuWidth=this.autoWidth?"":this.$el.offsetWidth)},onResize:function(){this.setMenuWidth()},getText:function(){var t=this;if(!this.$slots||!this.$slots.default||0===this.$slots.length||n.i(r.h)(this.value))return"";var e=[];return this.$slots.default.forEach(function(i){if(i.componentOptions&&i.componentOptions.propsData&&!n.i(r.h)(i.componentOptions.propsData.value)){var a=i.componentOptions.propsData,s=a.value,o=a.title;return s===t.value||t.multiple&&t.value.length&&t.value.indexOf(s)!==-1?(e.push(o),!1):void 0}}),e.join(",")}},updated:function(){this.setMenuWidth()},watch:{anchorEl:function(t){t&&(this.trigger=t)},value:function(){this.label=this.getText()}},components:{popover:i.a,"mu-menu":a.menu}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(3),a=n(5),r=n(2),s=n(1);e.default={name:"mu-flat-button",mixins:[a.a],props:{icon:{type:String},iconClass:{type:[String,Array,Object]},type:{type:String},label:{type:String},labelPosition:{type:String,default:"after"},labelClass:{type:[String,Array,Object],default:""},primary:{type:Boolean,default:!1},secondary:{type:Boolean,default:!1},disabled:{type:Boolean,default:!1},keyboardFocused:{type:Boolean,default:!1},href:{type:String,default:""},target:{type:String},backgroundColor:{type:String,default:""},color:{type:String,default:""},hoverColor:{type:String,default:""},rippleColor:{type:String},rippleOpacity:{type:Number}},methods:{handleClick:function(t){this.$emit("click",t)},handleKeyboardFocus:function(t){this.$emit("keyboardFocus",t),this.$emit("keyboard-focus",t)},handleHover:function(t){this.$emit("hover",t)},handleHoverExit:function(t){this.$emit("hoverExit",t),this.$emit("hover-exit",t)}},computed:{buttonStyle:function(){return{"background-color":this.hover?n.i(s.d)(this.hoverColor):n.i(s.d)(this.backgroundColor),color:n.i(s.d)(this.color)}},buttonClass:function(){return{"mu-flat-button-primary":this.primary,"mu-flat-button-secondary":this.secondary,"label-before":"before"===this.labelPosition,"no-label":!this.label}}},components:{"abstract-button":i.a,icon:r.a}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0}),e.default={name:"mu-flexbox",props:{gutter:{type:Number,default:8},orient:{type:String,default:"horizontal"},justify:String,align:String,wrap:String},computed:{styles:function(){return{"justify-content":this.justify,"align-items":this.align,"flex-wrap":this.wrap}}}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0}),e.default={name:"mu-flexbox-item",props:{order:{type:[Number,String],default:0},grow:{type:[Number,String],default:1},shrink:{type:[Number,String],default:1},basis:{type:[Number,String],default:"auto"}},computed:{itemStyle:function(){var t={};return t["horizontal"===this.$parent.orient?"marginLeft":"marginTop"]=this.$parent.gutter+"px",t.flex=this.grow+" "+this.shrink+" "+this.basis,t.order=this.order,t}}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(3),a=n(5),r=n(2),s=n(1);e.default={name:"mu-float-button",mixins:[a.a],props:{icon:{type:String},iconClass:{type:[String,Array,Object],default:""},type:{type:String},href:{type:String,default:""},target:{type:String},disabled:{type:Boolean,default:!1},secondary:{type:Boolean,default:!1},mini:{type:Boolean,default:!1},backgroundColor:{type:String,default:""}},computed:{buttonClass:function(){var t=[];return this.secondary&&t.push("mu-float-button-secondary"),this.mini&&t.push("mu-float-button-mini"),t.join(" ")},buttonStyle:function(){return{"background-color":n.i(s.d)(this.backgroundColor)}}},methods:{handleClick:function(t){this.$emit("click",t)},handleKeyboardFocus:function(t){this.$emit("keyboardFocus",t),this.$emit("keyboard-focus",t)},handleHover:function(t){this.$emit("hover",t)},handleHoverExit:function(t){this.$emit("hoverExit",t),this.$emit("hover-exit",t)}},components:{"abstract-button":i.a,icon:r.a}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0}),e.default={name:"mu-col",props:{width:{type:String,default:"100"},tablet:{type:String,default:""},desktop:{type:String,default:""}},computed:{classObj:function t(){var e="col-"+this.width,t={};if(t[e]=!0,this.tablet){t["tablet-"+this.tablet]=!0}if(this.desktop){t["desktop-"+this.desktop]=!0}return t}}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0}),e.default={name:"mu-row",props:{gutter:{type:Boolean,default:!1}}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0}),e.default={name:"mu-grid-list",props:{cellHeight:{type:Number,default:180},cols:{type:Number,default:2},padding:{type:Number,default:4}},computed:{gridListStyle:function(){return{margin:-this.padding/this.cols+"px"}}}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0}),e.default={name:"mu-grid-tile",props:{actionPosition:{type:String,default:"right",validator:function(t){return["left","right"].indexOf(t)!==-1}},cols:{type:Number,default:1},rows:{type:Number,default:1},title:{type:String},subTitle:{type:String},titlePosition:{type:String,default:"bottom",validator:function(t){return["top","bottom"].indexOf(t)!==-1}},titleBarClass:{type:[String,Array,Object]}},computed:{tileClass:function(){var t=[];return"top"===this.titlePosition&&t.push("top"),"left"===this.actionPosition&&t.push("action-left"),this.$slots&&this.$slots.title&&this.$slots.subTitle&&this.$slots.title.length>0&&this.$slots.subTitle.length>0&&t.push("multiline"),t},style:function(){return{width:this.cols/this.$parent.cols*100+"%",padding:this.$parent.padding/2+"px",height:this.$parent.cellHeight*this.rows+"px"}}}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(1);e.default={name:"mu-icon",props:{value:{type:String},size:{type:Number},color:{type:String,default:""}},computed:{iconStyle:function(){return{"font-size":this.size+"px",width:this.size+"px",height:this.size+"px",color:n.i(i.d)(this.color)}}},methods:{handleClick:function(t){this.$emit("click",t)}},render:function(t){var e=this.value,n=this.iconStyle,i=this.handleClick;if(!e)return null;var a=0!==e.indexOf(":"),r=a?e:"";return t("i",{class:["mu-icon",a?"material-icons":e.substring(1)],style:n,on:{click:i}},r)}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(3),a=n(5),r=n(2),s=n(34);e.default={name:"mu-icon-button",mixins:[a.a],props:{icon:{type:String},iconClass:{type:[String,Array,Object],default:""},type:{type:String},href:{type:String,default:""},target:{type:String},disabled:{type:Boolean,default:!1},keyboardFocused:{type:Boolean,default:!1},tooltip:{type:String},tooltipPosition:{type:String,default:"bottom-center"},touch:{type:Boolean,default:!1}},computed:{verticalPosition:function(){return this.tooltipPosition.split("-")[0]},horizontalPosition:function(){return this.tooltipPosition.split("-")[1]}},data:function(){return{tooltipShown:!1,tooltipTrigger:null}},methods:{handleClick:function(t){this.$emit("click",t)},handleHover:function(t){this.tooltipShown=!0,this.$emit("hover",t)},handleHoverExit:function(t){this.tooltipShown=!1,this.$emit("hoverExit",t),this.$emit("hover-exit",t)},handleKeyboardFocus:function(t){this.$emit("keyboardFocus",t),this.$emit("keyboard-focus",t)}},mounted:function(){this.tooltipTrigger=this.$el},components:{"abstract-button":i.a,icon:r.a,tooltip:s.a}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(23),a=n(8),r=n(24);e.default={name:"mu-icon-menu",props:{icon:{type:String,required:!0},iconClass:{type:[String,Array,Object]},menuClass:{type:[String,Array,Object]},menuListClass:{type:[String,Array,Object]},value:{},multiple:{type:Boolean,default:!1},desktop:{type:Boolean,default:!1},open:{type:Boolean,default:!1},maxHeight:{type:Number},anchorOrigin:{type:Object,default:function(){return{vertical:"top",horizontal:"left"}}},targetOrigin:{type:Object,default:function(){return{vertical:"top",horizontal:"left"}}},scroller:{},itemClickClose:{type:Boolean,default:!0},tooltip:{type:String},tooltipPosition:{type:String,default:"bottom-center"}},data:function(){return{openMenu:this.open,trigger:null}},methods:{handleOpen:function(){this.openMenu=!0,this.$emit("open")},handleClose:function(){this.openMenu=!1,this.$emit("close")},change:function(t){this.$emit("change",t)},itemClick:function(t){this.itemClickClose&&this.handleClose(),this.$emit("itemClick",t),this.$emit("item-click",t)}},mounted:function(){this.trigger=this.$el},watch:{open:function(t,e){t!==e&&(this.openMenu=t)}},components:{"icon-button":i.a,popover:a.a,"mu-menu":r.menu}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(55),a=n.n(i),r=n(64);e.default={name:"mu-infinite-scroll",mixins:[r.a],props:{loading:{type:Boolean,default:!1},loadingText:{type:String,default:"正在加载。。。"}},methods:{onScroll:function(){if(!this.loading){var t=this.scroller,e=t===window,n=e?t.scrollY:t.scrollTop;(e?document.documentElement.scrollHeight||document.body.scrollHeight:t.scrollHeight)-n-5<=(e?window.innerHeight:t.offsetHeight)&&this.$emit("load")}}},components:{circular:a.a}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(1);e.default={props:{mergeStyle:{type:Object,default:function(){return{}}},color:{type:String,default:""},opacity:{type:Number}},computed:{styles:function(){return n.i(i.b)({},{color:this.color,opacity:this.opacity},this.mergeStyle)}}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(1);e.default={name:"circle",props:{size:{type:Number,default:24},color:{type:String,default:""},borderWidth:{type:Number,default:3},secondary:{type:Boolean,default:!1}},computed:{spinnerStyle:function(){return{"border-color":n.i(i.d)(this.color)}}}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0}),e.default={methods:{beforeEnter:function(t){t.dataset.oldPaddingTop=t.style.paddingTop,t.dataset.oldPaddingBottom=t.style.paddingBottom,t.style.height="0"},enter:function(t){t.dataset.oldOverflow=t.style.overflow,t.style.display="block",0!==t.scrollHeight?(t.style.height=t.scrollHeight+"px",t.style.paddingTop=t.dataset.oldPaddingTop,t.style.paddingBottom=t.dataset.oldPaddingBottom):(t.style.height="",t.style.paddingTop=t.dataset.oldPaddingTop,t.style.paddingBottom=t.dataset.oldPaddingBottom),t.style.overflow="hidden"},afterEnter:function(t){t.style.display="",t.style.height="",t.style.overflow=t.dataset.oldOverflow,t.style.paddingTop=t.dataset.oldPaddingTop,t.style.paddingBottom=t.dataset.oldPaddingBottom},beforeLeave:function(t){t.dataset.oldPaddingTop=t.style.paddingTop,t.dataset.oldPaddingBottom=t.style.paddingBottom,t.dataset.oldOverflow=t.style.overflow,t.style.display="block",0!==t.scrollHeight&&(t.style.height=t.scrollHeight+"px"),t.style.overflow="hidden"},leave:function(t){0!==t.scrollHeight&&setTimeout(function(){t.style.height=0,t.style.paddingTop=0,t.style.paddingBottom=0})},afterLeave:function(t){t.style.display="none",t.style.height="",t.style.overflow=t.dataset.oldOverflow,t.style.paddingTop=t.dataset.oldPaddingTop,t.style.paddingBottom=t.dataset.oldPaddingBottom}}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0}),e.default={props:{color:{type:String,default:""},opacity:{type:Number}},computed:{style:function(){return{color:this.color,opacity:this.opacity}}},methods:{setRippleSize:function(){var t=this.$refs.innerCircle,e=t.offsetHeight,n=t.offsetWidth,i=Math.max(e,n),a=0;t.style.top.indexOf("px",t.style.top.length-2)!==-1&&(a=parseInt(t.style.top)),t.style.height=i+"px",t.style.top=e/2-i/2+a+"px"}},mounted:function(){this.setRippleSize()},updated:function(){this.setRippleSize()}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0}),e.default={name:"mu-overlay",props:{show:{type:Boolean,default:!1},fixed:{type:Boolean,default:!1},onClick:{type:Function},opacity:{type:Number,default:.4},color:{type:String,default:"#000"},zIndex:{type:Number}},computed:{overlayStyle:function(){return{opacity:this.opacity,"background-color":this.color,position:this.fixed?"fixed":"","z-index":this.zIndex}}},methods:{prevent:function(t){t.preventDefault(),t.stopPropagation()},handleClick:function(){this.onClick&&this.onClick()}}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(408),a=n.n(i),r=n(39);e.default={props:{centerRipple:{type:Boolean,default:!0},rippleWrapperClass:{},color:{type:String,default:""},opacity:{type:Number}},data:function(){return{nextKey:0,ripples:[]}},mounted:function(){this.ignoreNextMouseDown=!1},methods:{start:function(t,e){if(this.ignoreNextMouseDown&&!e)return void(this.ignoreNextMouseDown=!1);this.ripples.push({key:this.nextKey++,color:this.color,opacity:this.opacity,style:this.centerRipple?{}:this.getRippleStyle(t)}),this.ignoreNextMouseDown=e},end:function(){0!==this.ripples.length&&(this.ripples.splice(0,1),this.stopListeningForScrollAbort())},stopListeningForScrollAbort:function(){this.handleMove||(this.handleMove=this.handleTouchMove.bind(this)),document.body.removeEventListener("touchmove",this.handleMove,!1)},startListeningForScrollAbort:function(t){this.firstTouchY=t.touches[0].clientY,this.firstTouchX=t.touches[0].clientX,document.body.addEventListener("touchmove",this.handleMove,!1)},handleMouseDown:function(t){0===t.button&&this.start(t,!1)},handleTouchStart:function(t){t.touches&&(this.startListeningForScrollAbort(t),this.startTime=Date.now()),this.start(t.touches[0],!0)},handleTouchMove:function(t){var e=Math.abs(t.touches[0].clientY-this.firstTouchY),n=Math.abs(t.touches[0].clientX-this.firstTouchX);(e>6||n>6)&&this.end()},getRippleStyle:function(t){var e=this.$refs.holder,n=e.offsetHeight,i=e.offsetWidth,a=r.a(e),s=t.touches&&t.touches.length,o=s?t.touches[0].pageX:t.pageX,l=s?t.touches[0].pageY:t.pageY,u=o-a.left,c=l-a.top,d=this.calcDiag(u,c),f=this.calcDiag(i-u,c),h=this.calcDiag(i-u,n-c),p=this.calcDiag(u,n-c),m=Math.max(d,f,h,p),v=2*m;return{directionInvariant:!0,height:v+"px",width:v+"px",top:c-m+"px",left:u-m+"px"}},calcDiag:function(t,e){return Math.sqrt(t*t+e*e)}},components:{"circle-ripple":a.a}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(1);e.default={name:"mu-linear-progress",props:{max:{type:Number,default:100},min:{type:Number,default:0},mode:{type:String,default:"indeterminate",validator:function(t){return["indeterminate","determinate"].indexOf(t)!==-1}},value:{type:Number,default:0},color:{type:String},size:{type:Number}},computed:{percent:function(){return(this.value-this.min)/(this.max-this.min)*100},linearStyle:function(){var t=this.size,e=this.color,a=this.mode,r=this.percent;return{height:t+"px","background-color":n.i(i.d)(e),"border-radius":(t?t/2:"")+"px",width:"determinate"===a?r+"%":""}},linearClass:function(){return"mu-linear-progress-"+this.mode}}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0}),e.default={name:"mu-list",props:{nestedLevel:{type:Number,default:0},value:{}},methods:{handleChange:function(t){this.$emit("change",t)},handleItemClick:function(t){this.$emit("itemClick",t),this.$emit("item-click",t)}}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(3),a=n(5),r=n(23),s=n(79),o=n.n(s),l=n(77),u=n.n(l),c=n(1);e.default={name:"mu-list-item",mixins:[a.a],props:{href:{type:String},target:{type:String},title:{type:String,default:""},titleClass:{type:[String,Object,Array]},afterText:{type:String,default:""},afterTextClass:{type:[String,Object,Array]},describeText:{type:String,default:""},describeTextClass:{type:[String,Object,Array]},describeLine:{type:Number,default:2},inset:{type:Boolean,default:!1},nestedListClass:{type:[String,Object,Array]},open:{type:Boolean,default:!0},toggleNested:{type:Boolean,default:!1},toggleIconClass:{type:[String,Object,Array]},disabled:{type:Boolean,default:!1},disableRipple:{type:Boolean,default:!1},value:{}},data:function(){return{nestedOpen:this.open}},computed:{hasAvatar:function(){return this.$slots&&(this.$slots.leftAvatar&&this.$slots.leftAvatar.length>0||this.$slots.rightAvatar&&this.$slots.rightAvatar.length>0)},nestedLevel:function(){return this.$parent.nestedLevel+1},showLeft:function(){return this.$slots&&(this.$slots.left&&this.$slots.left.length>0||this.$slots.leftAvatar&&this.$slots.leftAvatar.length>0)},showRight:function(){return this.toggleNested||this.$slots&&(this.$slots.right&&this.$slots.right.length>0||this.$slots.rightAvatar&&this.$slots.rightAvatar.length>0)},showTitleRow:function(){return this.title||this.$slots&&this.$slots.title&&this.$slots.title.length>0||this.afterText||this.$slots&&this.$slots.after&&this.$slots.after.length>0},showDescribe:function(){return this.describeText||this.$slots&&this.$slots.describe&&this.$slots.describe.length>0},itemClass:function(){var t=["mu-item"];return(this.showLeft||this.inset)&&t.push("show-left"),this.showRight&&t.push("show-right"),this.hasAvatar&&t.push("has-avatar"),this.selected&&t.push("selected"),t.join(" ")},itemStyle:function(){return{"margin-left":18*(this.nestedLevel-1)+"px"}},textStyle:function(){return{"max-height":18*this.describeLine+"px","-webkit-line-clamp":this.describeLine}},showNested:function(){return this.nestedOpen&&this.$slots&&this.$slots.nested&&this.$slots.nested.length>0},selected:function(){return n.i(c.c)(this.$parent.value)&&n.i(c.c)(this.value)&&this.$parent.value===this.value},nestedSelectValue:function(){return this.$parent.value}},methods:{handleToggleNested:function(){this.nestedOpen=!this.nestedOpen,this.$emit("toggleNested",this.nestedOpen),this.$emit("toggle-nested",this.nestedOpen)},handleClick:function(t){this.$emit("click",t),this.$parent.handleItemClick&&this.$parent.handleItemClick(this),n.i(c.c)(this.value)&&this.$parent.handleChange(this.value),this.toggleNested&&this.handleToggleNested()},handleKeyboardFocus:function(t){this.$emit("keyboardFocus",t),this.$emit("keyboard-focus",t)},handleHover:function(t){this.$emit("hover",t)},handleHoverExit:function(t){this.$emit("hoverExit",t),this.$emit("hover-exit",t)},handleNestedChange:function(t){this.$parent.handleChange(t)},stop:function(t){t.stopPropagation()}},watch:{open:function(t,e){t!==e&&(this.nestedOpen=t)}},components:{"abstract-button":i.a,"mu-list":o.a,"icon-button":r.a,"expand-transition":u.a}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(1),a=n(17),r=n.n(a),s=n(37);e.default={name:"mu-menu",props:{desktop:{type:Boolean,default:!1},multiple:{type:Boolean,default:!1},autoWidth:{type:Boolean,default:!0},width:{type:[String,Number]},maxHeight:{type:Number},disableAutoFocus:{type:Boolean,default:!1},initiallyKeyboardFocused:{type:Boolean,default:!1},listClass:{type:[String,Object,Array]},popover:{type:Boolean,default:!1},value:{}},data:function(){return{focusIndex:-1,isKeyboardFocused:!1}},computed:{keyWidth:function(){return this.desktop?64:56},contentWidth:function(){return this.autoWidth?"":n.i(i.e)(this.width)},menuListClass:function(){var t=this.desktop,e=this.listClass,a=[];return t&&a.push("mu-menu-destop"),a.concat(n.i(i.f)(e))}},mounted:function(){this.setWidth();var t=this.getSelectedIndex();this.setScollPosition(),this.focusIndex=this.disableAutoFocus?-1:t>=0?t:this.initiallyKeyboardFocused?0:-1,this.isKeyboardFocused=this.initiallyKeyboardFocused},beforeUpdate:function(){var t=this.getSelectedIndex();this.focusIndex=this.disableAutoFocus?-1:t>=0?t:0},updated:function(){this.setWidth()},methods:{clickoutside:function(){this.setFocusIndex(-1,!1)},setWidth:function(){if(this.autoWidth){var t=this.$el,e=this.$refs.list,n=t.offsetWidth;if(0!==n){var i=this.keyWidth,a=1.5*i,r=n/i,s=void 0;r=r<=1.5?1.5:Math.ceil(r),s=r*i,s<a&&(s=a),t.style.width=s+"px",e.style.width=s+"px"}}},handleChange:function(t){this.$emit("change",t)},handleClick:function(t){this.$emit("itemClick",t),this.$emit("item-click",t)},handleKeydown:function(t){switch(r()(t)){case"down":t.stopPropagation(),t.preventDefault(),this.incrementKeyboardFocusIndex();break;case"tab":t.stopPropagation(),t.preventDefault(),t.shiftKey?this.decrementKeyboardFocusIndex():this.incrementKeyboardFocusIndex();break;case"up":t.stopPropagation(),t.preventDefault(),this.decrementKeyboardFocusIndex()}},decrementKeyboardFocusIndex:function(){var t=this.focusIndex,e=this.getMenuItemCount()-1;t--,t<0&&(t=e),this.setFocusIndex(t,!0)},incrementKeyboardFocusIndex:function(){var t=this.focusIndex,e=this.getMenuItemCount()-1;t++,t>e&&(t=0),this.setFocusIndex(t,!0)},getMenuItemCount:function(){var t=0;return this.$children.forEach(function(e){e._isMenuItem&&!e.disabled&&t++}),t},getSelectedIndex:function(){var t=-1,e=0;return this.$children.forEach(function(n){n.active&&(t=e),n._isMenuItem&&!n.disabled&&e++}),t},setFocusIndex:function(t,e){this.focusIndex=t,this.isKeyboardFocused=e},setScollPosition:function(t){var e=this.desktop,n=null;this.$children.forEach(function(t){t.active&&(n=t)});var i=e?32:48;if(n){var a=n.$el.offsetTop,r=a-i;r<i&&(r=0),this.$refs.list.scrollTop=r}}},watch:{focusIndex:function(t,e){var n=this;if(t!==e){var i=0;this.$children.forEach(function(e){if(e._isMenuItem&&!e.disabled){var a=i===t,r="none";a&&(r=n.isKeyboardFocused?"keyboard-focused":"focused"),e.focusState=r,i++}})}},popover:function(t){var e=this;t&&setTimeout(function(){var t=e.getSelectedIndex();e.disableAutoFocus?e.$el.focus():e.setFocusIndex(t,!1)},300)}},directives:{clickoutside:s.a}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(3),a=n(5),r=n(2),s=n(1),o=n(8),l=n(80),u=n.n(l);e.default={name:"mu-menu-item",mixins:[a.a],props:{href:{type:String},target:{type:String},title:{type:String},titleClass:{type:[String,Object,Array]},afterText:{type:String},afterTextClass:{type:[String,Object,Array]},disabled:{type:Boolean,default:!1},disableFocusRipple:{type:Boolean,default:!1},inset:{type:Boolean,default:!1},leftIcon:{type:String},leftIconColor:{type:String},leftIconClass:{type:[String,Object,Array]},rightIcon:{type:String},rightIconColor:{type:String},rightIconClass:{type:[String,Object,Array]},nestedMenuClass:{type:[String,Object,Array]},nestedMenuListClass:{type:[String,Object,Array]},value:{},nestedMenuValue:{}},computed:{showAfterText:function(){return!this.rightIcon&&this.afterText&&(!this.$slot||!this.$slot.after||0===this.$slot.after.length)},active:function(){return n.i(s.c)(this.$parent.value)&&n.i(s.c)(this.value)&&(this.$parent.value===this.value||this.$parent.multiple&&this.$parent.value.indexOf(this.value)!==-1)}},data:function(){return this._isMenuItem=!0,{openMenu:!1,trigger:null,focusState:"none"}},mounted:function(){this.trigger=this.$el,this.applyFocusState()},methods:{handleClick:function(t){this.$emit("click",t),this.$parent.handleClick(this),this.open(),n.i(s.c)(this.value)&&this.$parent.handleChange(this.value)},filterColor:function(t){return n.i(s.d)(t)},open:function(){this.openMenu=this.$slots&&this.$slots.default&&this.$slots.default.length>0},close:function(){this.openMenu=!1},handleKeyboardFocus:function(t){this.$emit("keyboardFocus",t),this.$emit("keyboard-focus",t)},handleHover:function(t){this.$emit("hover",t)},handleHoverExit:function(t){this.$emit("hoverExit",t),this.$emit("hover-exit",t)},applyFocusState:function(){var t=this.$refs.button;if(t){var e=t.$el;switch(this.focusState){case"none":e.blur();break;case"focused":e.focus();break;case"keyboard-focused":t.setKeyboardFocus(),e.focus()}}}},watch:{focusState:function(){this.applyFocusState()}},components:{"abstract-button":i.a,icon:r.a,popover:o.a,"mu-menu":u.a}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(3);e.default={props:{icon:{type:String},index:{type:Number},isCircle:{type:Boolean,default:!1},disabled:{type:Boolean,default:!1},isActive:{type:Boolean,default:!1},identifier:{type:String}},data:function(){return{}},methods:{handleHover:function(t){this.$emit("hover",t)},handleHoverExit:function(t){this.$emit("hoverExit",t),this.$emit("hover-exit",t)},handleClick:function(){this.index?this.$emit("click",this.index):this.$emit("click",this.identifier)}},components:{"abstract-button":i.a}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(411),a=n.n(i),r=n(60),s=n(13),o=n(81),l=n.n(o);e.default={name:"mu-pagination",props:{total:{type:Number,default:1},current:{type:Number,default:1},defaultPageSize:{type:Number,default:10},pageSize:{type:Number},showSizeChanger:{type:Boolean,default:!1},pageSizeOption:{type:Array,default:function(){return[10,20,30,40]}}},data:function(){return{leftDisabled:!1,rightDisabled:!1,actualCurrent:this.current,actualPageSize:this.defaultPageSize,totalPageCount:0,pageList:[],quickJumpPage:""}},mounted:function(){this.iconIsDisabled(this.actualCurrent),this.showSizeChanger?this.actualPageSize=this.pageSizeOption[0]:this.pageSize&&(this.actualPageSize=this.pageSize),this.totalPageCount=Math.ceil(this.total/this.actualPageSize),this.pageList=this.calcPageList(this.actualCurrent)},methods:{handleClick:function(t){if("number"==typeof t)this.actualCurrent=t;else switch(t){case"singleBack":this.actualCurrent=Math.max(1,this.actualCurrent-1);break;case"backs":this.actualCurrent=Math.max(1,this.actualCurrent-5);break;case"forwards":this.actualCurrent=Math.min(this.totalPageCount,this.actualCurrent+5);break;case"singleForward":this.actualCurrent=Math.min(this.totalPageCount,this.actualCurrent+1)}},iconIsDisabled:function(t){this.leftDisabled=1===t,this.rightDisabled=t===this.totalPageCount},calcPageList:function(t){var e=[];if(this.totalPageCount>5){var n=Math.max(2,t-2),i=Math.min(t+2,this.totalPageCount-1);t-1<2&&(i=4),this.totalPageCount-t<2&&(n=this.totalPageCount-3);for(var a=n;a<=i;a++)e.push(a)}else for(var r=2;r<this.totalPageCount;r++)e.push(r);return e},pageSizeAndTotalChange:function(t){this.iconIsDisabled(t),this.pageList=this.calcPageList(t)}},components:{"page-item":a.a,"select-field":r.a,"text-field":s.a,"menu-item":l.a},watch:{actualCurrent:function(t){0!==t&&(this.pageSizeAndTotalChange(t),this.$emit("pageChange",t),this.$emit("page-change",t))},actualPageSize:function(t,e){var n=e*(this.actualCurrent-1),i=this.actualCurrent;this.actualCurrent=Math.floor(n/t)+1,this.totalPageCount=Math.ceil(this.total/this.actualPageSize),i===this.actualCurrent&&this.pageSizeAndTotalChange(i),this.$emit("pageSizeChange",t),this.$emit("page-size-change",t)},total:function(t){var e=this.actualCurrent;this.actualCurrent=Math.min(this.totalPageCount,this.actualCurrent),this.totalPageCount=Math.ceil(this.total/this.actualPageSize),e===this.actualCurrent&&this.pageSizeAndTotalChange(e)},current:function(t){this.actualCurrent=t}}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0}),e.default={name:"mu-paper",props:{circle:{type:Boolean,default:!1},rounded:{type:Boolean,default:!0},zDepth:{type:Number,default:1}},computed:{paperClass:function(){var t=[];return this.circle&&t.push("mu-paper-circle"),this.rounded&&t.push("mu-paper-round"),t.push("mu-paper-"+this.zDepth),t}}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(36),a=n.n(i),r=n(65),s=n(126),o=n(39),l=36;e.default={props:{divider:{type:Boolean,default:!1},content:{type:String,default:""},values:{type:Array,default:function(){return[]}},value:{},textAlign:{type:String,default:""},width:{type:String,default:""},visibleItemCount:{type:Number,default:5}},data:function(){return{animate:!1}},computed:{contentHeight:function(){return l*this.visibleItemCount},valueIndex:function(){return this.values.indexOf(this.value)},dragRange:function(){var t=this.values,e=this.visibleItemCount;return[-l*(t.length-Math.ceil(e/2)),l*Math.floor(e/2)]}},mounted:function(){this.divider||(this.initEvents(),this.doOnValueChange())},methods:{value2Translate:function(t){var e=this.values,n=e.indexOf(t),i=Math.floor(this.visibleItemCount/2);if(n!==-1)return(n-i)*-l},translate2Value:function(t){t=Math.round(t/l)*l;var e=-(t-Math.floor(this.visibleItemCount/2)*l)/l;return this.values[e]},doOnValueChange:function(){var t=this.value,e=this.$refs.wrapper;s.a.translateElement(e,null,this.value2Translate(t))},doOnValuesChange:function(){var t=this.$el,e=t.querySelectorAll(".mu-picker-item");Array.prototype.forEach.call(e,function(t,e){s.a.translateElement(t,null,l*e)})},initEvents:function(){var t=this,e=this.$refs.wrapper,n=new r.a(e),i=0,u=void 0,c=void 0;n.start(function(){i=s.a.getElementTranslate(e).top}).drag(function(t,n){n.preventDefault(),n.stopPropagation();var a=i+t.y;s.a.translateElement(e,0,a),u=a-c||a,c=a}).end(function(n){var i=s.a.getElementTranslate(e).top,r=void 0;n.time<300&&(r=i+7*u);var c=t.dragRange;t.animate=!0,o.b(e,function(){t.animate=!1}),a.a.nextTick(function(){var n=void 0;n=r?Math.round(r/l)*l:Math.round(i/l)*l,n=Math.max(Math.min(n,c[1]),c[0]),s.a.translateElement(e,null,n),t.$emit("change",t.translate2Value(n))})})}},watch:{values:function(t){this.valueIndex===-1&&(this.value=(t||[])[0])},value:function(){this.doOnValueChange()}}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(414),a=n.n(i);e.default={name:"mu-picker",props:{visibleItemCount:{type:Number,default:5},values:{type:Array,default:function(){return[]}},slots:{type:Array,default:function(){return[]}}},methods:{change:function(t,e){this.$emit("change",e[0],t)}},components:{"picker-slot":a.a}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(35),a=n.n(i),r=n(64),s=n(26),o=n(63);e.default={name:"mu-popover",mixins:[r.a,o.a,s.a],props:{overlay:{default:!1},overlayOpacity:{default:.01},trigger:{},autoPosition:{type:Boolean,default:!0},anchorOrigin:{type:Object,default:function(){return{vertical:"bottom",horizontal:"left"}}},targetOrigin:{type:Object,default:function(){return{vertical:"top",horizontal:"left"}}},popoverClass:{type:[String,Object,Array]}},methods:{getAnchorPosition:function(t){var e=t.getBoundingClientRect(),n={top:e.top,left:e.left,width:t.width,height:t.height};return n.right=e.right||n.left+n.width,n.bottom=e.bottom||n.top+n.height,n.middle=n.left+(n.right-n.left)/2,n.center=n.top+(n.bottom-n.top)/2,n},getTargetPosition:function(t){return{top:0,center:t.offsetHeight/2,bottom:t.offsetHeight,left:0,middle:t.offsetWidth/2,right:t.offsetWidth}},getElInfo:function(t){var e=t.getBoundingClientRect();return{left:e.left,top:e.top,width:t.offsetWidth,height:t.offsetHeight}},setStyle:function(){if(this.open){var t=this.targetOrigin,e=this.anchorOrigin,n=this.$refs.popup,i=this.getAnchorPosition(this.trigger),a=this.getTargetPosition(n),r={top:i[e.vertical]-a[t.vertical],left:i[e.horizontal]-a[t.horizontal]};if(i.top<0||i.top>window.innerHeight||i.left<0||i.left>window.innerWidth)return void this.close("overflow");this.autoPosition&&(a=this.getTargetPosition(n),r=this.applyAutoPositionIfNeeded(i,a,t,e,r)),n.style.left=Math.max(0,r.left)+"px",n.style.top=Math.max(0,r.top)+"px"}},getOverlapMode:function(t,e,n){return[t,e].indexOf(n)>=0?"auto":t===e?"inclusive":"exclusive"},getPositions:function(t,e){var n=a()({},t),i=a()({},e),r={x:["left","right"].filter(function(t){return t!==i.horizontal}),y:["top","bottom"].filter(function(t){return t!==i.vertical})},s={x:this.getOverlapMode(n.horizontal,i.horizontal,"middle"),y:this.getOverlapMode(n.vertical,i.vertical,"center")};return r.x.splice("auto"===s.x?0:1,0,"middle"),r.y.splice("auto"===s.y?0:1,0,"center"),"auto"!==s.y&&(n.vertical="top"===n.vertical?"bottom":"top","inclusive"===s.y&&(i.vertical=i.vertical)),"auto"!==s.x&&(n.horizontal="left"===n.horizontal?"right":"left","inclusive"===s.y&&(i.horizontal=i.horizontal)),{positions:r,anchorPos:n}},applyAutoPositionIfNeeded:function(t,e,n,i,a){var r=this.getPositions(i,n),s=r.positions,o=r.anchorPos;if(a.top<0||a.top+e.bottom>window.innerHeight){var l=t[o.vertical]-e[s.y[0]];l+e.bottom<=window.innerHeight?a.top=Math.max(0,l):(l=t[o.vertical]-e[s.y[1]])+e.bottom<=window.innerHeight&&(a.top=Math.max(0,l))}if(a.left<0||a.left+e.right>window.innerWidth){var u=t[o.horizontal]-e[s.x[0]];u+e.right<=window.innerWidth?a.left=Math.max(0,u):(u=t[o.horizontal]-e[s.x[1]])+e.right<=window.innerWidth&&(a.left=Math.max(0,u))}return a},close:function(t){this.$emit("close",t)},clickOutSide:function(t){this.close("clickOutSide")},onScroll:function(){this.setStyle()},onResize:function(){this.setStyle()},show:function(){this.$emit("show")},hide:function(){this.$emit("hide")}},mounted:function(){this.setStyle()},updated:function(){var t=this;setTimeout(function(){t.setStyle()},0)}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(26),a=n(1);e.default={name:"mu-popup",mixins:[i.a],props:{popupClass:{type:[String,Object,Array]},popupTransition:{type:String,default:""},position:{type:String,default:""}},data:function(){return{transition:this.popupTransition}},created:function(){this.popupTransition||(this.transition="popup-slide-"+this.position)},computed:{popupCss:function(){var t=this.position,e=this.popupClass,i=[];return t&&i.push("mu-popup-"+t),i.concat(n.i(a.f)(e))}},methods:{show:function(){this.$emit("show")},hide:function(){this.$emit("hide")}},watch:{popupTransition:function(t,e){t!==e&&(this.transition=t)}}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(2),a=n(32),r=n.n(a);e.default={name:"mu-radio",props:{name:{type:String},value:{type:String},nativeValue:{type:String},label:{type:String,default:""},labelLeft:{type:Boolean,default:!1},labelClass:{type:[String,Object,Array]},disabled:{type:Boolean,default:!1},uncheckIcon:{type:String,default:""},checkedIcon:{type:String,default:""},iconClass:{type:[String,Object,Array]}},data:function(){return{inputValue:this.value}},watch:{value:function(t){this.inputValue=t},inputValue:function(t){this.$emit("input",t)}},methods:{handleClick:function(){},handleMouseDown:function(t){this.disabled||0===t.button&&this.$children[0].start(t)},handleMouseUp:function(){this.disabled||this.$children[0].end()},handleMouseLeave:function(){this.disabled||this.$children[0].end()},handleTouchStart:function(t){this.disabled||this.$children[0].start(t)},handleTouchEnd:function(){this.disabled||this.$children[0].end()},handleChange:function(){this.$emit("change",this.inputValue)}},components:{icon:i.a,"touch-ripple":r.a}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(3),a=n(5),r=n(1),s=n(2);e.default={name:"mu-raised-button",mixins:[a.a],props:{icon:{type:String},iconClass:{type:[String,Array,Object]},label:{type:String},labelPosition:{type:String,default:"after"},labelClass:{type:[String,Array,Object],default:""},primary:{type:Boolean,default:!1},secondary:{type:Boolean,default:!1},disabled:{type:Boolean,default:!1},keyboardFocused:{type:Boolean,default:!1},fullWidth:{type:Boolean,default:!1},type:{type:String},href:{type:String,default:""},target:{type:String},backgroundColor:{type:String,default:""},color:{type:String,default:""},rippleColor:{type:String},rippleOpacity:{type:Number}},data:function(){return{focus:!1}},computed:{buttonStyle:function(){return{"background-color":n.i(r.d)(this.backgroundColor),color:n.i(r.d)(this.color)}},inverse:function(){return this.primary||this.secondary||this.backgroundColor},buttonClass:function(){return{"mu-raised-button-primary":this.primary,"mu-raised-button-secondary":this.secondary,"label-before":"before"===this.labelPosition,"mu-raised-button-inverse":this.inverse,"mu-raised-button-full":this.fullWidth,focus:this.focus,"no-label":!this.label}}},methods:{handleClick:function(t){this.$emit("click",t)},handleKeyboardFocus:function(t){this.focus=t,this.$emit("keyboardFocus",t),this.$emit("keyboard-focus",t)},handleHover:function(t){this.$emit("hover",t)},handleHoverExit:function(t){this.$emit("hoverExit",t),this.$emit("hover-exit",t)}},components:{"abstract-button":i.a,icon:s.a}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(65),a=n(55),r=n.n(a),s=n(39),o=130,l=-68;e.default={name:"mu-refresh-control",props:{refreshing:{type:Boolean,default:!1},trigger:{}},data:function(){return{y:0,draging:!1,state:"pending"}},computed:{refreshStyle:function(){var t={};if(!this.refreshing&&this.draging){var e="translate3d(0, "+(this.y+l)+"px, 0) ";t["-webkit-transform"]=t.transform=e}return t},circularStyle:function(){var t={};if(!this.refreshing&&this.draging){var e=this.y/o,n="rotate("+360*e+"deg)",i=this.y/Math.abs(l);t["-webkit-transform"]=t.transform=n,t.opacity=i}return t},refreshClass:function(){var t=[];switch(this.state){case"pending":break;case"ready":t.push("mu-refresh-control-noshow");break;case"dragStart":t.push("mu-refresh-control-hide");break;case"dragAnimate":t.push("mu-refresh-control-animate"),t.push("mu-refresh-control-hide");break;case"refreshAnimate":t.push("mu-refresh-control-animate"),t.push("mu-refresh-control-noshow")}return this.refreshing&&t.push("mu-refresh-control-refreshing"),t}},mounted:function(){this.bindDrag()},beforeDestory:function(){this.unbindDrag()},methods:{clearState:function(){this.state="ready",this.draging=!1,this.y=0},getScrollEventTarget:function(t){for(var e=t;e&&"HTML"!==e.tagName&&"BODY"!==e.tagName&&1===e.nodeType;){var n=document.defaultView.getComputedStyle(e).overflowY;if("scroll"===n||"auto"===n)return e;e=e.parentNode}return window},getScrollTop:function(t){return t===window?Math.max(window.pageYOffset||0,document.documentElement.scrollTop):t.scrollTop},bindDrag:function(){var t=this;if(this.trigger){var e=this.drager=new i.a(this.trigger);this.state="ready",e.start(function(){if(!t.refreshing){t.state="dragStart";0===t.getScrollTop(t.getScrollEventTarget(t.$el))&&(t.draging=!0)}}).drag(function(n,i){var a=t.getScrollTop(t.getScrollEventTarget(t.$el));n.y<5||t.refreshing||0!==a||(0!==a||t.draging||(t.draging=!0,e.reset(i)),t.draging&&n.y>0&&(i.preventDefault(),i.stopPropagation()),t.y=n.y/2,t.y<0&&(t.y=1),t.y>o&&(t.y=o))}).end(function(e,n){if(!e.y||e.y<5)return void t.clearState();var i=e.y+l>0&&t.draging;t.state="dragAnimate",i?(t.draging=!1,t.$emit("refresh")):(t.y=0,s.b(t.$el,t.clearState.bind(t)))})}},unbindDrag:function(){this.drager&&(this.drager.destory(),this.drager=null)}},watch:{refreshing:function(t){t?this.state="refreshAnimate":s.b(this.$el,this.clearState.bind(this))},trigger:function(t,e){t!==e&&(this.unbindDrag(),this.bindDrag())}},components:{circular:r.a}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(13),a=n(58),r=n(1);e.default={name:"mu-select-field",props:{name:{type:String},label:{type:String},labelFloat:{type:Boolean,default:!1},labelClass:{type:[String,Array,Object]},labelFocusClass:{type:[String,Array,Object]},disabled:{type:Boolean,default:!1},hintText:{type:String},hintTextClass:{type:[String,Array,Object]},helpText:{type:String},helpTextClass:{type:[String,Array,Object]},errorText:{type:String},errorColor:{type:String},icon:{type:String},iconClass:{type:[String,Array,Object]},maxHeight:{type:Number},autoWidth:{type:Boolean,default:!1},fullWidth:{type:Boolean,default:!1},underlineShow:{type:Boolean,default:!0},underlineClass:{type:[String,Array,Object]},underlineFocusClass:{type:[String,Array,Object]},dropDownIconClass:{type:[String,Array,Object]},value:{},multiple:{type:Boolean,default:!1},scroller:{}},data:function(){var t=this.value;return n.i(r.h)(t)&&(t=""),!this.multiple||t instanceof Array||(t=[]),{anchorEl:null,inputValue:t}},mounted:function(){this.anchorEl=this.$children[0].$refs.input},methods:{handlehange:function(t){if(t!==this.inputValue){if(this.multiple){var e=this.inputValue.indexOf(t);e===-1?this.inputValue.push(t):this.inputValue.splice(e,1)}else this.inputValue=t;this.$emit("change",this.inputValue)}},handleOpen:function(){this.$refs.textField.handleFocus(),this.$emit("open")},handleClose:function(){this.$refs.textField.handleBlur(),this.$emit("close")}},watch:{value:function(t){this.inputValue=t},inputValue:function(t,e){t!==e&&this.$emit("input",t)}},components:{"text-field":i.a,"dropDown-menu":a.a}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(78),a=n.n(i),r=n(17),s=n.n(r);e.default={name:"mu-slider",props:{name:{type:String},value:{type:[Number,String],default:0},max:{type:Number,default:100},min:{type:Number,default:0},step:{type:Number,default:.1},disabled:{type:Boolean,default:!1}},data:function(){return{inputValue:this.value,active:!1,hover:!1,focused:!1,dragging:!1}},computed:{percent:function(){var t=(this.inputValue-this.min)/(this.max-this.min)*100;return t>100?100:t<0?0:t},fillStyle:function(){return{width:this.percent+"%"}},thumbStyle:function(){return{left:this.percent+"%"}},sliderClass:function(){return{zero:this.inputValue<=this.min,active:this.active,disabled:this.disabled}}},created:function(){this.handleDragMouseMove=this.handleDragMouseMove.bind(this),this.handleMouseEnd=this.handleMouseEnd.bind(this),this.handleTouchMove=this.handleTouchMove.bind(this),this.handleTouchEnd=this.handleTouchEnd.bind(this)},methods:{handleKeydown:function(t){var e=this.min,n=this.max,i=this.step,a=void 0;switch(s()(t)){case"page down":case"down":a="decrease";break;case"left":a="decrease";break;case"page up":case"up":a="increase";break;case"right":a="increase";break;case"home":a="min";break;case"end":a="max"}if(a){switch(t.preventDefault(),a){case"decrease":this.inputValue-=i;break;case"increase":this.inputValue+=i;break;case"min":this.inputValue=e;break;case"max":this.inputValue=n}this.inputValue=parseFloat(this.inputValue.toFixed(5)),this.inputValue>n?this.inputValue=n:this.inputValue<e&&(this.inputValue=e)}},handleMouseDown:function(t){this.disabled||(this.setValue(t),t.preventDefault(),document.addEventListener("mousemove",this.handleDragMouseMove),document.addEventListener("mouseup",this.handleMouseEnd),this.$el.focus(),this.onDragStart(t))},handleMouseUp:function(){this.disabled||(this.active=!1)},handleTouchStart:function(t){this.disabled||(this.setValue(t.touches[0]),document.addEventListener("touchmove",this.handleTouchMove),document.addEventListener("touchup",this.handleTouchEnd),document.addEventListener("touchend",this.handleTouchEnd),document.addEventListener("touchcancel",this.handleTouchEnd),t.preventDefault(),this.onDragStart(t))},handleTouchEnd:function(t){this.disabled||(document.removeEventListener("touchmove",this.handleTouchMove),document.removeEventListener("touchup",this.handleTouchEnd),document.removeEventListener("touchend",this.handleTouchEnd),document.removeEventListener("touchcancel",this.handleTouchEnd),this.onDragStop(t))},handleFocus:function(){this.disabled||(this.focused=!0)},handleBlur:function(){this.disabled||(this.focused=!1)},handleMouseEnter:function(){this.disabled||(this.hover=!0)},handleMouseLeave:function(){this.disabled||(this.hover=!1)},setValue:function(t){var e=this.$el,n=this.max,i=this.min,a=this.step,r=(t.clientX-e.getBoundingClientRect().left)/e.offsetWidth*(n-i);r=Math.round(r/a)*a+i,r=parseFloat(r.toFixed(5)),r>n?r=n:r<i&&(r=i),this.inputValue=r,this.$emit("change",r)},onDragStart:function(t){this.dragging=!0,this.active=!0,this.$emit("dragStart",t),this.$emit("drag-start",t)},onDragUpdate:function(t){var e=this;this.dragRunning||(this.dragRunning=!0,window.requestAnimationFrame(function(){e.dragRunning=!1,e.disabled||e.setValue(t)}))},onDragStop:function(t){this.dragging=!1,this.active=!1,this.$emit("dragStop",t),this.$emit("drag-stop",t)},handleDragMouseMove:function(t){this.onDragUpdate(t)},handleTouchMove:function(t){this.onDragUpdate(t.touches[0])},handleMouseEnd:function(t){document.removeEventListener("mousemove",this.handleDragMouseMove),document.removeEventListener("mouseup",this.handleMouseEnd),this.onDragStop(t)}},watch:{value:function(t){this.inputValue=t},inputValue:function(t){this.$emit("input",t)}},components:{"focus-ripple":a.a}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(22),a=n(27),r=n(37);e.default={name:"mu-snackbar",props:{action:{type:String},actionColor:{type:String},message:{type:String}},data:function(){return{zIndex:n.i(a.a)()}},methods:{clickOutSide:function(){this.$emit("close","clickOutSide")},handleActionClick:function(){this.$emit("actionClick"),this.$emit("action-click")}},components:{"flat-button":i.a},directives:{clickoutside:r.a}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(66),a=n.n(i);e.default={name:"mu-step",props:{active:{type:Boolean,default:!1},completed:{type:Boolean,default:!1},disabled:{type:Boolean,default:!1},index:{type:Number},last:{type:Boolean,default:!1}},render:function(t){var e=this.active,n=this.completed,i=this.disabled,r=this.index,s=this.last,o=[];return this.$slots.default&&this.$slots.default.length>0&&this.$slots.default.forEach(function(t){if(t.componentOptions&&t.componentOptions.propsData){var l=r+1;t.componentOptions.propsData=a()({active:e,completed:n,disabled:i,last:s,num:l},t.componentOptions.propsData),o.push(t)}}),t("div",{class:"mu-step"},o)}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(3),a=n(82),r=n.n(a);e.default={name:"mu-step-button",props:{active:{type:Boolean},completed:{type:Boolean},disabled:{type:Boolean},num:{type:[String,Number]},last:{type:Boolean},childrenInLabel:{type:Boolean,default:!0}},methods:{handleClick:function(t){this.$emit("click",t)}},components:{abstractButton:i.a,"step-label":r.a}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0}),e.default={}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(77),a=n.n(i);e.default={name:"mu-step-content",props:{active:{type:Boolean},last:{type:Boolean}},components:{"expand-transition":a.a}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0}),e.default={name:"mu-step-label",props:{active:{type:Boolean},completed:{type:Boolean},disabled:{type:Boolean},num:{type:[String,Number]}}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(426),a=n.n(i);e.default={name:"mu-stepper",props:{activeStep:{type:Number,default:0},linear:{type:Boolean,default:!0},orientation:{type:String,default:"horizontal",validator:function(t){return["horizontal","vertical"].indexOf(t)!==-1}}},render:function(t){var e=this.activeStep,n=this.linear,i=this.orientation,r=[];if(this.$slots.default&&this.$slots.default.length>0){var s=0;this.$slots.default.forEach(function(i){if(i.componentOptions){s>0&&r.push(t(a.a,{}));var o=i.componentOptions.propsData;e===s?o.active=!0:n&&e>s?o.completed=!0:n&&e<s&&(o.disabled=!0),o.index=s++,r.push(i)}}),r.length>0&&(r[r.length-1].componentOptions.propsData.last=!0)}return t("div",{class:["mu-stepper","vertical"===i?"mu-stepper-vertical":""]},r)}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0}),e.default={name:"mu-sub-header",props:{inset:{type:Boolean,default:!1}}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(32),a=n.n(i);e.default={name:"mu-switch",props:{name:{type:String},value:{type:Boolean},label:{type:String,default:""},labelLeft:{type:Boolean,default:!1},labelClass:{type:[String,Object,Array]},trackClass:{type:[String,Object,Array]},thumbClass:{type:[String,Object,Array]},disabled:{type:Boolean,default:!1}},data:function(){return{inputValue:this.value}},watch:{value:function(t){this.inputValue=t},inputValue:function(t){this.$emit("input",t)}},methods:{handleMouseDown:function(t){this.disabled||0===t.button&&this.$children[0].start(t)},handleClick:function(){},handleMouseUp:function(){this.disabled||this.$children[0].end()},handleMouseLeave:function(){this.disabled||this.$children[0].end()},handleTouchStart:function(t){this.disabled||this.$children[0].start(t)},handleTouchEnd:function(){this.disabled||this.$children[0].end()},handleChange:function(){this.$emit("change",this.inputValue)}},components:{"touch-ripple":a.a}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0}),e.default={name:"mu-table",props:{fixedFooter:{type:Boolean,default:!0},fixedHeader:{type:Boolean,default:!0},height:{type:String},enableSelectAll:{type:Boolean,default:!1},allRowsSelected:{type:Boolean,default:!1},multiSelectable:{type:Boolean,default:!1},selectable:{type:Boolean,default:!0},showCheckbox:{type:Boolean,default:!0}},data:function(){return{isSelectAll:!1}},computed:{bodyStyle:function(){return{overflow:"auto",height:this.height}}},mounted:function(){this.allRowsSelected&&this.selectAll()},methods:{handleRowClick:function(t,e){this.$emit("rowClick",t,e),this.$emit("row-click",t,e)},handleRowHover:function(t,e){this.$emit("rowHover",t,e),this.$emit("row-hover",t,e)},handleRowHoverExit:function(t,e){this.$emit("rowHoverExit",t,e),this.$emit("row-hover-exit",t,e)},handleRowSelect:function(t){this.$emit("rowSelection",t),this.$emit("row-selection",t)},handleCellClick:function(t,e,n,i){this.$emit("cellClick",t,e,n,i),this.$emit("cell-click",t,e,n,i)},handleCellHover:function(t,e,n,i){this.$emit("cellHover",t,e,n,i),this.$emit("cell-hover",t,e,n,i)},handleCellHoverExit:function(t,e,n,i){this.$emit("cellHoverExit",t,e,n,i),this.$emit("cell-hover-exit",t,e,n,i)},changeSelectAll:function(t){this.isSelectAll=t},selectAll:function(){var t=this.getTbody();t&&t.selectAll()},unSelectAll:function(){var t=this.getTbody();t&&t.unSelectAll()},getTbody:function(){for(var t=0;t<this.$children.length;t++){var e=this.$children[t];if(e.isTbody)return e}}},watch:{allRowsSelected:function(t,e){t!==e&&(t?this.selectAll():this.unSelectAll())}}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0}),e.default={name:"mu-tbody",data:function(){return{selectedRows:[]}},created:function(){this.isTbody=!0,this._unSelectAll=!1},computed:{showCheckbox:function(){return this.$parent.showCheckbox},selectable:function(){return this.$parent.selectable},multiSelectable:function(){return this.$parent.multiSelectable},enableSelectAll:function(){return this.$parent.enableSelectAll},isSelectAll:function(){return this.$parent.isSelectAll}},methods:{handleRowClick:function(t,e){this.$parent.handleRowClick(this.getRowIndex(e),e)},selectRow:function(t){var e=!(arguments.length>1&&void 0!==arguments[1])||arguments[1];if(this.selectable){if(this.selectedRows.indexOf(t)===-1){if(this.multiSelectable||(this.selectedRows=[]),this.selectedRows.push(t),this.isSelectAllRow())return void this.selectAll(!0);this.$parent.handleRowSelect&&e&&this.$parent.handleRowSelect(this.convertSelectedRows(this.selectedRows))}}},isSelectAllRow:function(){if(!this.enableSelectAll||!this.multiSelectable)return!1;var t=0;return this.$children.forEach(function(e){e.selectable&&t++}),t===this.selectedRows.length},unSelectRow:function(t){var e=!(arguments.length>1&&void 0!==arguments[1])||arguments[1];if(this.selectable){var n=this.selectedRows.indexOf(t);n!==-1&&this.selectedRows.splice(n,1),this._unSelectAll=!0,this.$parent.changeSelectAll(!1),this.$parent.handleRowSelect&&e&&this.$parent.handleRowSelect(this.convertSelectedRows(this.selectedRows))}},selectAll:function(t){var e=this;this.selectable&&this.multiSelectable&&(this._unSelectAll=!1,t||(this.selectedRows=[],this.$children.forEach(function(t){t.selectable&&e.selectedRows.push(t.rowId)})),this.$parent.changeSelectAll(!0),this.$parent.handleRowSelect&&this.$parent.handleRowSelect(this.convertSelectedRows(this.selectedRows)))},unSelectAll:function(){this.selectable&&this.multiSelectable&&(this.selectedRows=[],this.$parent.changeSelectAll(!1),this.$parent.handleRowSelect&&this.$parent.handleRowSelect([]))},handleCellClick:function(t,e,n,i,a){this.$parent.handleCellClick&&this.$parent.handleCellClick(this.getRowIndex(a),e,n,a)},handleCellHover:function(t,e,n,i,a){this.$parent.handleCellHover&&this.$parent.handleCellHover(this.getRowIndex(a),e,n,a)},handleCellHoverExit:function(t,e,n,i,a){this.$parent.handleCellHoverExit&&this.$parent.handleCellHoverExit(this.getRowIndex(a),e,n,a)},handleRowHover:function(t,e,n){this.$parent.handleRowHover&&this.$parent.handleRowHover(this.getRowIndex(n),n)},handleRowHoverExit:function(t,e,n){this.$parent.handleRowHoverExit&&this.$parent.handleRowHoverExit(this.getRowIndex(n),n)},getRowIndex:function(t){return this.$children.indexOf(t)},convertSelectedRows:function(){var t=this,e=this.selectedRows.map(function(e){return t.convertRowIdToIndex(e)}).filter(function(t){return t!==-1});return this.multiSelectable?e:e[0]},convertRowIdToIndex:function(t){for(var e=0;e<this.$children.length;e++){var n=this.$children[e];if(n.rowId&&n.rowId===t)return e}return-1}}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0}),e.default={name:"mu-td",props:{name:{type:String}},methods:{handleMouseEnter:function(t){this.$emit("hover",t),this.$parent.handleCellHover&&this.$parent.handleCellHover(t,this.name,this)},handleMouseLeave:function(t){this.$emit("hoverExit",t),this.$emit("hover-exit",t),this.$parent.handleCellHoverExit&&this.$parent.handleCellHoverExit(t,this.name,this)},handleClick:function(t){this.$emit("click",t),this.$parent.handleCellClick&&this.$parent.handleCellClick(t,this.name,this)}}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0}),e.default={name:"mu-tfoot",created:function(){this.isTfoot=!0},computed:{showCheckbox:function(){return this.$parent.showCheckbox}}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(34);e.default={name:"mu-th",props:{tooltip:{type:String},tooltipPosition:{type:String,default:"bottom-right"},touch:{type:Boolean,default:!1}},data:function(){return{tooltipShown:!1,tooltipTrigger:null}},mounted:function(){this.tooltipTrigger=this.$refs.wrapper},computed:{verticalPosition:function(){return this.tooltipPosition.split("-")[0]},horizontalPosition:function(){return this.tooltipPosition.split("-")[1]}},methods:{showTooltip:function(){this.tooltipShown=!0},hideTooltip:function(){this.tooltipShown=!1}},components:{tooltip:i.a}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0}),e.default={name:"mu-thead",created:function(){this.isThead=!0},computed:{showCheckbox:function(){return this.$parent.showCheckbox},enableSelectAll:function(){return this.$parent.enableSelectAll},multiSelectable:function(){return this.$parent.multiSelectable},isSelectAll:function(){return this.$parent.isSelectAll}},methods:{selectAll:function(){this.$parent.selectAll()},unSelectAll:function(){this.$parent.unSelectAll()}}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(1),a=n(83),r=n.n(a),s=n(84),o=n.n(s),l=n(56),u=1;e.default={name:"mu-tr",props:{selectable:{type:Boolean,default:!0},selected:{type:Boolean,default:!1}},data:function(){return{hover:!1,rowId:"tr-"+u++}},mounted:function(){this.selected&&this.$parent.selectRow(this.rowId)},computed:{className:function(){return{hover:this.hover,selected:this.isSelected,stripe:!1}},isTh:function(){return this.$parent.isThead},isTf:function(){return this.$parent.isTfoot},isTb:function(){return this.$parent.isTbody},isSelected:function(){return this.$parent.selectedRows&&this.$parent.selectedRows.indexOf(this.rowId)!==-1},showCheckbox:function(){return this.$parent.showCheckbox},enableSelectAll:function(){return this.$parent.enableSelectAll},multiSelectable:function(){return this.$parent.multiSelectable},isSelectAll:function(){return this.$parent.isSelectAll}},methods:{handleHover:function(t){n.i(i.g)()&&this.$parent.isTbody&&(this.hover=!0,this.$parent.handleRowHover&&this.$parent.handleRowHover(t,this.rowId,this))},handleExit:function(t){n.i(i.g)()&&this.$parent.isTbody&&(this.hover=!1,this.$parent.handleRowHoverExit&&this.$parent.handleRowHoverExit(t,this.rowId,this))},handleClick:function(t){this.$parent.isTbody&&(this.selectable&&(this.isSelected?this.$parent.unSelectRow(this.rowId):this.$parent.selectRow(this.rowId)),this.$parent.handleRowClick(t,this))},handleCheckboxClick:function(t){t.stopPropagation()},handleCheckboxChange:function(t){this.selectable&&(t?this.$parent.selectRow(this.rowId):this.$parent.unSelectRow(this.rowId))},handleSelectAllChange:function(t){t?this.$parent.selectAll():this.$parent.unSelectAll()},handleCellHover:function(t,e,n){this.$parent.handleCellHover&&this.$parent.handleCellHover(t,e,n,this.rowId,this)},handleCellHoverExit:function(t,e,n){this.$parent.handleCellHoverExit&&this.$parent.handleCellHoverExit(t,e,n,this.rowId,this)},handleCellClick:function(t,e,n){this.$parent.handleCellClick&&this.$parent.handleCellClick(t,e,n,this.rowId,this)}},watch:{selected:function(t,e){t!==e&&(t?this.$parent.selectRow(this.rowId,!1):this.$parent.unSelectRow(this.rowId,!1))}},components:{"mu-td":r.a,"mu-th":o.a,checkbox:l.a}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(3),a=n(5),r=n(2),s=n(1);e.default={name:"mu-tab",mixins:[a.a],props:{icon:{type:String,default:""},iconClass:{type:[String,Object,Array]},title:{type:String,default:""},titleClass:{type:[String,Object,Array]},href:{type:String},disabled:{type:Boolean},value:{}},computed:{active:function(){return n.i(s.c)(this.value)&&this.$parent.value===this.value},textClass:function(){var t=this.icon,e=this.titleClass,i=[];return t&&i.push("has-icon"),i.concat(n.i(s.f)(e))}},methods:{tabClick:function(t){this.$parent.handleTabClick&&this.$parent.handleTabClick(this.value,this),this.$emit("click",t)}},watch:{active:function(t,e){t!==e&&t&&this.$emit("active")}},components:{"abstract-button":i.a,icon:r.a}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0}),e.default={name:"mu-tabs",props:{lineClass:{type:[String,Object,Array]},value:{}},data:function(){return{tabLightStyle:{width:"100%",transform:"translate3d(0, 0, 0)"}}},updated:function(){this.setTabLightStyle()},methods:{handleTabClick:function(t,e){this.value!==t&&this.$emit("change",t)},getActiveIndex:function(){var t=this;if(!this.$children||0===this.$children.length)return-1;var e=-1;return this.$children.forEach(function(n,i){if(n.value===t.value)return e=i,!1}),e},setTabLightStyle:function(){var t=100*this.getActiveIndex(),e=this.$children.length,n=this.$refs.highlight;n.style.width=e>0?(100/e).toFixed(4)+"%":"100%",n.style.transform="translate3d("+t+"%, 0, 0)"}},mounted:function(){this.setTabLightStyle()}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0}),e.default={props:{name:{type:String},placeholder:{type:String},value:{type:String},rows:{type:Number,default:1},rowsMax:{type:Number},disabled:{type:Boolean,default:!1},normalClass:{type:[String,Array,Object]}},methods:{resizeTextarea:function(){var t=this.$refs.textarea;if(t){var e=this.$refs.textareaHidden,n=window.getComputedStyle(t,null).getPropertyValue("line-height");n=Number(n.substring(0,n.indexOf("px")));var i=window.getComputedStyle(t,null).getPropertyValue("padding-top");i=Number(i.substring(0,i.indexOf("px")));var a=window.getComputedStyle(t,null).getPropertyValue("padding-bottom");a=Number(a.substring(0,a.indexOf("px")));var r=a+i+n*this.rows,s=a+i+n*(this.rowsMax||0),o=e.scrollHeight;t.style.height=(o<r?r:o>s&&s>0?s:o)+"px"}},handleInput:function(t){this.$emit("input",t.target.value)},handleChange:function(t){this.$emit("change",t)},handleFocus:function(t){this.$emit("focus",t)},handleBlur:function(t){this.$emit("blur",t)},focus:function(){var t=this.$refs.textarea;t&&t.focus()}},mounted:function(){this.resizeTextarea()},watch:{value:function(t,e){var n=this;t!==e&&this.$nextTick(function(){n.resizeTextarea()})}}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(2),a=n(442),r=n.n(a),s=n(438),o=n.n(s),l=n(441),u=n.n(l),c=n(1),d=n(440),f=n.n(d);e.default={name:"mu-text-field",props:{name:{type:String},type:{type:String},icon:{type:String},iconClass:{type:[String,Array,Object]},label:{type:String},labelFloat:{type:Boolean,default:!1},labelClass:{type:[String,Array,Object]},labelFocusClass:{type:[String,Array,Object]},hintText:{type:String},hintTextClass:{type:[String,Array,Object]},value:{},inputClass:{type:[String,Array,Object]},multiLine:{type:Boolean,default:!1},rows:{type:Number,default:1},rowsMax:{type:Number},errorText:{type:String},errorColor:{type:String},helpText:{type:String},helpTextClass:{type:[String,Array,Object]},maxLength:{type:Number,default:0},disabled:{type:Boolean,default:!1},fullWidth:{type:Boolean,default:!1},underlineShow:{type:Boolean,default:!0},underlineClass:{type:[String,Array,Object]},underlineFocusClass:{type:[String,Array,Object]},max:{type:[Number,String]},min:{type:[Number,String]}},data:function(){return{isFocused:!1,inputValue:this.value,charLength:0}},computed:{textFieldClass:function(){return{"focus-state":this.isFocused,"has-label":this.label,"no-empty-state":this.inputValue,"has-icon":this.icon,error:this.errorText,"multi-line":this.multiLine,disabled:this.disabled,"full-width":this.fullWidth}},float:function(){return this.labelFloat&&!this.isFocused&&!this.inputValue&&0!==this.inputValue},errorStyle:function(){return{color:!this.disabled&&this.errorText?n.i(c.d)(this.errorColor):""}},showHint:function(){return!this.float&&!this.inputValue&&0!==this.inputValue}},methods:{handleFocus:function(t){this.isFocused=!0,this.$emit("focus",t)},handleBlur:function(t){this.isFocused=!1,this.$emit("blur",t)},handleInput:function(t){this.inputValue=t.target?t.target.value:t},handleChange:function(t){this.$emit("change",t,t.target.value)},handleLabelClick:function(){this.$emit("labelClick")},focus:function(){var t=this.$refs,e=t.input,n=t.textarea;e?e.focus():n&&n.focus()}},watch:{value:function(t){this.inputValue=t},inputValue:function(t,e){this.charLength=this.maxLength&&String(this.inputValue)?String(this.inputValue).length:0,this.$emit("input",t)},charLength:function(t){t>this.maxLength&&!this.isTextOverflow&&(this.isTextOverflow=!0,this.$emit("textOverflow",!0),this.$emit("text-overflow",!0)),this.isTextOverflow&&t<=this.maxLength&&(this.isTextOverflow=!1,this.$emit("textOverflow",!1),this.$emit("text-overflow",!1))}},components:{icon:i.a,underline:r.a,"enhanced-textarea":o.a,"text-field-label":u.a,"text-field-hint":f.a}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0}),e.default={props:{text:{type:String},show:{type:Boolean,default:!0}}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(1);e.default={props:{focus:{type:Boolean,default:!1},float:{type:Boolean,default:!1},normalClass:{type:[String,Object,Array]},focusClass:{type:[String,Object,Array]}},computed:{labelClass:function(){var t=this.float,e=this.focus,a=this.normalClass,r=this.focusClass,s=[];return t&&s.push("float"),s=s.concat(n.i(i.f)(a)),e&&(s=s.concat(n.i(i.f)(r))),s}}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(1);e.default={props:{focus:{type:Boolean,default:!1},error:{type:Boolean},errorColor:{type:String},disabled:{type:Boolean},normalClass:{type:[String,Object,Array]},focusClass:{type:[String,Object,Array]}},computed:{lineClass:function(){var t=this.disabled,e=this.normalClass,a=[];return t&&a.push("disabled"),a.concat(n.i(i.f)(e))},focusLineClass:function(){var t=this.normalClass,e=this.focus,a=this.focusClass,r=this.error,s=[];return s.concat(n.i(i.f)(t)),r&&s.push("error"),e&&s.push("focus"),s.concat(n.i(i.f)(a))},errorStyle:function(){return{"background-color":this.error?n.i(i.d)(this.errorColor):""}}}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(446),a=n.n(i),r=n(444),s=n.n(r),o=n(445),l=n.n(o),u=n(22);e.default={props:{autoOk:{type:Boolean,default:!1},format:{type:String,default:"ampm",validator:function(t){return["ampm","24hr"].indexOf(t)!==-1}},initialTime:{type:Date,default:function(){return new Date}},okLabel:{type:String,default:"确定"},cancelLabel:{type:String,default:"取消"},landscape:{type:Boolean,default:!1}},data:function(){return{selectedTime:this.initialTime,mode:"hour"}},methods:{getAffix:function(){return"ampm"!==this.format?"":this.selectedTime.getHours()<12?"am":"pm"},handleSelectAffix:function(t){if(t!==this.getAffix()){var e=this.selectedTime.getHours();if("am"===t)return void this.handleChangeHours(e-12,t);this.handleChangeHours(e+12,t)}},handleChangeHours:function(t,e){var n=this,i=new Date(this.selectedTime),a=void 0;"string"==typeof e&&(a=e,e=void 0),a||(a=this.getAffix()),"pm"===a&&t<12&&(t+=12),i.setHours(t),this.selectedTime=i,e&&setTimeout(function(){n.mode="minute",n.$emit("changeHours",i)},100)},handleChangeMinutes:function(t){var e=this,n=new Date(this.selectedTime);n.setMinutes(t),this.selectedTime=n,setTimeout(function(){e.$emit("changeMinutes",n),e.autoOk&&e.accept()},0)},accept:function(){this.$emit("accept",this.selectedTime)},dismiss:function(){this.$emit("dismiss")}},watch:{initialTime:function(t){this.selectedTime=t}},components:{"time-display":a.a,"clock-hours":s.a,"clock-minutes":l.a,"flat-button":u.a}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(85),a=n.n(i),r=n(86),s=n.n(r),o=n(18);e.default={props:{format:{type:String,default:"ampm",validator:function(t){return["ampm","24hr"].indexOf(t)!==-1}},initialHours:{type:Number,default:(new Date).getHours()}},computed:{hours:function t(){for(var e="ampm"===this.format?12:24,t=[],n=1;n<=e;n++)t.push(n%24);return t}},methods:{getSelected:function(){var t=this.initialHours;return"ampm"===this.format&&(t%=12,t=t||12),t},isMousePressed:function(t){return void 0===t.buttons?t.nativeEvent.which:t.buttons},handleUp:function(t){t.preventDefault(),this.setClock(t,!0)},handleMove:function(t){t.preventDefault(),1===this.isMousePressed(t)&&this.setClock(t,!1)},handleTouchMove:function(t){t.preventDefault(),this.setClock(t.changedTouches[0],!1)},handleTouchEnd:function(t){t.preventDefault(),this.setClock(t.changedTouches[0],!0)},setClock:function(t,e){if(void 0===t.offsetX){var i=n.i(o.c)(t);t.offsetX=i.offsetX,t.offsetY=i.offsetY}var a=this.getHours(t.offsetX,t.offsetY);this.$emit("change",a,e)},getHours:function(t,e){var i=30,a=t-this.center.x,r=e-this.center.y,s=this.basePoint.x-this.center.x,l=this.basePoint.y-this.center.y,u=Math.atan2(s,l)-Math.atan2(a,r),c=n.i(o.d)(u);c=Math.round(c/i)*i,c%=360;var d=Math.floor(c/i)||0,f=Math.pow(a,2)+Math.pow(r,2),h=Math.sqrt(f);return d=d||12,"24hr"===this.format?h<90&&(d+=12,d%=24):d%=12,d}},mounted:function(){var t=this.$refs.mask;this.center={x:t.offsetWidth/2,y:t.offsetHeight/2},this.basePoint={x:this.center.x,y:0}},components:{"clock-number":a.a,"clock-pointer":s.a}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(85),a=n.n(i),r=n(86),s=n.n(r),o=n(18);e.default={props:{initialMinutes:{type:Number,default:function(){return(new Date).getMinutes()}}},mounted:function(){var t=this.$refs.mask;this.center={x:t.offsetWidth/2,y:t.offsetHeight/2},this.basePoint={x:this.center.x,y:0}},data:function(){return{minutes:null}},created:function(){this.minutes=this.getMinuteNumbers()},methods:{getMinuteNumbers:function(){for(var t=[],e=0;e<12;e++)t.push(5*e);var n=this.initialMinutes,i=!1;return{numbers:t.map(function(t){var e=n===t;return e&&(i=!0),{minute:t,isSelected:e}}),hasSelected:i,selected:n}},isMousePressed:function(t){return void 0===t.buttons?t.nativeEvent.which:t.buttons},handleUp:function(t){t.preventDefault(),this.setClock(t,!0)},handleMove:function(t){t.preventDefault(),1===this.isMousePressed(t)&&this.setClock(t,!1)},handleTouch:function(t){t.preventDefault(),this.setClock(t.changedTouches[0],!1)},setClock:function(t,e){if(void 0===t.offsetX){var i=n.i(o.c)(t);t.offsetX=i.offsetX,t.offsetY=i.offsetY}var a=this.getMinutes(t.offsetX,t.offsetY);this.$emit("change",a,e)},getMinutes:function(t,e){var i=6,a=t-this.center.x,r=e-this.center.y,s=this.basePoint.x-this.center.x,l=this.basePoint.y-this.center.y,u=Math.atan2(s,l)-Math.atan2(a,r),c=n.i(o.d)(u);return c=Math.round(c/i)*i,c%=360,Math.floor(c/i)||0}},watch:{initialMinutes:function(t){this.minutes=this.getMinuteNumbers()}},components:{"clock-number":a.a,"clock-pointer":s.a}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(232),a=n.n(i),r=n(18),s=[[0,5],[54.5,16.6],[94.4,59.5],[109,114],[94.4,168.5],[54.5,208.4],[0,223],[-54.5,208.4],[-94.4,168.5],[-109,114],[-94.4,59.5],[-54.5,19.6]],o=[[0,40],[36.9,49.9],[64,77],[74,114],[64,151],[37,178],[0,188],[-37,178],[-64,151],[-74,114],[-64,77],[-37,50]];e.default={props:{value:{type:Number,default:0},type:{type:String,default:"minute",validator:function(t){return["hour","minute"].indexOf(t)!==-1}},selected:{type:Boolean,default:!1}},computed:{isInner:function(){return n.i(r.e)(this)},numberClass:function(){return{selected:this.selected,inner:this.isInner}},numberStyle:function(){var t=this.value;"hour"===this.type?t%=12:t/=5;var e=s[t];this.isInner&&(e=o[t]);var n=e,i=a()(n,2);return{transform:"translate("+i[0]+"px, "+i[1]+"px)",left:this.isInner?"calc(50% - 14px)":"calc(50% - 16px)"}}}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(18);e.default={props:{hasSelected:{type:Boolean,default:!1},type:{type:String,default:"minute",validator:function(t){return["hour","minute"].indexOf(t)!==-1}},value:{type:Number}},computed:{isInner:function(){return n.i(i.e)(this)},pointerStyle:function(){var t=this.type,e=this.value,n=this.calcAngle;return{transform:"rotateZ("+("hour"===t?n(e,12):n(e,60))+"deg)"}}},methods:{calcAngle:function(t,e){return t%=e,360/e*t}},render:function(t){return void 0===this.value||null===this.value?t("span",{}):t("div",{class:{"mu-clock-pointer":!0,inner:this.isInner},style:this.pointerStyle},[t("div",{class:{"mu-clock-pointer-mark":!0,"has-selected":this.hasSelected}})])}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0}),e.default={props:{affix:{type:String,default:"",validator:function(t){return["","pm","am"].indexOf(t)!==-1}},format:{type:String,validator:function(t){return t&&["ampm","24hr"].indexOf(t)!==-1}},mode:{type:String,default:"hour",validator:function(t){return["hour","minute"].indexOf(t)!==-1}},selectedTime:{type:Date,default:function(){return new Date},required:!0}},methods:{handleSelectAffix:function(t){this.$emit("selectAffix",t)},handleSelectHour:function(){this.$emit("selectHour")},handleSelectMin:function(){this.$emit("selectMin")}},computed:{sanitizeTime:function(){var t=this.selectedTime.getHours(),e=this.selectedTime.getMinutes().toString();return"ampm"===this.format&&(t%=12,t=t||12),t=t.toString(),t.length<2&&(t="0"+t),e.length<2&&(e="0"+e),[t,e]}}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(13),a=n(448),r=n.n(a),s=n(18);e.default={name:"mu-time-picker",props:{autoOk:{type:Boolean,default:!1},cancelLabel:{type:String},okLabel:{type:String},container:{type:String,default:"dialog",validator:function(t){return t&&["dialog","inline"].indexOf(t)!==-1}},mode:{type:String,default:"portrait",validator:function(t){return t&&["portrait","landscape"].indexOf(t)!==-1}},format:{type:String,default:"ampm",validator:function(t){return["ampm","24hr"].indexOf(t)!==-1}},name:{type:String},label:{type:String},labelFloat:{type:Boolean,default:!1},labelClass:{type:[String,Array,Object]},labelFocusClass:{type:[String,Array,Object]},disabled:{type:Boolean,default:!1},hintText:{type:String},hintTextClass:{type:[String,Array,Object]},helpText:{type:String},helpTextClass:{type:[String,Array,Object]},errorText:{type:String},errorColor:{type:String},icon:{type:String},iconClass:{type:[String,Array,Object]},fullWidth:{type:Boolean,default:!1},underlineShow:{type:Boolean,default:!0},underlineClass:{type:[String,Array,Object]},underlineFocusClass:{type:[String,Array,Object]},inputClass:{type:[String,Array,Object]},value:{type:String}},data:function(){return{inputValue:this.value,dialogTime:null}},methods:{handleClick:function(){var t=this;this.disabled||setTimeout(function(){t.openDialog()},0)},handleFocus:function(t){t.target.blur(),this.$emit("focus",t)},openDialog:function(){this.disabled||(this.dialogTime=this.inputValue?s.a(this.inputValue,this.format):new Date,this.$refs.dialog.open=!0)},handleAccept:function(t){var e=s.b(t,this.format);this.inputValue!==e&&(this.inputValue=e,this.$emit("change",e))}},watch:{value:function(t){this.inputValue=t},inputValue:function(t){this.$emit("input",t)}},components:{"text-field":i.a,"time-picker-dialog":r.a}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(443),a=n.n(i),r=n(8),s=n(33);e.default={props:{autoOk:{type:Boolean,default:!1},cancelLabel:{type:String},okLabel:{type:String},container:{type:String,default:"dialog",validator:function(t){return t&&["dialog","inline"].indexOf(t)!==-1}},mode:{type:String,default:"portrait",validator:function(t){return t&&["portrait","landscape"].indexOf(t)!==-1}},format:{type:String,default:"ampm",validator:function(t){return["ampm","24hr"].indexOf(t)!==-1}},initialTime:{type:Date}},data:function(){return{open:!1,showClock:!1,trigger:null}},mounted:function(){this.trigger=this.$el},methods:{handleAccept:function(t){this.$emit("accept",t),this.open=!1},handleDismiss:function(){this.dismiss()},handleClose:function(){this.dismiss()},dismiss:function(){this.open=!1,this.$emit("dismiss")},hideClock:function(){this.showClock=!1}},watch:{open:function(t){t&&(this.showClock=!0)}},render:function(t){var e=this.showClock?t(a.a,{props:{autoOk:this.autoOk,cancelLabel:this.cancelLabel,okLabel:this.okLabel,landscape:"landscape"===this.mode,initialTime:this.initialTime,format:this.format},on:{accept:this.handleAccept,dismiss:this.handleDismiss}}):void 0;return t("div",{},["dialog"===this.container?t(s.a,{props:{open:this.open,dialogClass:["mu-time-picker-dialog",this.mode]},on:{close:this.handleClose,hide:this.hideClock}},[e]):t(r.a,{props:{trigger:this.trigger,overlay:!1,open:this.open},on:{close:this.handleClose,hide:this.hideClock}},[e])])}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(27),a=n(37);e.default={name:"mu-toast",props:{message:{type:String}},methods:{clickOutSide:function(){this.$emit("close","clickOutSide")}},data:function(){return{zIndex:n.i(i.a)()}},directives:{clickoutside:a.a}}},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0}),e.default={name:"mu-tooltip",props:{label:{type:String},trigger:{},verticalPosition:{type:String,default:"bottom"},horizontalPosition:{type:String,default:"center"},show:{type:Boolean,default:!1},touch:{type:Boolean,default:!1}},data:function(){return{offsetWidth:0,triggerWidth:0,triggerHeight:0}},computed:{tooltipStyle:function(){var t=this.horizontalPosition,e=this.verticalPosition,n=this.offsetWidth,i=this.touch,a=this.triggerWidth,r=this.triggerHeight,s=this.show,o=i?10:0,l=i?-20:-10,u="bottom"===e?14+o:-14-o;return{right:"left"===t?"0":null,left:"center"===t?(n-a)/2*-1+"px":"right"===t?"0":"",top:s?"top"===e?l+"px":r-u+o+2+"px":"-3000px",transform:"translate(0px, "+u+"px)"}},rippleStyle:function(){var t=this.horizontalPosition,e=this.verticalPosition;return{left:"center"===t?"50%":"left"===t?"100%":"0%",top:"bottom"===e?"0":"100%"}}},methods:{setRippleSize:function(){var t=this.$refs.ripple,e=this.$el;if(e&&t){var n=parseInt(e.offsetWidth,10)/("center"===this.horizontalPosition?2:1),i=parseInt(e.offsetHeight,10),a=Math.ceil(2*Math.sqrt(Math.pow(i,2)+Math.pow(n,2)));this.show?(t.style.height=a+"px",t.style.width=a+"px"):(t.style.width="0px",t.style.height="0px")}},setTooltipSize:function(){this.offsetWidth=this.$el.offsetWidth,this.trigger&&(this.triggerWidth=this.trigger.offsetWidth,this.triggerHeight=this.trigger.offsetHeight)}},mounted:function(){this.setRippleSize(),this.setTooltipSize()},beforeUpdate:function(){this.setTooltipSize()},updated:function(){this.setRippleSize()}}},function(t,e,n){t.exports={default:n(234),__esModule:!0}},function(t,e,n){t.exports={default:n(235),__esModule:!0}},function(t,e,n){t.exports={default:n(237),__esModule:!0}},function(t,e,n){t.exports={default:n(239),__esModule:!0}},function(t,e,n){t.exports={default:n(240),__esModule:!0}},function(t,e,n){"use strict";e.__esModule=!0,e.default=function(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}},function(t,e,n){"use strict";function i(t){return t&&t.__esModule?t:{default:t}}e.__esModule=!0;var a=n(227),r=i(a);e.default=function(){function t(t,e){for(var n=0;n<e.length;n++){var i=e[n];i.enumerable=i.enumerable||!1,i.configurable=!0,"value"in i&&(i.writable=!0),(0,r.default)(t,i.key,i)}}return function(e,n,i){return n&&t(e.prototype,n),i&&t(e,i),e}}()},function(t,e,n){"use strict";function i(t){return t&&t.__esModule?t:{default:t}}e.__esModule=!0;var a=n(226),r=i(a),s=n(225),o=i(s);e.default=function(){function t(t,e){var n=[],i=!0,a=!1,r=void 0;try{for(var s,l=(0,o.default)(t);!(i=(s=l.next()).done)&&(n.push(s.value),!e||n.length!==e);i=!0);}catch(t){a=!0,r=t}finally{try{!i&&l.return&&l.return()}finally{if(a)throw r}}return n}return function(e,n){if(Array.isArray(e))return e;if((0,r.default)(Object(e)))return t(e,n);throw new TypeError("Invalid attempt to destructure non-iterable instance")}}()},function(t,e,n){"use strict";function i(t){return t&&t.__esModule?t:{default:t}}e.__esModule=!0;var a=n(229),r=i(a),s=n(228),o=i(s),l="function"==typeof o.default&&"symbol"==typeof r.default?function(t){return typeof t}:function(t){return t&&"function"==typeof o.default&&t.constructor===o.default&&t!==o.default.prototype?"symbol":typeof t};e.default="function"==typeof o.default&&"symbol"===l(r.default)?function(t){return void 0===t?"undefined":l(t)}:function(t){return t&&"function"==typeof o.default&&t.constructor===o.default&&t!==o.default.prototype?"symbol":void 0===t?"undefined":l(t)}},function(t,e,n){n(54),n(53),t.exports=n(262)},function(t,e,n){n(54),n(53),t.exports=n(263)},function(t,e,n){n(265),t.exports=n(4).Object.assign},function(t,e,n){n(266);var i=n(4).Object;t.exports=function(t,e,n){return i.defineProperty(t,e,n)}},function(t,e,n){n(267),t.exports=n(4).Object.keys},function(t,e,n){n(269),n(268),n(270),n(271),t.exports=n(4).Symbol},function(t,e,n){n(53),n(54),t.exports=n(52).f("iterator")},function(t,e){t.exports=function(t){if("function"!=typeof t)throw TypeError(t+" is not a function!");return t}},function(t,e){t.exports=function(){}},function(t,e,n){var i=n(12),a=n(260),r=n(259);t.exports=function(t){return function(e,n,s){var o,l=i(e),u=a(l.length),c=r(s,u);if(t&&n!=n){for(;u>c;)if((o=l[c++])!=o)return!0}else for(;u>c;c++)if((t||c in l)&&l[c]===n)return t||c||0;return!t&&-1}}},function(t,e,n){var i=n(241);t.exports=function(t,e,n){if(i(t),void 0===e)return t;switch(n){case 1:return function(n){return t.call(e,n)};case 2:return function(n,i){return t.call(e,n,i)};case 3:return function(n,i,a){return t.call(e,n,i,a)}}return function(){return t.apply(e,arguments)}}},function(t,e,n){var i=n(16),a=n(44),r=n(29);t.exports=function(t){var e=i(t),n=a.f;if(n)for(var s,o=n(t),l=r.f,u=0;o.length>u;)l.call(t,s=o[u++])&&e.push(s);return e}},function(t,e,n){t.exports=n(7).document&&document.documentElement},function(t,e,n){var i=n(40);t.exports=Array.isArray||function(t){return"Array"==i(t)}},function(t,e,n){"use strict";var i=n(72),a=n(30),r=n(45),s={};n(15)(s,n(6)("iterator"),function(){return this}),t.exports=function(t,e,n){t.prototype=i(s,{next:a(1,n)}),r(t,e+" Iterator")}},function(t,e){t.exports=function(t,e){return{value:e,done:!!t}}},function(t,e,n){var i=n(16),a=n(12);t.exports=function(t,e){for(var n,r=a(t),s=i(r),o=s.length,l=0;o>l;)if(r[n=s[l++]]===e)return n}},function(t,e,n){var i=n(31)("meta"),a=n(28),r=n(10),s=n(11).f,o=0,l=Object.isExtensible||function(){return!0},u=!n(14)(function(){return l(Object.preventExtensions({}))}),c=function(t){s(t,i,{value:{i:"O"+ ++o,w:{}}})},d=function(t,e){if(!a(t))return"symbol"==typeof t?t:("string"==typeof t?"S":"P")+t;if(!r(t,i)){if(!l(t))return"F";if(!e)return"E";c(t)}return t[i].i},f=function(t,e){if(!r(t,i)){if(!l(t))return!0;if(!e)return!1;c(t)}return t[i].w},h=function(t){return u&&p.NEED&&l(t)&&!r(t,i)&&c(t),t},p=t.exports={KEY:i,NEED:!1,fastKey:d,getWeak:f,onFreeze:h}},function(t,e,n){"use strict";var i=n(16),a=n(44),r=n(29),s=n(49),o=n(70),l=Object.assign;t.exports=!l||n(14)(function(){var t={},e={},n=Symbol(),i="abcdefghijklmnopqrst";return t[n]=7,i.split("").forEach(function(t){e[t]=t}),7!=l({},t)[n]||Object.keys(l({},e)).join("")!=i})?function(t,e){for(var n=s(t),l=arguments.length,u=1,c=a.f,d=r.f;l>u;)for(var f,h=o(arguments[u++]),p=c?i(h).concat(c(h)):i(h),m=p.length,v=0;m>v;)d.call(h,f=p[v++])&&(n[f]=h[f]);return n}:l},function(t,e,n){var i=n(11),a=n(19),r=n(16);t.exports=n(9)?Object.defineProperties:function(t,e){a(t);for(var n,s=r(e),o=s.length,l=0;o>l;)i.f(t,n=s[l++],e[n]);return t}},function(t,e,n){var i=n(29),a=n(30),r=n(12),s=n(50),o=n(10),l=n(69),u=Object.getOwnPropertyDescriptor;e.f=n(9)?u:function(t,e){if(t=r(t),e=s(e,!0),l)try{return u(t,e)}catch(t){}if(o(t,e))return a(!i.f.call(t,e),t[e])}},function(t,e,n){var i=n(12),a=n(73).f,r={}.toString,s="object"==typeof window&&window&&Object.getOwnPropertyNames?Object.getOwnPropertyNames(window):[],o=function(t){try{return a(t)}catch(t){return s.slice()}};t.exports.f=function(t){return s&&"[object Window]"==r.call(t)?o(t):a(i(t))}},function(t,e,n){var i=n(10),a=n(49),r=n(46)("IE_PROTO"),s=Object.prototype;t.exports=Object.getPrototypeOf||function(t){return t=a(t),i(t,r)?t[r]:"function"==typeof t.constructor&&t instanceof t.constructor?t.constructor.prototype:t instanceof Object?s:null}},function(t,e,n){var i=n(20),a=n(4),r=n(14);t.exports=function(t,e){var n=(a.Object||{})[t]||Object[t],s={};s[t]=e(n),i(i.S+i.F*r(function(){n(1)}),"Object",s)}},function(t,e,n){var i=n(48),a=n(41);t.exports=function(t){return function(e,n){var r,s,o=String(a(e)),l=i(n),u=o.length;return l<0||l>=u?t?"":void 0:(r=o.charCodeAt(l),r<55296||r>56319||l+1===u||(s=o.charCodeAt(l+1))<56320||s>57343?t?o.charAt(l):r:t?o.slice(l,l+2):s-56320+(r-55296<<10)+65536)}}},function(t,e,n){var i=n(48),a=Math.max,r=Math.min;t.exports=function(t,e){return t=i(t),t<0?a(t+e,0):r(t,e)}},function(t,e,n){var i=n(48),a=Math.min;t.exports=function(t){return t>0?a(i(t),9007199254740991):0}},function(t,e,n){var i=n(67),a=n(6)("iterator"),r=n(21);t.exports=n(4).getIteratorMethod=function(t){if(void 0!=t)return t[a]||t["@@iterator"]||r[i(t)]}},function(t,e,n){var i=n(19),a=n(261);t.exports=n(4).getIterator=function(t){var e=a(t);if("function"!=typeof e)throw TypeError(t+" is not iterable!");return i(e.call(t))}},function(t,e,n){var i=n(67),a=n(6)("iterator"),r=n(21);t.exports=n(4).isIterable=function(t){var e=Object(t);return void 0!==e[a]||"@@iterator"in e||r.hasOwnProperty(i(e))}},function(t,e,n){"use strict";var i=n(242),a=n(249),r=n(21),s=n(12);t.exports=n(71)(Array,"Array",function(t,e){this._t=s(t),this._i=0,this._k=e},function(){var t=this._t,e=this._k,n=this._i++;return!t||n>=t.length?(this._t=void 0,a(1)):"keys"==e?a(0,n):"values"==e?a(0,t[n]):a(0,[n,t[n]])},"values"),r.Arguments=r.Array,i("keys"),i("values"),i("entries")},function(t,e,n){var i=n(20);i(i.S+i.F,"Object",{assign:n(252)})},function(t,e,n){var i=n(20);i(i.S+i.F*!n(9),"Object",{defineProperty:n(11).f})},function(t,e,n){var i=n(49),a=n(16);n(257)("keys",function(){return function(t){return a(i(t))}})},function(t,e){},function(t,e,n){"use strict";var i=n(7),a=n(10),r=n(9),s=n(20),o=n(75),l=n(251).KEY,u=n(14),c=n(47),d=n(45),f=n(31),h=n(6),p=n(52),m=n(51),v=n(250),y=n(245),g=n(247),b=n(19),x=n(12),C=n(50),_=n(30),S=n(72),w=n(255),k=n(254),$=n(11),O=n(16),T=k.f,M=$.f,D=w.f,F=i.Symbol,P=i.JSON,A=P&&P.stringify,E="prototype",j=h("_hidden"),B=h("toPrimitive"),I={}.propertyIsEnumerable,R=c("symbol-registry"),L=c("symbols"),z=c("op-symbols"),H=Object[E],N="function"==typeof F,V=i.QObject,W=!V||!V[E]||!V[E].findChild,Y=r&&u(function(){return 7!=S(M({},"a",{get:function(){return M(this,"a",{value:7}).a}})).a})?function(t,e,n){var i=T(H,e);i&&delete H[e],M(t,e,n),i&&t!==H&&M(H,e,i)}:M,K=function(t){var e=L[t]=S(F[E]);return e._k=t,e},G=N&&"symbol"==typeof F.iterator?function(t){return"symbol"==typeof t}:function(t){return t instanceof F},X=function(t,e,n){return t===H&&X(z,e,n),b(t),e=C(e,!0),b(n),a(L,e)?(n.enumerable?(a(t,j)&&t[j][e]&&(t[j][e]=!1),n=S(n,{enumerable:_(0,!1)})):(a(t,j)||M(t,j,_(1,{})),t[j][e]=!0),Y(t,e,n)):M(t,e,n)},U=function(t,e){b(t);for(var n,i=y(e=x(e)),a=0,r=i.length;r>a;)X(t,n=i[a++],e[n]);return t},q=function(t,e){return void 0===e?S(t):U(S(t),e)},Z=function(t){var e=I.call(this,t=C(t,!0));return!(this===H&&a(L,t)&&!a(z,t))&&(!(e||!a(this,t)||!a(L,t)||a(this,j)&&this[j][t])||e)},J=function(t,e){if(t=x(t),e=C(e,!0),t!==H||!a(L,e)||a(z,e)){var n=T(t,e);return!n||!a(L,e)||a(t,j)&&t[j][e]||(n.enumerable=!0),n}},Q=function(t){for(var e,n=D(x(t)),i=[],r=0;n.length>r;)a(L,e=n[r++])||e==j||e==l||i.push(e);return i},tt=function(t){for(var e,n=t===H,i=D(n?z:x(t)),r=[],s=0;i.length>s;)!a(L,e=i[s++])||n&&!a(H,e)||r.push(L[e]);return r};N||(F=function(){if(this instanceof F)throw TypeError("Symbol is not a constructor!");var t=f(arguments.length>0?arguments[0]:void 0),e=function(n){this===H&&e.call(z,n),a(this,j)&&a(this[j],t)&&(this[j][t]=!1),Y(this,t,_(1,n))};return r&&W&&Y(H,t,{configurable:!0,set:e}),K(t)},o(F[E],"toString",function(){return this._k}),k.f=J,$.f=X,n(73).f=w.f=Q,n(29).f=Z,n(44).f=tt,r&&!n(43)&&o(H,"propertyIsEnumerable",Z,!0),p.f=function(t){return K(h(t))}),s(s.G+s.W+s.F*!N,{Symbol:F});for(var et="hasInstance,isConcatSpreadable,iterator,match,replace,search,species,split,toPrimitive,toStringTag,unscopables".split(","),nt=0;et.length>nt;)h(et[nt++]);for(var et=O(h.store),nt=0;et.length>nt;)m(et[nt++]);s(s.S+s.F*!N,"Symbol",{for:function(t){return a(R,t+="")?R[t]:R[t]=F(t)},keyFor:function(t){if(G(t))return v(R,t);throw TypeError(t+" is not a symbol!")},useSetter:function(){W=!0},useSimple:function(){W=!1}}),s(s.S+s.F*!N,"Object",{create:q,defineProperty:X,defineProperties:U,getOwnPropertyDescriptor:J,getOwnPropertyNames:Q,getOwnPropertySymbols:tt}),P&&s(s.S+s.F*(!N||u(function(){var t=F();return"[null]"!=A([t])||"{}"!=A({a:t})||"{}"!=A(Object(t))})),"JSON",{stringify:function(t){if(void 0!==t&&!G(t)){for(var e,n,i=[t],a=1;arguments.length>a;)i.push(arguments[a++]);return e=i[1],"function"==typeof e&&(n=e),!n&&g(e)||(e=function(t,e){if(n&&(e=n.call(this,t,e)),!G(e))return e}),i[1]=e,A.apply(P,i)}}}),F[E][B]||n(15)(F[E],B,F[E].valueOf),d(F,"Symbol"),d(Math,"Math",!0),d(i.JSON,"JSON",!0)},function(t,e,n){n(51)("asyncIterator")},function(t,e,n){n(51)("observable")},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e){},function(t,e,n){n(280);var i=n(0)(n(127),n(457),null,null);t.exports=i.exports},function(t,e,n){n(298);var i=n(0)(n(128),n(477),null,null);t.exports=i.exports},function(t,e,n){n(297);var i=n(0)(n(129),n(476),null,null);t.exports=i.exports},function(t,e,n){n(300);var i=n(0)(n(130),n(479),null,null);t.exports=i.exports},function(t,e,n){n(324);var i=n(0)(n(131),null,null,null);t.exports=i.exports},function(t,e,n){n(287);var i=n(0)(n(132),n(466),null,null);t.exports=i.exports},function(t,e,n){n(340);var i=n(0)(n(133),n(514),null,null);t.exports=i.exports},function(t,e,n){n(348);var i=n(0)(n(134),n(522),null,null);t.exports=i.exports},function(t,e,n){n(310);var i=n(0)(n(135),n(488),null,null);t.exports=i.exports},function(t,e,n){n(281);var i=n(0)(n(136),n(458),null,null);t.exports=i.exports},function(t,e,n){n(318);var i=n(0)(n(137),n(495),null,null);t.exports=i.exports},function(t,e,n){n(365);var i=n(0)(n(138),n(540),null,null);t.exports=i.exports},function(t,e,n){n(319);var i=n(0)(n(139),n(496),null,null);t.exports=i.exports},function(t,e,n){n(304);var i=n(0)(n(140),n(482),null,null);t.exports=i.exports},function(t,e,n){n(363);var i=n(0)(n(141),n(538),null,null);t.exports=i.exports},function(t,e,n){n(338);var i=n(0)(n(142),n(512),null,null);t.exports=i.exports},function(t,e,n){n(335);var i=n(0)(n(143),n(510),null,null);t.exports=i.exports},function(t,e,n){n(303);var i=n(0)(n(144),n(481),null,null);t.exports=i.exports},function(t,e,n){n(289);var i=n(0)(n(145),n(468),null,null);t.exports=i.exports},function(t,e,n){n(343);var i=n(0)(n(146),n(517),null,null);t.exports=i.exports},function(t,e,n){n(351);var i=n(0)(n(147),n(525),null,null);t.exports=i.exports},function(t,e,n){n(341);var i=n(0)(n(148),n(515),null,null);t.exports=i.exports},function(t,e,n){n(334);var i=n(0)(n(149),n(509),null,null);t.exports=i.exports},function(t,e,n){n(292);var i=n(0)(n(150),null,null,null);t.exports=i.exports},function(t,e,n){n(336);var i=n(0)(n(151),null,null,null);t.exports=i.exports},function(t,e,n){n(288);var i=n(0)(n(152),n(467),null,null);t.exports=i.exports},function(t,e,n){n(322);var i=n(0)(n(153),n(499),null,null);t.exports=i.exports},function(t,e,n){n(323);var i=n(0)(n(154),n(500),null,null);t.exports=i.exports},function(t,e,n){n(302);var i=n(0)(n(155),n(480),null,null);t.exports=i.exports},function(t,e,n){n(284);var i=n(0)(n(156),n(462),null,null);t.exports=i.exports},function(t,e,n){n(352);var i=n(0)(n(157),n(526),null,null);t.exports=i.exports},function(t,e,n){n(337);var i=n(0)(n(158),n(511),null,null);t.exports=i.exports},function(t,e,n){var i=n(0)(n(159),n(527),null,null);t.exports=i.exports},function(t,e,n){n(349);var i=n(0)(n(160),n(523),null,null);t.exports=i.exports},function(t,e,n){var i=n(0)(n(161),n(465),null,null);t.exports=i.exports},function(t,e,n){var i=n(0)(n(162),n(459),null,null);t.exports=i.exports},function(t,e,n){n(353);var i=n(0)(n(163),n(528),null,null);t.exports=i.exports},function(t,e,n){n(325);var i=n(0)(n(164),n(501),null,null);t.exports=i.exports},function(t,e,n){n(278);var i=n(0)(n(165),null,null,null);t.exports=i.exports},function(t,e,n){n(330);var i=n(0)(n(166),n(505),null,null);t.exports=i.exports},function(t,e,n){n(285);var i=n(0)(n(167),n(463),null,null);t.exports=i.exports},function(t,e,n){n(331);var i=n(0)(n(168),n(506),null,null);t.exports=i.exports},function(t,e,n){n(360);var i=n(0)(n(169),n(535),null,null);t.exports=i.exports},function(t,e,n){n(306);var i=n(0)(n(175),n(484),null,null);t.exports=i.exports},function(t,e,n){n(364);var i=n(0)(n(177),n(539),null,null);t.exports=i.exports},function(t,e,n){n(291);var i=n(0)(n(180),n(470),null,null);t.exports=i.exports},function(t,e,n){n(276);var i=n(0)(n(181),n(454),null,null);t.exports=i.exports},function(t,e,n){n(326);var i=n(0)(n(182),n(502),null,null);t.exports=i.exports},function(t,e,n){n(282);var i=n(0)(n(183),n(460),null,null);t.exports=i.exports},function(t,e,n){n(333);var i=n(0)(n(184),n(508),null,null);t.exports=i.exports},function(t,e,n){n(347);var i=n(0)(n(185),n(521),null,null);t.exports=i.exports},function(t,e,n){n(316);var i=n(0)(n(186),n(493),null,null);t.exports=i.exports},function(t,e,n){n(275);var i=n(0)(n(187),n(453),null,null);t.exports=i.exports},function(t,e,n){n(305);var i=n(0)(n(188),n(483),null,null);t.exports=i.exports},function(t,e,n){n(346);var i=n(0)(n(189),n(520),null,null);t.exports=i.exports},function(t,e,n){n(309);var i=n(0)(n(190),n(487),null,null);t.exports=i.exports},function(t,e,n){n(362);var i=n(0)(n(191),n(537),null,null);t.exports=i.exports},function(t,e,n){n(345);var i=n(0)(n(192),n(519),null,null);t.exports=i.exports},function(t,e,n){n(315);var i=n(0)(n(193),null,null,null);t.exports=i.exports},function(t,e,n){n(329);var i=n(0)(n(194),n(504),null,null);t.exports=i.exports},function(t,e,n){n(321);var i=n(0)(n(195),n(498),null,null);t.exports=i.exports},function(t,e,n){n(273);var i=n(0)(n(196),n(451),null,null);t.exports=i.exports},function(t,e,n){n(358);var i=n(0)(n(198),null,null,null);t.exports=i.exports},function(t,e,n){n(279);var i=n(0)(n(199),n(456),null,null);t.exports=i.exports},function(t,e,n){n(317);var i=n(0)(n(200),n(494),null,null);t.exports=i.exports},function(t,e,n){n(312);var i=n(0)(n(201),n(490),null,null);t.exports=i.exports},function(t,e,n){var i=n(0)(n(202),n(475),null,null);t.exports=i.exports},function(t,e,n){var i=n(0)(n(204),n(533),null,null);t.exports=i.exports},function(t,e,n){n(308);var i=n(0)(n(206),n(486),null,null);t.exports=i.exports},function(t,e,n){n(354);var i=n(0)(n(207),n(529),null,null);t.exports=i.exports},function(t,e,n){n(307);var i=n(0)(n(208),n(485),null,null);t.exports=i.exports},function(t,e,n){n(320);var i=n(0)(n(209),n(497),null,null);t.exports=i.exports},function(t,e,n){n(356);var i=n(0)(n(210),n(531),null,null);t.exports=i.exports},function(t,e,n){n(328);var i=n(0)(n(211),n(503),null,null);t.exports=i.exports},function(t,e,n){n(361);var i=n(0)(n(212),n(536),null,null);t.exports=i.exports},function(t,e,n){n(286);var i=n(0)(n(213),n(464),null,null);t.exports=i.exports},function(t,e,n){n(296);var i=n(0)(n(214),n(474),null,null);t.exports=i.exports},function(t,e,n){n(294);var i=n(0)(n(215),n(472),null,null);t.exports=i.exports},function(t,e,n){n(313);var i=n(0)(n(216),n(491),null,null);t.exports=i.exports},function(t,e,n){n(350);var i=n(0)(n(217),n(524),null,null);t.exports=i.exports},function(t,e,n){n(274);var i=n(0)(n(220),n(452),null,null);t.exports=i.exports},function(t,e,n){n(295);var i=n(0)(n(221),n(473),null,null);t.exports=i.exports},function(t,e,n){n(301);var i=n(0)(n(222),null,null,null);t.exports=i.exports},function(t,e,n){n(344);var i=n(0)(n(223),n(518),null,null);t.exports=i.exports},function(t,e,n){n(283);var i=n(0)(n(224),n(461),null,null);t.exports=i.exports},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("div",{staticClass:"mu-step-content",class:{last:t.last}},[n("div",{staticStyle:{position:"relative",overflow:"hidden",height:"100%"}},[n("expand-transition",[t.active?n("div",{ref:"inner",staticClass:"mu-step-content-inner"},[t._t("default")],2):t._e()])],1)])},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("div",{staticClass:"mu-time-display"},[n("div",{staticClass:"mu-time-display-text"},[n("div",{staticClass:"mu-time-display-affix"}),t._v(" "),n("div",{staticClass:"mu-time-display-time"},[n("span",{staticClass:"mu-time-display-clickable",class:{inactive:"minute"===t.mode},on:{click:t.handleSelectHour}},[t._v(t._s(t.sanitizeTime[0]))]),t._v(" "),n("span",[t._v(":")]),t._v(" "),n("span",{staticClass:"mu-time-display-clickable",class:{inactive:"hour"===t.mode},on:{click:t.handleSelectMin}},[t._v(t._s(t.sanitizeTime[1]))])]),t._v(" "),n("div",{staticClass:"mu-time-display-affix"},["ampm"===t.format?n("div",{staticClass:"mu-time-display-clickable",class:{inactive:"am"===t.affix},on:{click:function(e){t.handleSelectAffix("pm")}}},[t._v("\n        PM\n      ")]):t._e(),t._v(" "),"ampm"===t.format?n("div",{staticClass:"mu-time-display-clickable mu-time-display-affix-top",class:{inactive:"pm"===t.affix},on:{click:function(e){t.handleSelectAffix("am")}}},[t._v("\n        AM\n      ")]):t._e()])])])},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("label",{staticClass:"mu-radio",class:{"label-left":t.labelLeft,disabled:t.disabled,"no-label":!t.label},on:{mousedown:t.handleMouseDown,mouseleave:t.handleMouseLeave,mouseup:t.handleMouseUp,touchstart:t.handleTouchStart,touchend:t.handleTouchEnd,touchcancel:t.handleTouchEnd,click:function(e){e.stopPropagation(),t.handleClick(e)}}},[n("input",{directives:[{name:"model",rawName:"v-model",value:t.inputValue,expression:"inputValue"}],attrs:{type:"radio",disabled:t.disabled,name:t.name},domProps:{value:t.nativeValue,checked:t._q(t.inputValue,t.nativeValue)},on:{change:t.handleChange,__c:function(e){t.inputValue=t.nativeValue}}}),t._v(" "),t.disabled?t._e():n("touch-ripple",{staticClass:"mu-radio-wrapper",attrs:{rippleWrapperClass:"mu-radio-ripple-wrapper"}},[t.label&&t.labelLeft?n("div",{staticClass:"mu-radio-label",class:t.labelClass},[t._v(t._s(t.label))]):t._e(),t._v(" "),n("div",{staticClass:"mu-radio-icon"},[t.checkedIcon?t._e():n("svg",{staticClass:"mu-radio-icon-uncheck mu-radio-svg-icon",class:t.iconClass,attrs:{viewBox:"0 0 24 24"}},[n("path",{attrs:{d:"M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"}})]),t._v(" "),t.uncheckIcon?t._e():n("svg",{staticClass:"mu-radio-icon-checked mu-radio-svg-icon",class:t.iconClass,attrs:{viewBox:"0 0 24 24"}},[n("path",{attrs:{d:"M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0-5C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"}})]),t._v(" "),t.uncheckIcon?n("icon",{staticClass:"mu-radio-icon-uncheck",class:t.iconClass,attrs:{value:t.uncheckIcon}}):t._e(),t._v(" "),t.checkedIcon?n("icon",{staticClass:"mu-radio-icon-checked",class:t.iconClass,attrs:{value:t.checkedIcon}}):t._e()],1),t._v(" "),t.label&&!t.labelLeft?n("div",{staticClass:"mu-radio-label",class:t.labelClass},[t._v(t._s(t.label))]):t._e()]),t._v(" "),t.disabled?n("div",{staticClass:"mu-radio-wrapper"},[t.label&&t.labelLeft?n("div",{staticClass:"mu-radio-label",class:t.labelClass},[t._v(t._s(t.label))]):t._e(),t._v(" "),n("div",{staticClass:"mu-radio-icon"},[t.checkedIcon?t._e():n("svg",{staticClass:"mu-radio-icon-uncheck mu-radio-svg-icon",class:t.iconClass,attrs:{viewBox:"0 0 24 24"}},[n("path",{attrs:{d:"M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"}})]),t._v(" "),t.uncheckIcon?t._e():n("svg",{staticClass:"mu-radio-icon-checked mu-radio-svg-icon",class:t.iconClass,attrs:{viewBox:"0 0 24 24"}},[n("path",{attrs:{d:"M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0-5C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"}})]),t._v(" "),t.uncheckIcon?n("icon",{staticClass:"mu-radio-icon-uncheck",class:t.iconClass,attrs:{value:t.uncheckIcon}}):t._e(),t._v(" "),t.checkedIcon?n("icon",{staticClass:"mu-radio-icon-checked",class:t.iconClass,attrs:{value:t.checkedIcon}}):t._e()],1),t._v(" "),t.label&&!t.labelLeft?n("div",{staticClass:"mu-radio-label",class:t.labelClass},[t._v(t._s(t.label))]):t._e()]):t._e()],1)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return t.total?n("div",{staticClass:"mu-pagination"},[n("page-item",{attrs:{identifier:"singleBack",disabled:t.leftDisabled},on:{click:t.handleClick}},[n("svg",{staticClass:"mu-pagination-svg-icon",attrs:{viewBox:"0 0 24 24"}},[n("path",{attrs:{d:"M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"}})])]),t._v(" "),n("page-item",{attrs:{index:1,isActive:1===t.actualCurrent},on:{click:t.handleClick}}),t._v(" "),t.totalPageCount>5&&t.actualCurrent-1>=4?n("page-item",{attrs:{identifier:"backs",title:"前5页"},on:{click:t.handleClick}},[n("span",[t._v("...")])]):t._e(),t._v(" "),t._l(t.pageList,function(e){return n("page-item",{key:e,attrs:{index:e,isActive:t.actualCurrent===e},on:{click:t.handleClick}})}),t._v(" "),t.totalPageCount>5&&t.totalPageCount-t.actualCurrent>=4?n("page-item",{attrs:{identifier:"forwards",title:"后5页"},on:{click:t.handleClick}},[n("span",[t._v("...")])]):t._e(),t._v(" "),1!==t.totalPageCount?n("page-item",{attrs:{index:t.totalPageCount,isActive:t.actualCurrent===t.totalPageCount},on:{click:t.handleClick}}):t._e(),t._v(" "),n("page-item",{attrs:{identifier:"singleForward",disabled:t.rightDisabled},on:{click:t.handleClick}},[n("svg",{staticClass:"mu-pagination-svg-icon",attrs:{viewBox:"0 0 24 24"}},[n("path",{attrs:{d:"M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"}})])]),t._v(" "),t.showSizeChanger?n("select-field",{style:{width:"100px"},model:{value:t.actualPageSize,callback:function(e){t.actualPageSize=e},expression:"actualPageSize"}},t._l(t.pageSizeOption,function(t){return n("menu-item",{key:"mt_"+t,style:{width:"100px"},attrs:{value:t,title:t+" / 页"}})})):t._e()],2):t._e()},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement;return(t._self._c||e)("transition",{attrs:{name:"mu-expand"},on:{"before-enter":t.beforeEnter,enter:t.enter,"after-enter":t.afterEnter,"before-leave":t.beforeLeave,leave:t.leave,"after-leave":t.afterLeave}},[t._t("default")],2)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement;return(t._self._c||e)("div",{staticClass:"mu-sub-header",class:{inset:t.inset}},[t._t("default")],2)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("div",{staticClass:"mu-appbar",class:["mu-paper-"+t.zDepth]},[n("div",{staticClass:"left"},[t._t("left")],2),t._v(" "),n("div",{staticClass:"mu-appbar-title",class:t.titleClass},[t._t("default",[n("span",[t._v(t._s(t.title))])])],2),t._v(" "),n("div",{staticClass:"right"},[t._t("right")],2)])},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("div",{staticClass:"mu-card-header"},[t._t("avatar"),t._v(" "),t.title||t.subTitle?n("div",{staticClass:"mu-card-header-title"},[n("div",{staticClass:"mu-card-title",class:t.titleClass},[t._v("\n      "+t._s(t.title)+"\n    ")]),t._v(" "),n("div",{staticClass:"mu-card-sub-title",class:t.subTitleClass},[t._v("\n      "+t._s(t.subTitle)+"\n    ")])]):t._e(),t._v(" "),t._t("default")],2)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement;return(t._self._c||e)("div",{staticClass:"row",class:{"no-gutter":!t.gutter}},[t._t("default")],2)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("div",{staticClass:"mu-picker-slot",class:{"mu-picker-slot-divider":t.divider},style:{width:t.width}},[t.divider?t._e():n("div",{ref:"wrapper",staticClass:"mu-picker-slot-wrapper",class:{animate:t.animate},style:{height:t.contentHeight+"px"}},t._l(t.values,function(e,i){return n("div",{key:i,staticClass:"mu-picker-item",class:{selected:e===t.value},style:{"text-align":t.textAlign}},[t._v(t._s(e.text||e))])})),t._v(" "),t.divider?n("div",[t._v(t._s(t.content))]):t._e()])},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("div",{staticClass:"mu-tooltip",class:{touched:t.touch,"when-shown":t.show},style:t.tooltipStyle},[n("div",{ref:"ripple",staticClass:"mu-tooltip-ripple",class:{"when-shown":t.show},style:t.rippleStyle}),t._v(" "),n("span",{staticClass:"mu-tooltip-label"},[t._v(t._s(t.label))])])},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("div",{staticClass:"mu-dropDown-menu",class:{disabled:t.disabled}},[n("svg",{staticClass:"mu-dropDown-menu-icon",class:t.iconClass,attrs:{viewBox:"0 0 24 24"}},[n("path",{attrs:{d:"M7 10l5 5 5-5z"}})]),t._v(" "),n("div",{staticClass:"mu-dropDown-menu-text",class:t.labelClass,on:{click:t.handleOpen}},[n("div",{staticClass:"mu-dropDown-menu-text-overflow"},[t._v(t._s(t.label))])]),t._v(" "),n("div",{staticClass:"mu-dropDown-menu-line",class:t.underlineClass}),t._v(" "),!t.disabled&&t.$slots&&t.$slots.default&&t.$slots.default.length>0?n("popover",{attrs:{scroller:t.scroller,open:t.openMenu,trigger:t.trigger,anchorOrigin:t.anchorOrigin},on:{close:t.handleClose}},[n("mu-menu",{class:t.menuClass,style:{width:t.menuWidth+"px"},attrs:{listClass:t.menuListClass,value:t.value,multiple:t.multiple,autoWidth:t.autoWidth,popover:t.openMenu,desktop:"",maxHeight:t.maxHeight},on:{change:t.change,itemClick:t.itemClick}},[t._t("default")],2)],1):t._e()],1)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("div",{staticClass:"mu-icon-menu"},[n("icon-button",{attrs:{tooltip:t.tooltip,tooltipPosition:t.tooltipPosition,icon:t.icon,iconClass:t.iconClass},on:{click:t.handleOpen}},[t._t("icon")],2),t._v(" "),t.$slots&&t.$slots.default&&t.$slots.default.length>0?n("popover",{attrs:{open:t.openMenu,trigger:t.trigger,scroller:t.scroller,anchorOrigin:t.anchorOrigin,targetOrigin:t.targetOrigin},on:{close:t.handleClose}},[n("mu-menu",{class:t.menuClass,attrs:{popover:t.openMenu,value:t.value,listClass:t.menuListClass,multiple:t.multiple,desktop:t.desktop,maxHeight:t.maxHeight},on:{change:t.change,itemClick:t.itemClick}},[t._t("default")],2)],1):t._e()],1)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement;return(t._self._c||e)("div",{staticClass:"mu-text-field-label",class:t.labelClass},[t._t("default")],2)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement;return(t._self._c||e)("div",{staticClass:"col",class:t.classObj},[t._t("default")],2)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("abstract-button",{staticClass:"mu-buttom-item",class:{"mu-bottom-item-active":t.active},attrs:{href:t.href,to:t.to,tag:t.tag,activeClass:t.activeClass,event:t.event,exact:t.exact,append:t.append,replace:t.replace,disableTouchRipple:t.shift,"center-ripple":!1,wrapperClass:"mu-buttom-item-wrapper"},nativeOn:{click:function(e){t.handleClick(e)}}},[t.icon?n("icon",{staticClass:"mu-bottom-item-icon",class:t.iconClass,attrs:{value:t.icon}}):t._e(),t._v(" "),t._t("default"),t._v(" "),t.title?n("span",{staticClass:"mu-bottom-item-text",class:t.titleClass},[t._v(t._s(t.title))]):t._e()],2)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("button",{staticClass:"mu-year-button",class:{selected:t.selected,hover:t.hover},on:{click:t.handleClick,mouseenter:t.handleHover,mouseleave:t.handleHoverExit}},[n("span",{staticClass:"mu-year-button-text"},[t._v(t._s(t.year))])])},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("div",{staticClass:"mu-calendar-monthday-content"},t._l(t.weeksArray,function(e,i){return n("div",{key:i,staticClass:"mu-calendar-monthday-row"},t._l(e,function(e,a){return n("day-button",{key:"dayButton"+i+a,attrs:{disabled:t.isDisableDate(e),selected:t.equalsDate(e),date:e},on:{click:function(n){t.handleClick(e)}}})}))}))},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("div",[n("abstract-button",{ref:"button",staticClass:"mu-menu-item-wrapper",class:{active:t.active},attrs:{href:t.href,target:t.target,centerRipple:!1,to:t.to,tag:t.tag,activeClass:t.activeClass,event:t.event,exact:t.exact,append:t.append,replace:t.replace,disableFocusRipple:t.disableFocusRipple,disabled:t.disabled,containerElement:"div"},on:{click:t.handleClick,keyboardFocus:t.handleKeyboardFocus,hover:t.handleHover,hoverExit:t.handleHoverExit}},[n("div",{staticClass:"mu-menu-item",class:{"have-left-icon":t.leftIcon||t.inset}},[n("icon",{staticClass:"mu-menu-item-left-icon",class:t.leftIconClass,style:{color:t.filterColor(t.leftIconColor)},attrs:{value:t.leftIcon}}),t._v(" "),n("div",{staticClass:"mu-menu-item-title",class:t.titleClass},[t._t("title",[t._v("\n           "+t._s(t.title)+"\n         ")])],2),t._v(" "),t.rightIcon?t._e():n("div",[t.showAfterText?n("span",{class:t.afterTextClass},[t._v(t._s(t.afterText))]):t._e(),t._v(" "),t._t("after")],2),t._v(" "),n("icon",{staticClass:"mu-menu-item-right-icon",class:t.rightIconClass,style:{color:t.filterColor(t.rightIconColor)},attrs:{value:t.rightIcon}})],1)]),t._v(" "),t.$slots&&t.$slots.default&&t.$slots.default.length>0?n("popover",{attrs:{open:t.openMenu,anchorOrigin:{vertical:"top",horizontal:"right"},trigger:t.trigger},on:{close:t.close}},[t.openMenu?n("mu-menu",{class:t.nestedMenuClass,attrs:{desktop:t.$parent.desktop,popover:"",listClass:t.nestedMenuListClass,maxHeight:t.$parent.maxHeight,value:t.nestedMenuValue}},[t._t("default")],2):t._e()],1):t._e()],1)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("abstract-button",{staticClass:"mu-pagination-item",class:{circle:t.isCircle,active:t.isActive},attrs:{wrapperClass:"mu-pagination-item-wrapper",centerRipple:!1,disabled:t.disabled,containerElement:"div"},on:{click:t.handleClick,hover:t.handleHover,hoverExit:t.handleHoverExit}},[t.index?n("span",[t._v(t._s(t.index))]):t._e(),t._v(" "),t._t("default")],2)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("div",{on:{mousedown:t.handleMouseDown,mouseup:function(e){t.end()},mouseleave:function(e){t.end()},touchstart:t.handleTouchStart,touchend:function(e){t.end()},touchcancel:function(e){t.end()}}},[n("div",{ref:"holder",staticClass:"mu-ripple-wrapper",class:t.rippleWrapperClass},t._l(t.ripples,function(t){return n("circle-ripple",{key:t.key,attrs:{color:t.color,opacity:t.opacity,"merge-style":t.style}})})),t._v(" "),t._t("default")],2)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("div",{staticClass:"mu-clock",class:{"mu-clock-landspace":t.landscape}},[n("time-display",{attrs:{selectedTime:t.selectedTime,format:t.format,mode:t.mode,affix:t.getAffix()},on:{selectMin:function(e){t.mode="minute"},selectHour:function(e){t.mode="hour"},selectAffix:t.handleSelectAffix}}),t._v(" "),n("div",{staticClass:"mu-clock-container"},[n("div",{staticClass:"mu-clock-circle"}),t._v(" "),"hour"===t.mode?n("clock-hours",{attrs:{format:t.format,initialHours:t.selectedTime.getHours()},on:{change:t.handleChangeHours}}):t._e(),t._v(" "),"minute"===t.mode?n("clock-minutes",{attrs:{initialMinutes:t.selectedTime.getMinutes()},on:{change:t.handleChangeMinutes}}):t._e(),t._v(" "),n("div",{staticClass:"mu-clock-actions"},[n("flat-button",{attrs:{label:t.cancelLabel,primary:""},on:{click:t.dismiss}}),t._v(" "),n("flat-button",{attrs:{label:t.okLabel,primary:""},on:{click:t.accept}})],1)],1)],1)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("div",{staticClass:"mu-time-picker",class:{fullWidth:t.fullWidth}},[n("text-field",{attrs:{name:t.name,value:t.inputValue,fullWidth:t.fullWidth,inputClass:t.inputClass,label:t.label,labelFloat:t.labelFloat,labelClass:t.labelClass,labelFocusClass:t.labelFocusClass,hintText:t.hintText,hintTextClass:t.hintTextClass,helpText:t.helpText,helpTextClass:t.helpTextClass,disabled:t.disabled,errorText:t.errorText,errorColor:t.errorColor,icon:t.icon,iconClass:t.iconClass,underlineShow:t.underlineShow,underlineClass:t.underlineClass,underlineFocusClass:t.underlineFocusClass},on:{focus:t.handleFocus,labelClick:t.handleClick}}),t._v(" "),t.disabled?t._e():n("time-picker-dialog",{ref:"dialog",attrs:{initialTime:t.dialogTime,format:t.format,mode:t.mode,container:t.container,autoOk:t.autoOk,okLabel:t.okLabel,cancelLabel:t.cancelLabel},on:{accept:t.handleAccept}})],1)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("div",[n("hr",{staticClass:"mu-text-field-line",class:t.lineClass}),t._v(" "),t.disabled?t._e():n("hr",{staticClass:"mu-text-field-focus-line",class:t.focusLineClass,style:t.errorStyle})])},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement;return(t._self._c||e)("tbody",[t._t("default")],2)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("div",{staticClass:"mu-avatar",style:t.avatarStyle,on:{click:t.handleClick}},[n("div",{staticClass:"mu-avatar-inner"},[t.icon?n("icon",{class:t.iconClass,attrs:{value:t.icon,size:t.iconSize}}):t._e(),t._v(" "),t.src?n("img",{class:t.imgClass,attrs:{src:t.src}}):t._e(),t._v(" "),t._t("default")],2)])},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("div",{staticClass:"mu-auto-complete",class:{fullWidth:t.fullWidth}},[n("text-field",{ref:"textField",attrs:{value:t.searchText,disabled:t.disabled,inputClass:t.inputClass,label:t.label,labelFloat:t.labelFloat,labelClass:t.labelClass,labelFocusClass:t.labelFocusClass,hintText:t.hintText,hintTextClass:t.hintTextClass,helpText:t.helpText,helpTextClass:t.helpTextClass,errorText:t.errorText,errorColor:t.errorColor,icon:t.icon,iconClass:t.iconClass,fullWidth:t.fullWidth,underlineShow:t.underlineShow,underlineClass:t.underlineClass,underlineFocusClass:t.underlineFocusClass},on:{focus:t.handleFocus,input:t.handleInput,blur:t.handleBlur},nativeOn:{keydown:function(e){t.handleKeyDown(e)}},model:{value:t.searchText,callback:function(e){t.searchText=e},expression:"searchText"}}),t._v(" "),n("popover",{attrs:{overlay:!1,autoPosition:!1,scroller:t.scroller,open:t.open&&t.list.length>0,trigger:t.anchorEl,anchorOrigin:t.anchorOrigin,targetOrigin:t.targetOrigin},on:{close:t.handleClose}},[t.open?n("mu-menu",{ref:"menu",staticClass:"mu-auto-complete-menu",style:{width:(t.menuWidth&&t.menuWidth>t.inputWidth?t.menuWidth:t.inputWidth)+"px"},attrs:{maxHeight:t.maxHeight,disableAutoFocus:t.focusTextField,initiallyKeyboardFocused:"",autoWidth:!1},on:{itemClick:t.handleItemClick},nativeOn:{mousedown:function(e){t.handleMouseDown(e)}}},t._l(t.list,function(e,i){return n("menu-item",{key:"auto_"+i,staticClass:"mu-auto-complete-menu-item",attrs:{disableFocusRipple:t.disableFocusRipple,afterText:"",leftIcon:e.leftIcon,leftIconColor:e.leftIconColor,rightIconColor:e.rightIconColor,rightIcon:e.rightIcon,value:e.value,title:e.text},nativeOn:{mousedown:function(e){t.handleMouseDown(e)}}})})):t._e()],1)],1)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("div",{directives:[{name:"clickoutside",rawName:"v-clickoutside",value:t.clickoutside,expression:"clickoutside"}],staticClass:"mu-menu",style:{width:t.contentWidth},attrs:{tabindex:"0"},on:{keydown:t.handleKeydown}},[n("div",{ref:"list",staticClass:"mu-menu-list",class:t.menuListClass,style:{width:t.contentWidth,"max-height":t.maxHeight+"px"}},[t._t("default")],2)])},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("div",{staticClass:"mu-badge-container"},[t._t("default"),t._v(" "),n("em",{staticClass:"mu-badge",class:t.badgeInternalClass,style:t.badgeStyle},[t._t("content",[t._v("\n      "+t._s(t.content)+"\n    ")])],2)],2)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement;return(t._self._c||e)("paper",{staticClass:"mu-drawer",class:{open:t.open,right:t.right},style:t.drawerStyle,attrs:{zDepth:t.zDepth}},[t._t("default")],2)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("div",{staticClass:"mu-calendar",class:{"mu-calendar-landspace":"landscape"===t.mode}},[n("date-display",{attrs:{monthDaySelected:t.displayMonthDay,disableYearSelection:t.disableYearSelection,selectedDate:t.selectedDate,dateTimeFormat:t.dateTimeFormat},on:{selectYear:t.selectYear,selectMonth:t.selectMonth}}),t._v(" "),n("div",{staticClass:"mu-calendar-container"},[t.displayMonthDay?n("div",{staticClass:"mu-calendar-monthday-container"},[n("calendar-toolbar",{attrs:{slideType:t.slideType,nextMonth:t.nextMonth,prevMonth:t.prevMonth,displayDates:t.displayDates,dateTimeFormat:t.dateTimeFormat},on:{monthChange:t.handleMonthChange}}),t._v(" "),n("div",{staticClass:"mu-calendar-week"},t._l(t.weekTexts,function(e,i){return n("span",{key:i,staticClass:"mu-calendar-week-day"},[t._v(t._s(e))])})),t._v(" "),n("div",{staticClass:"mu-calendar-monthday"},t._l(t.displayDates,function(e,i){return n("transition",{key:i,attrs:{name:"mu-calendar-slide-"+t.slideType}},[n("div",{key:e.getTime(),staticClass:"mu-calendar-monthday-slide"},[n("calendar-month",{attrs:{shouldDisableDate:t.shouldDisableDate,displayDate:e,firstDayOfWeek:t.firstDayOfWeek,maxDate:t.maxDate,minDate:t.minDate,selectedDate:t.selectedDate},on:{selected:t.handleSelected}})],1)])}))],1):t._e(),t._v(" "),t.displayMonthDay?t._e():n("calendar-year",{attrs:{selectedDate:t.selectedDate,maxDate:t.maxDate,minDate:t.minDate},on:{change:t.handleYearChange}}),t._v(" "),n("div",{staticClass:"mu-calendar-actions"},[n("flat-button",{attrs:{label:t.cancelLabel,primary:""},on:{click:t.handleCancel}}),t._v(" "),t.autoOk?t._e():n("flat-button",{attrs:{label:t.okLabel,primary:""},on:{click:t.handleOk}})],1)],1)],1)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("label",{staticClass:"mu-checkbox",class:{"label-left":t.labelLeft,disabled:t.disabled,"no-label":!t.label},on:{mousedown:t.handleMouseDown,mouseup:t.handleMouseUp,mouseleave:t.handleMouseLeave,touchstart:t.handleTouchStart,touchend:t.handleTouchEnd,touchcancel:t.handleTouchEnd,click:function(e){e.stopPropagation(),t.handleClick(e)}}},[n("input",{directives:[{name:"model",rawName:"v-model",value:t.inputValue,expression:"inputValue"}],attrs:{type:"checkbox",disabled:t.disabled,name:t.name},domProps:{value:t.nativeValue,checked:Array.isArray(t.inputValue)?t._i(t.inputValue,t.nativeValue)>-1:t.inputValue},on:{change:t.handleChange,__c:function(e){var n=t.inputValue,i=e.target,a=!!i.checked;if(Array.isArray(n)){var r=t.nativeValue,s=t._i(n,r);a?s<0&&(t.inputValue=n.concat(r)):s>-1&&(t.inputValue=n.slice(0,s).concat(n.slice(s+1)))}else t.inputValue=a}}}),t._v(" "),t.disabled?t._e():n("touch-ripple",{staticClass:"mu-checkbox-wrapper",attrs:{rippleWrapperClass:"mu-checkbox-ripple-wrapper"}},[t.label&&t.labelLeft?n("div",{staticClass:"mu-checkbox-label",class:t.labelClass},[t._v(t._s(t.label))]):t._e(),t._v(" "),n("div",{staticClass:"mu-checkbox-icon"},[t.checkedIcon?t._e():n("svg",{staticClass:"mu-checkbox-icon-uncheck mu-checkbox-svg-icon",class:t.iconClass,attrs:{viewBox:"0 0 24 24"}},[n("path",{attrs:{d:"M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"}})]),t._v(" "),t.uncheckIcon?t._e():n("svg",{staticClass:"mu-checkbox-icon-checked mu-checkbox-svg-icon",class:t.iconClass,attrs:{viewBox:"0 0 24 24"}},[n("path",{attrs:{d:"M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"}})]),t._v(" "),t.uncheckIcon?n("icon",{staticClass:"mu-checkbox-icon-uncheck",class:t.iconClass,attrs:{value:t.uncheckIcon}}):t._e(),t._v(" "),t.checkedIcon?n("icon",{staticClass:"mu-checkbox-icon-checked",class:t.iconClass,attrs:{value:t.checkedIcon}}):t._e()],1),t._v(" "),t.label&&!t.labelLeft?n("div",{staticClass:"mu-checkbox-label",class:t.labelClass},[t._v(t._s(t.label))]):t._e()]),t._v(" "),t.disabled?n("div",{staticClass:"mu-checkbox-wrapper"},[t.label&&t.labelLeft?n("div",{staticClass:"mu-checkbox-label",class:t.labelClass},[t._v(t._s(t.label))]):t._e(),t._v(" "),n("div",{staticClass:"mu-checkbox-icon"},[t.checkedIcon?t._e():n("svg",{staticClass:"mu-checkbox-icon-uncheck mu-checkbox-svg-icon",class:t.iconClass,attrs:{viewBox:"0 0 24 24"}},[n("path",{attrs:{d:"M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"}})]),t._v(" "),t.uncheckIcon?t._e():n("svg",{staticClass:"mu-checkbox-icon-checked mu-checkbox-svg-icon",class:t.iconClass,attrs:{viewBox:"0 0 24 24"}},[n("path",{attrs:{d:"M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"}})]),t._v(" "),t.uncheckIcon?n("icon",{staticClass:"mu-checkbox-icon-uncheck",class:t.iconClass,attrs:{value:t.uncheckIcon}}):t._e(),t._v(" "),t.checkedIcon?n("icon",{staticClass:"mu-checkbox-icon-checked",class:t.iconClass,attrs:{value:t.checkedIcon}}):t._e()],1),t._v(" "),t.label&&!t.labelLeft?n("div",{staticClass:"mu-checkbox-label",class:t.labelClass},[t._v(t._s(t.label))]):t._e()]):t._e()],1)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("abstract-button",{staticClass:"mu-raised-button",class:t.buttonClass,style:t.buttonStyle,attrs:{type:t.type,href:t.href,target:t.target,to:t.to,tag:t.tag,activeClass:t.activeClass,event:t.event,exact:t.exact,append:t.append,replace:t.replace,rippleColor:t.rippleColor,rippleOpacity:t.rippleOpacity,disabled:t.disabled,keyboardFocused:t.keyboardFocused,wrapperClass:"mu-raised-button-wrapper",centerRipple:!1},on:{KeyboardFocus:t.handleKeyboardFocus,hover:t.handleHover,hoverExit:t.handleHoverExit,click:t.handleClick}},[t.label&&"before"===t.labelPosition?n("span",{staticClass:"mu-raised-button-label",class:t.labelClass},[t._v(t._s(t.label))]):t._e(),t._v(" "),n("icon",{class:t.iconClass,attrs:{value:t.icon}}),t._v(" "),t._t("default"),t._v(" "),t.label&&"after"===t.labelPosition?n("span",{staticClass:"mu-raised-button-label",class:t.labelClass},[t._v(t._s(t.label))]):t._e()],2)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("div",{staticClass:"mu-linear-progress",style:{height:t.size+"px","border-radius":(t.size?t.size/2:"")+"px"}},[n("div",{class:t.linearClass,style:t.linearStyle})])},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("abstract-button",{staticClass:"mu-tab-link",class:{"mu-tab-active":t.active},attrs:{href:t.href,to:t.to,tag:t.tag,activeClass:t.activeClass,event:t.event,exact:t.exact,append:t.append,replace:t.replace,disabled:t.disabled,"center-ripple":!1},on:{click:t.tabClick}},[t._t("default",[n("icon",{class:t.iconClass,attrs:{value:t.icon}})]),t._v(" "),t.title?n("div",{staticClass:"mu-tab-text",class:t.textClass},[t._v(t._s(t.title))]):t._e()],2)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement;return(t._self._c||e)("thead",{staticClass:"mu-thead"},[t._t("default")],2)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("text-field",{ref:"textField",staticClass:"mu-select-field",attrs:{label:t.label,labelFloat:t.labelFloat,underlineShow:t.underlineShow,labelClass:t.labelClass,labelFocusClass:t.labelFocusClass,underlineClass:t.underlineClass,underlineFocusClass:t.underlineFocusClass,fullWidth:t.fullWidth,hintText:t.hintText,hintTextClass:t.hintTextClass,helpText:t.helpText,helpTextClass:t.helpTextClass,icon:t.icon,iconClass:t.iconClass,value:t.inputValue instanceof Array?t.inputValue.join(""):t.inputValue,disabled:t.disabled,errorText:t.errorText,errorColor:t.errorColor}},[n("input",{attrs:{type:"hidden",name:t.name},domProps:{value:t.inputValue instanceof Array?t.inputValue.join(""):t.inputValue}}),t._v(" "),n("dropDown-menu",{attrs:{anchorEl:t.anchorEl,scroller:t.scroller,value:t.inputValue,disabled:t.disabled,maxHeight:t.maxHeight,autoWidth:t.autoWidth,iconClass:t.dropDownIconClass,multiple:t.multiple,anchorOrigin:{vertical:"bottom",horizontal:"left"}},on:{open:t.handleOpen,close:t.handleClose,change:t.handlehange}},[t._t("default")],2)],1)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement;return(t._self._c||e)("div",{staticClass:"mu-card-actions"},[t._t("default")],2)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("transition",{attrs:{name:"mu-overlay-fade"}},[t.show?n("div",{staticClass:"mu-overlay",style:t.overlayStyle,on:{click:t.handleClick,touchmove:t.prevent}}):t._e()])},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("div",[t.fixedHeader?n("div",[n("table",{staticClass:"mu-table"},[t._t("header")],2)]):t._e(),t._v(" "),n("div",{style:t.bodyStyle},[n("table",{staticClass:"mu-table"},[t.fixedHeader?t._e():t._t("header"),t._v(" "),t._t("default"),t._v(" "),t.fixedFooter?t._e():t._t("footer")],2)]),t._v(" "),t.fixedFooter?n("div",[n("table",{staticClass:"mu-table"},[t._t("footer")],2)]):t._e()])},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("div",{staticClass:"mu-clock-hours"},[n("clock-pointer",{attrs:{hasSelected:"",value:t.getSelected(),type:"hour"}}),t._v(" "),t._l(t.hours,function(e){return n("clock-number",{key:e,attrs:{selected:t.getSelected()===e,type:"hour",value:e}})}),t._v(" "),n("div",{ref:"mask",staticClass:"mu-clock-hours-mask",on:{mouseup:t.handleUp,mousemove:t.handleMove,touchmove:t.handleTouchMove,touchend:t.handleTouchEnd}})],2)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement;return(t._self._c||e)("span",{staticClass:"mu-clock-number",class:t.numberClass,style:t.numberStyle},[t._v(t._s(0===t.value?"00":t.value))])},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("span",[n("transition",{attrs:{name:t.transition},on:{"after-enter":function(e){t.show()},"after-leave":function(e){t.hide()}}},[t.open?n("div",{ref:"popup",staticClass:"mu-popup",class:t.popupCss,style:{"z-index":t.zIndex}},[t._t("default")],2):t._e()])],1)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("label",{staticClass:"mu-switch",class:{"label-left":t.labelLeft,disabled:t.disabled,"no-label":!t.label},on:{mousedown:t.handleMouseDown,mouseleave:t.handleMouseLeave,mouseup:t.handleMouseUp,touchstart:t.handleTouchStart,touchend:t.handleTouchEnd,touchcancel:t.handleTouchEnd,click:function(e){e.stopPropagation(),t.handleClick(e)}}},[n("input",{directives:[{name:"model",rawName:"v-model",value:t.inputValue,expression:"inputValue"}],attrs:{type:"checkbox",disabled:t.disabled,name:t.name},domProps:{checked:Array.isArray(t.inputValue)?t._i(t.inputValue,null)>-1:t.inputValue},on:{change:t.handleChange,__c:function(e){var n=t.inputValue,i=e.target,a=!!i.checked;if(Array.isArray(n)){var r=null,s=t._i(n,r);a?s<0&&(t.inputValue=n.concat(r)):s>-1&&(t.inputValue=n.slice(0,s).concat(n.slice(s+1)))}else t.inputValue=a}}}),t._v(" "),n("div",{staticClass:"mu-switch-wrapper"},[t.label&&t.labelLeft?n("div",{staticClass:"mu-switch-label",class:t.labelClass},[t._v(t._s(t.label))]):t._e(),t._v(" "),n("div",{staticClass:"mu-switch-container"},[n("div",{staticClass:"mu-switch-track",class:t.trackClass}),t._v(" "),t.disabled?n("div",{staticClass:"mu-switch-thumb",class:t.thumbClass}):t._e(),t._v(" "),t.disabled?t._e():n("touch-ripple",{staticClass:"mu-switch-thumb",attrs:{rippleWrapperClass:"mu-switch-ripple-wrapper"}})],1),t._v(" "),t.label&&!t.labelLeft?n("div",{staticClass:"mu-switch-label",class:t.labelClass},[t._v(t._s(t.label))]):t._e()])])},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("div",{staticClass:"mu-card-media"},[t._t("default"),t._v(" "),t.title||t.subTitle?n("div",{staticClass:"mu-card-media-title"},[t.title?n("div",{staticClass:"mu-card-title",class:t.titleClass},[t._v("\n      "+t._s(t.title)+"\n    ")]):t._e(),t._v(" "),t.subTitle?n("div",{staticClass:"mu-card-sub-title",class:t.subTitleClass},[t._v("\n      "+t._s(t.subTitle)+"\n    ")]):t._e()]):t._e()],2)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("div",{staticClass:"mu-card-title-container"},[n("div",{staticClass:"mu-card-title",class:t.titleClass},[t._v("\n    "+t._s(t.title)+"\n  ")]),t._v(" "),n("div",{staticClass:"mu-card-sub-title",class:t.subTitleClass},[t._v("\n    "+t._s(t.subTitle)+"\n  ")])])},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("div",{staticClass:"mu-tabs"},[t._t("default"),t._v(" "),n("span",{ref:"highlight",staticClass:"mu-tab-link-highlight",class:t.lineClass})],2)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement;t._self._c;return t._m(0)},staticRenderFns:[function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("div",{staticClass:"mu-step-connector"},[n("span",{staticClass:"mu-step-connector-line"})])}]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("span",[n("transition",{attrs:{name:"mu-dialog-slide"},on:{"after-enter":function(e){t.show()},"after-leave":function(e){t.hide()}}},[t.open?n("div",{ref:"popup",staticClass:"mu-dialog-wrapper",style:{"z-index":t.zIndex},on:{click:t.handleWrapperClick}},[n("div",{ref:"dialog",staticClass:"mu-dialog",class:t.dialogClass},[t.showTitle?n("h3",{ref:"title",staticClass:"mu-dialog-title",class:t.headerClass},[t._t("title",[t._v("\n            "+t._s(t.title)+"\n          ")])],2):t._e(),t._v(" "),n("div",{staticClass:"mu-dialog-body ",class:t.bodyClass,style:t.bodyStyle},[t._t("default")],2),t._v(" "),t.showFooter?n("div",{ref:"footer",staticClass:"mu-dialog-actions",class:t.footerClass},[t._t("actions")],2):t._e()])]):t._e()])],1)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement;return(t._self._c||e)("hr",{staticClass:"mu-divider",class:{inset:t.inset,"shallow-inset":t.shallowInset}})},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("div",{style:t.style},[n("div",{staticClass:"mu-grid-tile",class:t.tileClass},[t._t("default"),t._v(" "),n("div",{staticClass:"mu-grid-tile-titlebar",class:t.titleBarClass},[n("div",{staticClass:"mu-grid-tile-title-container"},[n("div",{staticClass:"mu-grid-tile-title"},[t._t("title",[t._v("\n            "+t._s(t.title)+"\n          ")])],2),t._v(" "),n("div",{staticClass:"mu-grid-tile-subtitle"},[t._t("subTitle",[t._v("\n            "+t._s(t.subTitle)+"\n          ")])],2)]),t._v(" "),n("div",{staticClass:"mu-grid-tile-action"},[t._t("action")],2)])],2)])},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement;return(t._self._c||e)("div",{staticClass:"mu-paper",class:t.paperClass},[t._t("default")],2)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("div",{staticClass:"mu-text-field",class:t.textFieldClass,style:t.isFocused?t.errorStyle:{}},[t.icon?n("icon",{staticClass:"mu-text-field-icon",class:t.iconClass,attrs:{value:t.icon}}):t._e(),t._v(" "),n("div",{ref:"content",staticClass:"mu-text-field-content",on:{click:t.handleLabelClick}},[t.label?n("text-field-label",{attrs:{float:t.float,focus:t.isFocused,normalClass:t.labelClass,focusClass:t.labelFocusClass}},[t._v(t._s(t.label))]):t._e(),t._v(" "),t.hintText?n("text-field-hint",{class:t.hintTextClass,attrs:{text:t.hintText,show:t.showHint}}):t._e(),t._v(" "),t._t("default",[t.multiLine?t._e():n("input",{ref:"input",staticClass:"mu-text-field-input",class:t.inputClass,attrs:{name:t.name,type:t.type,disabled:t.disabled,max:t.max,min:t.min},domProps:{value:t.inputValue},on:{change:t.handleChange,focus:t.handleFocus,input:t.handleInput,blur:t.handleBlur}}),t._v(" "),t.multiLine?n("enhanced-textarea",{ref:"textarea",attrs:{name:t.name,normalClass:t.inputClass,value:t.inputValue,disabled:t.disabled,rows:t.rows,rowsMax:t.rowsMax},on:{change:t.handleChange,input:t.handleInput,focus:t.handleFocus,blur:t.handleBlur}}):t._e()]),t._v(" "),t.underlineShow?n("underline",{attrs:{error:!!t.errorText,disabled:t.disabled,errorColor:t.errorColor,focus:t.isFocused,normalClass:t.underlineClass,focusClass:t.underlineFocusClass}}):t._e(),t._v(" "),t.errorText||t.helpText||t.maxLength>0?n("div",{staticClass:"mu-text-field-help",class:t.helpTextClass,style:t.errorStyle},[n("div",[t._v("\n            "+t._s(t.errorText||t.helpText)+"\n        ")]),t._v(" "),t.maxLength>0?n("div",[t._v("\n            "+t._s(t.charLength)+"/"+t._s(t.maxLength)+"\n        ")]):t._e()]):t._e()],2)],1)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("abstract-button",{staticClass:"mu-step-button",attrs:{centerRipple:!1,disabled:t.disabled},on:{click:t.handleClick}},[t.childrenInLabel?n("step-label",{attrs:{active:t.active,completed:t.completed,num:t.num,disabled:t.disabled}},[t._t("default"),t._v(" "),t._t("icon",null,{slot:"icon"})],2):t._e(),t._v(" "),t.childrenInLabel?t._e():t._t("default")],2)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("abstract-button",{staticClass:"mu-icon-button",attrs:{to:t.to,tag:t.tag,activeClass:t.activeClass,event:t.event,exact:t.exact,append:t.append,replace:t.replace,type:t.type,href:t.href,target:t.target,disabled:t.disabled,keyboardFocused:t.keyboardFocused},on:{click:t.handleClick,hover:t.handleHover,hoverExit:t.handleHoverExit,keyboardFocus:t.handleKeyboardFocus}},[t._t("default",[n("icon",{class:t.iconClass,attrs:{value:t.icon}})]),t._v(" "),t.tooltip?n("tooltip",{attrs:{trigger:t.tooltipTrigger,verticalPosition:t.verticalPosition,horizontalPosition:t.horizontalPosition,show:t.tooltipShown,label:t.tooltip,touch:t.touch}}):t._e()],2)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("div",{staticClass:"mu-infinite-scroll"},[n("circular",{directives:[{name:"show",rawName:"v-show",value:t.loading,expression:"loading"}],attrs:{size:24}}),t._v(" "),n("span",{directives:[{name:"show",rawName:"v-show",value:t.loading,expression:"loading"}],staticClass:"mu-infinite-scroll-text"},[t._v(t._s(t.loadingText))])],1)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("div",{staticClass:"mu-focus-ripple-wrapper"},[n("div",{ref:"innerCircle",staticClass:"mu-focus-ripple",style:t.style})])},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("div",{staticClass:"mu-picker"},[t._l(t.slots,function(e,i){return n("picker-slot",{key:i,attrs:{divider:e.divider,content:e.content,"text-align":e.textAlign,width:e.width,value:t.values[i],values:e.values,"visible-item-count":t.visibleItemCount},on:{change:function(e){t.change(i,arguments)}}})}),t._v(" "),n("div",{staticClass:"mu-picker-center-highlight"})],2)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("div",{staticClass:"mu-date-picker",class:{fullWidth:t.fullWidth}},[n("text-field",{attrs:{value:t.inputValue,disabled:t.disabled,fullWidth:t.fullWidth,label:t.label,labelFloat:t.labelFloat,labelClass:t.labelClass,labelFocusClass:t.labelFocusClass,hintText:t.hintText,hintTextClass:t.hintTextClass,helpText:t.helpText,helpTextClass:t.helpTextClass,errorText:t.errorText,errorColor:t.errorColor,icon:t.icon,iconClass:t.iconClass,inputClass:t.inputClass,underlineShow:t.underlineShow,underlineClass:t.underlineClass,underlineFocusClass:t.underlineFocusClass},on:{focus:t.handleFocus,labelClick:t.handleClick}}),t._v(" "),t.disabled?t._e():n("date-picker-dialog",{ref:"dialog",attrs:{initialDate:t.dialogDate,mode:t.mode,maxDate:t.maxLimitDate,minDate:t.minLimitDate,shouldDisableDate:t.shouldDisableDate,firstDayOfWeek:t.firstDayOfWeek,container:t.container,disableYearSelection:t.disableYearSelection,dateTimeFormat:t.dateTimeFormat,autoOk:t.autoOk,okLabel:t.okLabel,cancelLabel:t.cancelLabel},on:{accept:t.handleAccept}})],1)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement;return(t._self._c||e)("div",{staticClass:"mu-content-block"},[t._t("default")],2)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement;return(t._self._c||e)("div",{staticClass:"mu-flexbox",class:{"mu-flex-col":"vertical"===t.orient,"mu-flex-row":"horizontal"===t.orient},style:t.styles},[t._t("default")],2)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("div",{staticClass:"mu-circular-progress",style:{width:t.size+"px",height:t.size+"px"}},["indeterminate"===t.mode?n("circular",{attrs:{size:t.size,color:t.color,borderWidth:t.strokeWidth}}):t._e(),t._v(" "),"determinate"===t.mode?n("svg",{staticClass:"mu-circular-progress-determinate",style:t.circularSvgStyle,attrs:{viewBox:"0 0 "+t.size+" "+t.size}},[n("circle",{staticClass:"mu-circular-progress-determinate-path",style:t.circularPathStyle,attrs:{r:t.radius,cx:t.size/2,cy:t.size/2,fill:"none","stroke-miterlimit":"20","stroke-width":t.strokeWidth}})]):t._e()],1)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("div",{staticClass:"mu-circle-wrapper active",style:{width:t.size+"px",height:t.size+"px"}},[n("div",{staticClass:"mu-circle-spinner active",class:{"mu-circle-secondary":t.secondary},style:t.spinnerStyle},[n("div",{staticClass:"mu-circle-clipper left"},[n("div",{staticClass:"mu-circle",style:{"border-width":t.borderWidth+"px"}})]),t._v(" "),t._m(0),t._v(" "),n("div",{staticClass:"mu-circle-clipper right"},[n("div",{staticClass:"mu-circle",style:{"border-width":t.borderWidth+"px"}})])])])},staticRenderFns:[function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("div",{staticClass:"mu-circle-gap-patch"},[n("div",{staticClass:"mu-circle"})])}]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("span",[n("transition",{attrs:{name:"mu-bottom-sheet"},on:{"after-enter":function(e){t.show()},"after-leave":function(e){t.hide()}}},[n("div",{directives:[{name:"show",rawName:"v-show",value:t.open,expression:"open"}],ref:"popup",staticClass:"mu-bottom-sheet",class:t.sheetClass,style:{"z-index":t.zIndex}},[t._t("default")],2)])],1)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("div",{staticClass:"mu-date-display",class:t.displayClass},[n("div",{staticClass:"mu-date-display-year",class:{disabled:t.disableYearSelection},on:{click:t.handleSelectYear}},t._l(t.displayDates,function(e,i){return n("transition",{key:i,attrs:{name:"mu-date-display-"+t.slideType}},[n("div",{key:e.getFullYear(),staticClass:"mu-date-display-slideIn-wrapper"},[n("div",{staticClass:"mu-date-display-year-title"},[t._v("\n          "+t._s(e.getFullYear())+"\n        ")])])])})),t._v(" "),n("div",{staticClass:"mu-date-display-monthday",on:{click:t.handleSelectMonth}},t._l(t.displayDates,function(e,i){return n("transition",{key:i,attrs:{name:"mu-date-display-"+t.slideType}},[n("div",{key:t.dateTimeFormat.formatDisplay(e),staticClass:"mu-date-display-slideIn-wrapper"},[n("div",{staticClass:"mu-date-display-monthday-title"},[t._v("\n          "+t._s(t.dateTimeFormat.formatDisplay(e))+"\n        ")])])])}))])},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement;return(t._self._c||e)("div",{staticClass:"mu-list"},[t._t("default")],2)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("div",{staticClass:"mu-calendar-toolbar"},[n("icon-button",{attrs:{disabled:!t.prevMonth},on:{click:function(e){e.stopPropagation(),t.prev(e)}}},[n("svg",{staticClass:"mu-calendar-svg-icon",attrs:{viewBox:"0 0 24 24"}},[n("path",{attrs:{d:"M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"}})])]),t._v(" "),n("div",{staticClass:"mu-calendar-toolbar-title-wrapper"},t._l(t.displayDates,function(e,i){return n("transition",{key:i,attrs:{name:"mu-calendar-slide-"+t.slideType}},[n("div",{key:e.getTime(),staticClass:"mu-calendar-toolbar-title"},[t._v("\n        "+t._s(t.dateTimeFormat.formatMonth(e))+"\n      ")])])})),t._v(" "),n("icon-button",{attrs:{disabled:!t.nextMonth},on:{click:function(e){e.stopPropagation(),t.next(e)}}},[n("svg",{staticClass:"mu-calendar-svg-icon",attrs:{viewBox:"0 0 24 24"}},[n("path",{attrs:{d:"M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"}})])])],1)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("transition",{attrs:{name:"mu-toast"}},[n("div",{directives:[{name:"clickoutside",rawName:"v-clickoutside",value:t.clickOutSide,expression:"clickOutSide"}],staticClass:"mu-toast",style:{"z-index":t.zIndex}},[t._v("\n    "+t._s(t.message)+"\n  ")])])},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("transition",{attrs:{name:"mu-snackbar"}},[n("div",{directives:[{name:"clickoutside",rawName:"v-clickoutside",value:t.clickOutSide,expression:"clickOutSide"}],staticClass:"mu-snackbar",style:{"z-index":t.zIndex}},[n("div",{staticClass:"mu-snackbar-message"},[t._v("\n      "+t._s(t.message)+"\n    ")]),t._v(" "),t.action?n("flat-button",{staticClass:"mu-snackbar-action",attrs:{color:t.actionColor,rippleColor:"#FFF",rippleOpacity:.3,secondary:"",label:t.action},on:{click:t.handleActionClick}}):t._e()],1)])},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("div",{staticClass:"mu-refresh-control",class:t.refreshClass,style:t.refreshStyle},[n("svg",{directives:[{name:"show",rawName:"v-show",value:!t.refreshing&&t.draging,expression:"!refreshing && draging"}],staticClass:"mu-refresh-svg-icon",style:t.circularStyle,attrs:{viewBox:"0 0 24 24"}},[n("path",{attrs:{d:"M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"}})]),t._v(" "),n("circular",{directives:[{name:"show",rawName:"v-show",value:t.refreshing,expression:"refreshing"}],attrs:{size:24,"border-width":2}})],1)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("span",[n("transition",{attrs:{name:"mu-popover"},on:{"after-enter":function(e){t.show()},"after-leave":function(e){t.hide()}}},[t.open?n("div",{ref:"popup",staticClass:"mu-popover",class:t.popoverClass,style:{"z-index":t.zIndex}},[t._t("default")],2):t._e()])],1)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement;return(t._self._c||e)("div",{staticClass:"mu-card"},[t._t("default")],2)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("abstract-button",{staticClass:"mu-float-button",class:[t.buttonClass],style:t.buttonStyle,attrs:{type:t.type,href:t.href,target:t.target,to:t.to,tag:t.tag,activeClass:t.activeClass,event:t.event,exact:t.exact,append:t.append,replace:t.replace,disabled:t.disabled},on:{click:t.handleClick,keyboardFocus:t.handleKeyboardFocus,hover:t.handleHover,hoverExit:t.handleHoverExit}},[n("div",{staticClass:"mu-float-button-wrapper"},[t._t("default",[n("icon",{class:t.iconClass,attrs:{value:this.icon}})])],2)])},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("div",{staticClass:"mu-clock-minutes"},[n("clock-pointer",{attrs:{hasSelected:"",value:t.minutes.selected,hasSelected:t.minutes.hasSelected,type:"minute"}}),t._v(" "),t._l(t.minutes.numbers,function(t){return n("clock-number",{key:t.minute,attrs:{selected:t.isSelected,type:"minute",value:t.minute}})}),t._v(" "),n("div",{ref:"mask",staticClass:"mu-clock-minutes-mask",on:{mouseup:t.handleUp,mousemove:t.handleMove,touchmove:t.handleTouch,touchend:t.handleTouch}})],2)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("div",{staticClass:"mu-calendar-year-container"},[n("div",{ref:"container",staticClass:"mu-calendar-year"},[n("div",{staticClass:"mu-calendar-year-list"},t._l(t.years,function(e){return n("year-button",{key:"yearButton"+e,attrs:{year:e,selected:e===t.selectedDate.getFullYear()},on:{click:function(n){t.handleClick(e)}}})}))])])},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("abstract-button",{staticClass:"mu-flat-button",class:t.buttonClass,style:t.buttonStyle,attrs:{disabled:t.disabled,keyboardFocused:t.keyboardFocused,wrapperClass:"mu-flat-button-wrapper",type:t.type,href:t.href,target:t.target,to:t.to,tag:t.tag,activeClass:t.activeClass,event:t.event,exact:t.exact,append:t.append,replace:t.replace,rippleColor:t.rippleColor,rippleOpacity:t.rippleOpacity,centerRipple:!1},on:{click:t.handleClick,keyboardFocus:t.handleKeyboardFocus,hover:t.handleHover,hoverExit:t.handleHoverExit}},[t.label&&"before"===t.labelPosition?n("span",{staticClass:"mu-flat-button-label",class:t.labelClass},[t._v(t._s(t.label))]):t._e(),t._v(" "),n("icon",{class:t.iconClass,attrs:{value:t.icon}}),t._v(" "),t._t("default"),t._v(" "),t.label&&"after"===t.labelPosition?n("span",{staticClass:"mu-flat-button-label",class:t.labelClass},[t._v(t._s(t.label))]):t._e()],2)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement;return(t._self._c||e)("div",{staticClass:"mu-flexbox-item",style:t.itemStyle},[t._t("default")],2)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement;return(t._self._c||e)("div",{staticClass:"mu-grid-list",style:t.gridListStyle},[t._t("default")],2)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("tr",{key:t.rowId,staticClass:"mu-tr",class:t.className,on:{click:t.handleClick,mouseenter:t.handleHover,mouseleave:t.handleExit}},[t.isTh&&t.showCheckbox?n("mu-th",{staticClass:"mu-checkbox-col"},[n("checkbox",{attrs:{value:t.isSelectAll&&t.enableSelectAll,disabled:!t.enableSelectAll||!t.multiSelectable},on:{change:t.handleSelectAllChange}})],1):t._e(),t._v(" "),t.isTb&&t.showCheckbox?n("mu-td",{staticClass:"mu-checkbox-col"},[n("checkbox",{ref:"checkLabel",attrs:{disabled:!t.selectable||!t.$parent.selectable,value:t.isSelected},on:{change:t.handleCheckboxChange},nativeOn:{click:function(e){t.handleCheckboxClick(e)}}})],1):t._e(),t._v(" "),t.isTf&&t.showCheckbox?n("mu-td",{staticClass:"mu-checkbox-col"}):t._e(),t._v(" "),t._t("default")],2)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("th",{staticClass:"mu-th",on:{mouseenter:t.showTooltip,mouseleave:t.hideTooltip}},[n("div",{ref:"wrapper",staticClass:"mu-th-wrapper"},[t._t("default"),t._v(" "),t.tooltip?n("tooltip",{attrs:{trigger:t.tooltipTrigger,verticalPosition:t.verticalPosition,horizontalPosition:t.horizontalPosition,show:t.tooltipShown,label:t.tooltip,touch:t.touch}}):t._e()],2)])},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("div",{staticClass:"mu-text-field-multiline"},[n("textarea",{ref:"textareaHidden",staticClass:"mu-text-field-textarea-hide mu-text-field-input",attrs:{rows:"1"},domProps:{value:t.value}}),t._v(" "),n("textarea",{ref:"textarea",staticClass:"mu-text-field-input mu-text-field-textarea",class:t.normalClass,attrs:{name:t.name,placeholder:t.placeholder,disabled:t.disabled},domProps:{value:t.value},on:{change:t.handleChange,input:t.handleInput,focus:t.handleFocus,blur:t.handleBlur}})])},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement;return(t._self._c||e)("td",{staticClass:"mu-td",on:{mouseenter:t.handleMouseEnter,mouseleave:t.handleMouseLeave,click:t.handleClick}},[t._t("default")],2)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement;return(t._self._c||e)("tfoot",{staticClass:"mu-tfoot"},[t._t("default")],2)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("span",{staticClass:"mu-step-label",class:{active:t.active,completed:t.completed,disabled:t.disabled}},[t.num||t.$slots.icon&&t.$slots.length>0?n("span",{staticClass:"mu-step-label-icon-container"},[t._t("icon",[t.completed?n("svg",{staticClass:"mu-step-label-icon",attrs:{viewBox:"0 0 24 24"}},[n("path",{attrs:{d:"M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"}})]):t._e(),t._v(" "),t.completed?t._e():n("div",{staticClass:"mu-step-label-circle"},[t._v("\n        "+t._s(t.num)+"\n      ")])])],2):t._e(),t._v(" "),t._t("default")],2)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("transition",{attrs:{name:"mu-ripple"}},[n("div",{staticClass:"mu-circle-ripple",style:t.styles})])},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement;return(t._self._c||e)("div",{staticClass:"mu-text-field-hint",class:{show:t.show}},[t._v("\n  "+t._s(t.text)+"\n")])},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("div",{staticClass:"mu-slider",class:t.sliderClass,attrs:{tabindex:"0"},on:{focus:t.handleFocus,blur:t.handleBlur,keydown:t.handleKeydown,touchstart:t.handleTouchStart,touchend:t.handleTouchEnd,touchcancel:t.handleTouchEnd,mousedown:t.handleMouseDown,mouseup:t.handleMouseUp,mouseenter:t.handleMouseEnter,mouseleave:t.handleMouseLeave}},[n("input",{attrs:{type:"hidden",name:t.name},domProps:{value:t.inputValue}}),t._v(" "),n("div",{staticClass:"mu-slider-track"}),t._v(" "),n("div",{staticClass:"mu-slider-fill",style:t.fillStyle}),t._v(" "),n("div",{staticClass:"mu-slider-thumb",style:t.thumbStyle},[!t.focused&&!t.hover||t.active?t._e():n("focus-ripple")],1)])},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("div",{staticClass:"mu-chip",class:t.classNames,style:t.style,on:{mouseenter:t.onMouseenter,mouseup:t.onMouseup,mousedown:t.onMousedown,mouseleave:t.onMouseleave,touchstart:t.onTouchstart,click:t.handleClick,touchend:t.onTouchend,touchcancel:t.onTouchend}},[t._t("default"),t._v(" "),t.showDelete&&!t.disabled?n("svg",{staticClass:"mu-chip-delete-icon",class:t.deleteIconClass,attrs:{viewBox:"0 0 24 24"},on:{click:function(e){e.stopPropagation(),t.handleDelete(e)}}},[n("path",{attrs:{d:"M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"}})]):t._e()],2)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("div",[n("abstract-button",{staticClass:"mu-item-wrapper",style:t.disabled?t.itemStyle:{},attrs:{containerElement:"div",href:t.href,disabled:t.disabled,disableFocusRipple:t.disableRipple,disableTouchRipple:t.disableRipple,target:t.target,to:t.to,tag:t.tag,activeClass:t.activeClass,event:t.event,exact:t.exact,append:t.append,replace:t.replace,wrapperStyle:t.itemStyle,centerRipple:!1},on:{click:t.handleClick,keyboardFocus:t.handleKeyboardFocus,hover:t.handleHover,hoverExit:t.handleHoverExit}},[n("div",{class:t.itemClass},[t.showLeft?n("div",{staticClass:"mu-item-left"},[t._t("left"),t._v(" "),t._t("leftAvatar")],2):t._e(),t._v(" "),n("div",{staticClass:"mu-item-content"},[t.showTitleRow?n("div",{staticClass:"mu-item-title-row"},[n("div",{staticClass:"mu-item-title",class:t.titleClass},[t._t("title",[t._v("\n               "+t._s(t.title)+"\n             ")])],2),t._v(" "),n("div",{staticClass:"mu-item-after",class:t.afterTextClass},[t._t("after",[t._v("\n                "+t._s(t.afterText)+"\n              ")])],2)]):t._e(),t._v(" "),t.showDescribe?n("div",{staticClass:"mu-item-text",class:t.describeTextClass,style:t.textStyle},[t._t("describe",[t._v("\n            "+t._s(t.describeText)+"\n          ")])],2):t._e(),t._v(" "),t._t("default")],2),t._v(" "),t.showRight?n("div",{staticClass:"mu-item-right"},[t.toggleNested?n("icon-button",{on:{click:function(e){e.stopPropagation(),t.handleToggleNested(e)}},nativeOn:{mousedown:function(e){t.stop(e)},touchstart:function(e){t.stop(e)}}},[t.nestedOpen?n("svg",{staticClass:"mu-item-svg-icon",class:t.toggleIconClass,attrs:{viewBox:"0 0 24 24"}},[n("path",{attrs:{d:"M6 15L12 9L18 15"}})]):t._e(),t._v(" "),t.nestedOpen?t._e():n("svg",{staticClass:"mu-item-svg-icon",class:t.toggleIconClass,attrs:{viewBox:"0 0 24 24"}},[n("path",{attrs:{d:"M6 9L12 15L18 9"}})])]):t._e(),t._v(" "),t._t("right"),t._v(" "),t._t("rightAvatar")],2):t._e()])]),t._v(" "),n("expand-transition",[t.showNested?n("mu-list",{class:t.nestedListClass,attrs:{nestedLevel:t.nestedLevel,value:t.nestedSelectValue},on:{change:t.handleNestedChange}},[t._t("nested")],2):t._e()],1)],1)},staticRenderFns:[]}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement;return(t._self._c||e)("div",{staticClass:"mu-card-text"},[t._t("default")],2)},staticRenderFns:[]}},function(t,e){var n;n=function(){return this}();try{n=n||Function("return this")()||(0,eval)("this")}catch(t){"object"==typeof window&&(n=window)}t.exports=n},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=n(61),a=n.n(i),r=n(35),s=n.n(r),o=n(123),l=(n.n(o),n(36)),u=n.n(l),c=n(1),d=n(2),f=n(90),h=n(87),p=n(23),m=n(22),v=n(112),y=n(101),g=n(96),b=n(107),x=n(117),C=n(98),_=n(113),S=n(105),w=n(89),k=n(120),$=n(59),O=n(91),T=n(93),M=n(94),D=n(62),F=n.n(D),P=n(33),A=n(122),E=n(115),j=n(110),B=n(24),I=n(92),R=n(8),L=n(104),z=n(58),H=n(99),N=n(109),V=n(34),W=n(13),Y=n(60),K=n(56),G=n(111),X=n(118),U=n(114),q=n(106),Z=n(95),J=n(103),Q=n(119),tt=n(97),et=n(121),nt=n(116),it=n(88),at=n(108),rt=n(102),st=n(100),ot=n(57);n.d(e,"config",function(){return ot.a}),n.d(e,"install",function(){return ut});var lt=s()({icon:d.a,badge:f.a,appBar:h.a,iconButton:p.a,flatButton:m.a,raisedButton:v.a,floatButton:y.a,contentBlock:g.a},b,{subHeader:x.a,divider:C.a,refreshControl:_.a,infiniteScroll:S.a,avatar:w.a},k,{paper:$.a},O,T,{chip:M.a,overlay:F.a,dialog:P.a,toast:A.a,snackbar:E.a,popup:j.a},B,{bottomSheet:I.a,popover:R.a,iconMenu:L.a,dropDownMenu:z.a,drawer:H.a,picker:N.a,tooltip:V.a,textField:W.a,selectField:Y.a,checkbox:K.a,radio:G.a,_switch:X.a,slider:U.a,linearProgress:q.a,circularProgress:Z.a},J,Q,{datePicker:tt.a,timePicker:et.a},nt,{autoComplete:it.a},rt,st,{pagination:at.a}),ut=function(){a()(lt).forEach(function(t){u.a.component(lt[t].name,lt[t])}),n.i(c.a)()};"undefined"!=typeof window&&window.Vue&&ut(window.Vue),e.default={config:ot.a,install:ut}}])});
-},{"vue":13}],11:[function(require,module,exports){
+},{"vue":61}],59:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -5065,7 +17809,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],12:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 (function (process){
 /**
   * vue-router v2.5.3
@@ -7535,7 +20279,7 @@ if (inBrowser && window.Vue) {
 module.exports = VueRouter;
 
 }).call(this,require('_process'))
-},{"_process":11}],13:[function(require,module,exports){
+},{"_process":59}],61:[function(require,module,exports){
 (function (process,global){
 /*!
  * Vue.js v2.3.4
@@ -14677,7 +27421,7 @@ setTimeout(function () {
 module.exports = Vue$3;
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":11}],14:[function(require,module,exports){
+},{"_process":59}],62:[function(require,module,exports){
 var inserted = exports.cache = {}
 
 function noop () {}
@@ -14702,7 +27446,7 @@ exports.insert = function (css) {
   }
 }
 
-},{}],15:[function(require,module,exports){
+},{}],63:[function(require,module,exports){
 "use strict";
 
 var moment = require("moment");
@@ -14721,7 +27465,7 @@ module.exports = function (_) {
   };
 };
 
-},{"moment":9}],16:[function(require,module,exports){
+},{"moment":57}],64:[function(require,module,exports){
 "use strict";
 
 // imports
@@ -14825,7 +27569,7 @@ var glob = {
 
 module.exports = glob;
 
-},{"md5":8,"vue":13}],17:[function(require,module,exports){
+},{"md5":56,"vue":61}],65:[function(require,module,exports){
 ;(function(){
 "use strict";
 
@@ -14849,7 +27593,7 @@ var __vue__options__ = (typeof module.exports === "function"? module.exports.opt
 __vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('mu-list-item',{attrs:{"title":((_vm.lancamento.categoria.nome) + " (" + (_vm.lancamento.descricao) + ")"),"describeText":((_vm.lancamento.dtlancamento) + " $ " + (_vm.lancamento.valor))}},[(_vm.lancamento.categoria.tipo == 'Saída')?_c('mu-icon',{staticClass:"r",attrs:{"value":"monetization_on"},slot:"left"}):_vm._e(),_vm._v(" "),(_vm.lancamento.categoria.tipo == 'Entrada')?_c('mu-icon',{staticClass:"g",attrs:{"value":"monetization_on"},slot:"left"}):_vm._e(),_vm._v(" "),_c('mu-icon',{attrs:{"value":"indeterminate_check_box"},on:{"click":function($event){_vm.removelancamento(_vm.lan)}},slot:"right"})],1)}
 __vue__options__.staticRenderFns = []
 
-},{}],18:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
 ;(function(){
 "use strict";
 
@@ -14876,7 +27620,9 @@ module.exports = {
     addlancamento: function addlancamento() {
       if (!this.globalstore.usuario.lancamentos) Vue.set(this.globalstore.usuario, "lancamentos", []);
       this.globalstore.usuario.lancamentos.push(JSON.parse((0, _stringify2.default)(this.lancamento)));
-
+      this.globalstore.usuario.lancamentos = this.globalstore.usuario.lancamentos.sort(function (a, b) {
+        return b.dtlancamento.localeCompare(a.dtlancamento);
+      });
       this.globalstore.savecontext();
       alert("Lançamento Salvo!");
       this.lancamento = this.newlancamento();
@@ -14897,7 +27643,54 @@ var __vue__options__ = (typeof module.exports === "function"? module.exports.opt
 __vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('form',{on:{"submit":function($event){$event.preventDefault();_vm.addlancamento($event)}}},[_c('mu-date-picker',{attrs:{"hintText":"Data lançamento","okLabel":"OK","cancelLabel":"Cancelar","dateTimeFormat":_vm.dformat,"autoOk":"","fullWidth":""},model:{value:(_vm.lancamento.dtlancamento),callback:function ($$v) {_vm.lancamento.dtlancamento=$$v},expression:"lancamento.dtlancamento"}}),_vm._v(" "),_c('mu-select-field',{attrs:{"label":"Categoria","fullWidth":""},model:{value:(_vm.lancamento.categoria),callback:function ($$v) {_vm.lancamento.categoria=$$v},expression:"lancamento.categoria"}},_vm._l((_vm.globalstore.categorias),function(cat){return _c('mu-menu-item',{key:cat.nome,attrs:{"value":cat,"title":'[' + cat.tipo + '] ' + cat.nome}})})),_vm._v(" "),_c('mu-text-field',{attrs:{"label":"Valor","type":"number","labelFloat":"","fullWidth":"","required":""},model:{value:(_vm.lancamento.valor),callback:function ($$v) {_vm.lancamento.valor=$$v},expression:"lancamento.valor"}}),_vm._v(" "),_c('mu-text-field',{attrs:{"label":"Descrição (opcional)","labelFloat":"","fullWidth":""},model:{value:(_vm.lancamento.descricao),callback:function ($$v) {_vm.lancamento.descricao=$$v},expression:"lancamento.descricao"}}),_vm._v(" "),_c('mu-raised-button',{attrs:{"label":"Adicionar lançamento","icon":"monetization_on","type":"submit","primary":"","fullWidth":""}})],1)}
 __vue__options__.staticRenderFns = []
 
-},{"./dformat":15,"./globalstore":16,"babel-runtime/core-js/json/stringify":1,"moment":9,"vue":13}],19:[function(require,module,exports){
+},{"./dformat":63,"./globalstore":64,"babel-runtime/core-js/json/stringify":1,"moment":57,"vue":61}],67:[function(require,module,exports){
+;(function(){
+"use strict";
+
+var Chart = require("chart.js");
+module.exports = {
+  name: "TheRedLine",
+  props: {
+    lancamentos: {
+      type: Array,
+      required: true
+    }
+  },
+  data: function data() {
+    return {
+      chart: null
+    };
+  },
+  mounted: function mounted() {
+    this.chart = new Chart(this.$el.getContext("2d"), {
+      type: "line",
+      data: {
+        labels: this.makelabels(),
+        datasets: []
+      }
+    });
+  },
+  beforeDestroy: function beforeDestroy() {
+    this.chart.destroy();
+  },
+
+  methods: {
+    makelabels: function makelabels() {
+      return this.lancamentos.map(function (e) {
+        return e.dtlancamento;
+      }).filter(function (v, i, a) {
+        return a.indexOf(v) === i;
+      });
+    }
+  }
+};
+})()
+if (module.exports.__esModule) module.exports = module.exports.default
+var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
+__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('canvas',{attrs:{"width":"100%"}})}
+__vue__options__.staticRenderFns = []
+
+},{"chart.js":4}],68:[function(require,module,exports){
 ;(function(){
 "use strict";
 
@@ -14927,7 +27720,7 @@ var __vue__options__ = (typeof module.exports === "function"? module.exports.opt
 __vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('mu-list',[_c('mu-sub-header',[_vm._v("Saldo parcial")]),_vm._v(" "),_c('mu-list-item',{attrs:{"describeText":'Lançamentos computados',"title":'$ ' + _vm.parcial}},[(_vm.parcial <= 0)?_c('mu-icon',{staticClass:"r",attrs:{"value":"monetization_on"},slot:"left"}):_vm._e(),_vm._v(" "),(_vm.parcial > 0)?_c('mu-icon',{staticClass:"g",attrs:{"value":"monetization_on"},slot:"left"}):_vm._e()],1)],1)}
 __vue__options__.staticRenderFns = []
 
-},{"./globalstore":16}],20:[function(require,module,exports){
+},{"./globalstore":64}],69:[function(require,module,exports){
 ;(function(){
 "use strict";
 
@@ -14968,7 +27761,7 @@ var __vue__options__ = (typeof module.exports === "function"? module.exports.opt
 __vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('form',{staticClass:"row center-xs top-xs",on:{"submit":function($event){$event.preventDefault();_vm.dologin($event)}}},[_c('div',{staticClass:"col-xs-8 col-xs-offset-2"},[_c('h1',{staticClass:"r"},[_vm._v("Red Line finance")]),_vm._v(" "),_c('p',[_vm._v("Ajuda pra manter o juízo e dicas espertas pras contas não apertarem")]),_vm._v(" "),_c('mu-text-field',{attrs:{"type":"email","label":"Email","labelFloat":"","required":"","fullWidth":""},model:{value:(_vm.usuario.email),callback:function ($$v) {_vm.usuario.email=$$v},expression:"usuario.email"}}),_vm._v(" "),_c('mu-text-field',{attrs:{"type":"password","label":"Senha","labelFloat":"","required":"","fullWidth":""},model:{value:(_vm.usuario.senha),callback:function ($$v) {_vm.usuario.senha=$$v},expression:"usuario.senha"}}),_vm._v(" "),_c('mu-raised-button',{attrs:{"label":"Entrar","primary":"","type":"submit","fullWidth":""}}),_vm._v(" "),_c('br'),_vm._v(" "),_c('br'),_vm._v(" "),_c('mu-flat-button',{attrs:{"label":"Cadastrar","secondary":"","href":"#/cadastro"}}),_vm._v(" "),_c('br'),_vm._v(" "),_c('br')],1)])}
 __vue__options__.staticRenderFns = []
 
-},{"../../components/globalstore":16}],21:[function(require,module,exports){
+},{"../../components/globalstore":64}],70:[function(require,module,exports){
 ;(function(){
 "use strict";
 
@@ -15000,7 +27793,7 @@ var __vue__options__ = (typeof module.exports === "function"? module.exports.opt
 __vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('form',{staticClass:"row center-xs top-xs",on:{"submit":function($event){$event.preventDefault();_vm.docadastro($event)}}},[_c('div',{staticClass:"col-xs-8 col-xs-offset-2"},[_c('h1',{staticClass:"r"},[_vm._v("Novo usuário")]),_vm._v(" "),_c('p',[_vm._v("Os dados são personalizados por usuário, então crie o seu.")]),_vm._v(" "),_c('mu-text-field',{attrs:{"type":"email","label":"Email","labelFloat":"","required":"","fullWidth":""},model:{value:(_vm.usuario.email),callback:function ($$v) {_vm.usuario.email=$$v},expression:"usuario.email"}}),_vm._v(" "),_c('mu-text-field',{attrs:{"label":"Seu nome","labelFloat":"","required":"","fullWidth":""},model:{value:(_vm.usuario.nome),callback:function ($$v) {_vm.usuario.nome=$$v},expression:"usuario.nome"}}),_vm._v(" "),_c('mu-text-field',{attrs:{"type":"password","label":"Senha","labelFloat":"","required":"","fullWidth":""},model:{value:(_vm.usuario.senha),callback:function ($$v) {_vm.usuario.senha=$$v},expression:"usuario.senha"}}),_vm._v(" "),_c('mu-text-field',{attrs:{"type":"password","label":"Senha novamente","labelFloat":"","required":"","fullWidth":""},model:{value:(_vm.usuario.senha2),callback:function ($$v) {_vm.usuario.senha2=$$v},expression:"usuario.senha2"}}),_vm._v(" "),_c('mu-raised-button',{attrs:{"label":"Cadastrar","primary":"","type":"submit","fullWidth":""}}),_vm._v(" "),_c('br'),_vm._v(" "),_c('br'),_vm._v(" "),_c('mu-flat-button',{attrs:{"label":"Voltar","secondary":"","href":"#/login"}}),_vm._v(" "),_c('br'),_vm._v(" "),_c('br'),_vm._v(" "),_c('br')],1)])}
 __vue__options__.staticRenderFns = []
 
-},{"../../components/globalstore":16}],22:[function(require,module,exports){
+},{"../../components/globalstore":64}],71:[function(require,module,exports){
 var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert(".basemenu{position:fixed;right:.5em;top:0;font-weight:bolder;color:red}")
 ;(function(){
 "use strict";
@@ -15062,7 +27855,7 @@ var __vue__options__ = (typeof module.exports === "function"? module.exports.opt
 __vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_c('router-view'),_vm._v(" "),_c('mu-icon-menu',{directives:[{name:"show",rawName:"v-show",value:(_vm.globalstore.usuario),expression:"globalstore.usuario"}],staticClass:"basemenu",attrs:{"icon":"more_vert"}},[_c('mu-menu-item',{attrs:{"title":"Lançamento","href":"#/lancamentos","rightIcon":"add_box"}}),_vm._v(" "),_c('mu-menu-item',{attrs:{"title":"Projeção","href":"#/projecoes","rightIcon":"assignment"}}),_vm._v(" "),_c('mu-menu-item',{attrs:{"title":"Categoria","href":"#/categorias","rightIcon":"format_list_bulleted"}}),_vm._v(" "),_c('mu-menu-item',{attrs:{"title":"Relatório","href":"#/relatorios","rightIcon":"assessment"}}),_vm._v(" "),_c('mu-menu-item',{attrs:{"title":"Sair","rightIcon":"exit_to_app"},on:{"click":_vm.sair}})],1),_vm._v(" "),_c('mu-dialog',{attrs:{"title":"Red Line Finance","open":_vm.mostralerta},on:{"close":_vm.closealert}},[_vm._v("\n    "+_vm._s(_vm.txtalerta)+"\n    "),_c('mu-raised-button',{attrs:{"primary":"","label":"OK"},on:{"click":_vm.closealert},slot:"actions"})],1),_vm._v(" "),_c('mu-dialog',{attrs:{"title":"Red Line Finance","open":_vm.mostraconfirm},on:{"close":function($event){_vm.cbconfirm('no')}}},[_vm._v("\n    "+_vm._s(_vm.txtconfirm)+"\n    "),_c('mu-raised-button',{attrs:{"label":"CANCELAR"},on:{"click":function($event){_vm.cbconfirm('no')}},slot:"actions"}),_vm._v(" "),_c('mu-raised-button',{attrs:{"primary":"","label":"OK"},on:{"click":function($event){_vm.cbconfirm('yes')}},slot:"actions"})],1)],1)}
 __vue__options__.staticRenderFns = []
 
-},{"../../components/globalstore":16,"vueify/lib/insert-css":14}],23:[function(require,module,exports){
+},{"../../components/globalstore":64,"vueify/lib/insert-css":62}],72:[function(require,module,exports){
 ;(function(){
 "use strict";
 
@@ -15108,10 +27901,10 @@ module.exports = {
 })()
 if (module.exports.__esModule) module.exports = module.exports.default
 var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
-__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_vm._m(0),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.temlancamentos),expression:"temlancamentos"}],staticClass:"row top-xs"},[_c('div',{staticClass:"col-xs-10 col-xs-offset-1"},[_c('saldo-parcial')],1)]),_vm._v(" "),_c('div',{staticClass:"row top-xs"},[_c('div',{staticClass:"col-xs-10 col-xs-offset-1"},[_c('mu-list',[_c('mu-sub-header',[_vm._v("Últimos lançamentos")]),_vm._v(" "),_c('mu-list-item',{directives:[{name:"show",rawName:"v-show",value:(!_vm.temlancamentos),expression:"!temlancamentos"}],attrs:{"title":"Parece que você não tem lançamentos ainda!"}}),_vm._v(" "),_vm._l((_vm.lancamentosordenados),function(lan){return _c('item-lancamento',{key:lan.dtlancamento,attrs:{"lancamento":lan},on:{"removelancamento":function($event){_vm.removelancamento(lan)}}})})],2)],1)])])}
+__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_vm._m(0),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.temlancamentos),expression:"temlancamentos"}],staticClass:"row top-xs"},[_c('div',{staticClass:"col-xs-10 col-xs-offset-1"},[_c('saldo-parcial')],1),_vm._v(" "),_c('div',{staticClass:"col-xs-10 col-xs-offset-1"},[_c('red-line',{attrs:{"lancamentos":_vm.lancamentosordenados}})],1)]),_vm._v(" "),_c('div',{staticClass:"row top-xs"},[_c('div',{staticClass:"col-xs-10 col-xs-offset-1"},[_c('mu-list',[_c('mu-sub-header',[_vm._v("Últimos lançamentos")]),_vm._v(" "),_c('mu-list-item',{directives:[{name:"show",rawName:"v-show",value:(!_vm.temlancamentos),expression:"!temlancamentos"}],attrs:{"title":"Parece que você não tem lançamentos ainda!"}}),_vm._v(" "),_vm._l((_vm.lancamentosordenados),function(lan){return _c('item-lancamento',{key:lan.dtlancamento,attrs:{"lancamento":lan},on:{"removelancamento":function($event){_vm.removelancamento(lan)}}})})],2)],1)])])}
 __vue__options__.staticRenderFns = [function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"row center-xs top-xs"},[_c('div',{staticClass:"col-xs-10 col-xs-offset-1"},[_c('h1',{staticClass:"r"},[_vm._v("Relatórios")]),_vm._v(" "),_c('p',[_vm._v("Coisinhas coloridas pra você se animar... ou se preocupar. Olha as contas!")])])])}]
 
-},{"../../components/globalstore":16}],24:[function(require,module,exports){
+},{"../../components/globalstore":64}],73:[function(require,module,exports){
 ;(function(){
 "use strict";
 
@@ -15157,7 +27950,7 @@ var __vue__options__ = (typeof module.exports === "function"? module.exports.opt
 __vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_vm._m(0),_vm._v(" "),_c('div',{staticClass:"row top-xs"},[_c('div',{staticClass:"col-xs-8 col-xs-offset-2"},[_c('mu-list',[_c('mu-sub-header',[_vm._v("Categorias para compor projeções")]),_vm._v(" "),_vm._l((_vm.globalstore.categorias),function(cat){return _c('mu-list-item',{key:cat.nome,attrs:{"title":cat.nome}},[(cat.tipo == 'Saída')?_c('mu-icon',{staticClass:"r",attrs:{"value":"monetization_on"},slot:"left"}):_vm._e(),_vm._v(" "),(cat.tipo == 'Entrada')?_c('mu-icon',{staticClass:"g",attrs:{"value":"monetization_on"},slot:"left"}):_vm._e(),_vm._v(" "),_c('mu-icon',{attrs:{"value":"indeterminate_check_box"},on:{"click":function($event){_vm.removecategoria(cat)}},slot:"right"})],1)})],2),_vm._v(" "),_c('form',{on:{"submit":function($event){$event.preventDefault();_vm.criacategoria($event)}}},[_c('mu-select-field',{attrs:{"label":"Tipo","fullWidth":""},model:{value:(_vm.novacat.tipo),callback:function ($$v) {_vm.novacat.tipo=$$v},expression:"novacat.tipo"}},[_c('mu-menu-item',{attrs:{"value":"Entrada","title":"Entrada"}}),_vm._v(" "),_c('mu-menu-item',{attrs:{"value":"Saída","title":"Saída"}})],1),_vm._v(" "),_c('mu-text-field',{attrs:{"label":"Nova categoria","labelFloat":"","fullWidth":""},model:{value:(_vm.novacat.nome),callback:function ($$v) {_vm.novacat.nome=$$v},expression:"novacat.nome"}}),_vm._v(" "),_c('mu-raised-button',{attrs:{"label":"Criar categoria","icon":"add_box","type":"submit","primary":"","fullWidth":""}}),_vm._v(" "),_c('br'),_vm._v(" "),_c('br'),_vm._v(" "),_c('br')],1)],1)])])}
 __vue__options__.staticRenderFns = [function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"row center-xs top-xs"},[_c('div',{staticClass:"col-xs-8 col-xs-offset-2"},[_c('h1',{staticClass:"r"},[_vm._v("Categorias")]),_vm._v(" "),_c('p',[_vm._v("Dinheiro vai, dinheiro vem. Cabe a você explicar como é esse vai e vem.")])])])}]
 
-},{"../../components/globalstore":16}],25:[function(require,module,exports){
+},{"../../components/globalstore":64}],74:[function(require,module,exports){
 ;(function(){
 "use strict";
 
@@ -15189,15 +27982,20 @@ module.exports = {
       });
       this.globalstore.savecontext();
     }
+  },
+  computed: {
+    temprojecao: function temprojecao() {
+      return globalstore.usuario && globalstore.usuario.projecao && globalstore.usuario.projecao.length > 0;
+    }
   }
 };
 })()
 if (module.exports.__esModule) module.exports = module.exports.default
 var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
-__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_vm._m(0),_vm._v(" "),_c('div',{staticClass:"row top-xs"},[_c('form',{staticClass:"col-xs-8 col-xs-offset-2",on:{"submit":function($event){$event.preventDefault();_vm.addcategoria($event)}}},[_c('mu-list',[_c('mu-sub-header',[_vm._v("Projeção atual")]),_vm._v(" "),_c('mu-list-item',{directives:[{name:"show",rawName:"v-show",value:(_vm.globalstore.usuario && _vm.globalstore.usuario && (!_vm.globalstore.usuario.projecao || _vm.globalstore.usuario.projecao.length == 0)),expression:"globalstore.usuario && globalstore.usuario && (!globalstore.usuario.projecao || globalstore.usuario.projecao.length == 0)"}],attrs:{"title":"Parece que você não tem uma projeção ainda!"}}),_vm._v(" "),_vm._l((_vm.globalstore.usuario.projecao),function(proj){return _c('mu-list-item',{directives:[{name:"show",rawName:"v-show",value:(_vm.globalstore.usuario && _vm.globalstore.usuario.projecao),expression:"globalstore.usuario && globalstore.usuario.projecao"}],key:proj.nome,attrs:{"title":proj.categoria.nome,"describeText":'$ ' + proj.montante}},[(proj.categoria.tipo == 'Saída')?_c('mu-icon',{staticClass:"r",attrs:{"value":"monetization_on"},slot:"left"}):_vm._e(),_vm._v(" "),(proj.categoria.tipo == 'Entrada')?_c('mu-icon',{staticClass:"g",attrs:{"value":"monetization_on"},slot:"left"}):_vm._e(),_vm._v(" "),_c('mu-icon',{attrs:{"value":"indeterminate_check_box"},on:{"click":function($event){_vm.removecategoria(proj)}},slot:"right"})],1)})],2),_vm._v(" "),_c('div',[_c('mu-select-field',{attrs:{"label":"Categoria","fullWidth":""},model:{value:(_vm.catsel),callback:function ($$v) {_vm.catsel=$$v},expression:"catsel"}},_vm._l((_vm.globalstore.categorias),function(cat){return _c('mu-menu-item',{key:cat.nome,attrs:{"value":cat,"title":'[' + cat.tipo + '] ' + cat.nome}})})),_vm._v(" "),_c('mu-text-field',{attrs:{"label":"Montante","type":"number","labelFloat":"","fullWidth":""},model:{value:(_vm.montante),callback:function ($$v) {_vm.montante=$$v},expression:"montante"}}),_vm._v(" "),_c('mu-raised-button',{attrs:{"label":"Adicionar categoria","icon":"add_box","type":"submit","primary":"","fullWidth":""}}),_vm._v(" "),_c('br'),_vm._v(" "),_c('br'),_vm._v(" "),_c('br')],1)],1)])])}
-__vue__options__.staticRenderFns = [function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"row center-xs top-xs"},[_c('div',{staticClass:"col-xs-8 col-xs-offset-2"},[_c('h1',{staticClass:"r"},[_vm._v("Projeções")]),_vm._v(" "),_c('p',[_vm._v("Como você espera que seja o seu perfil de gastos e ganhos? Como você distribui\n        seus lançamentos através das categorias?")]),_vm._v(" "),_c('p',[_vm._v("Projeções são pensadas para lhe ajudar a pensar no período de um mês. Elas\n        que vão dizer se o mês é apertado ou não.")])])])}]
+__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_vm._m(0),_vm._v(" "),_c('div',{staticClass:"row top-xs"},[_c('form',{staticClass:"col-xs-10 col-xs-offset-1",on:{"submit":function($event){$event.preventDefault();_vm.addcategoria($event)}}},[_c('mu-list',[_c('mu-sub-header',[_vm._v("Projeção atual")]),_vm._v(" "),_c('mu-list-item',{directives:[{name:"show",rawName:"v-show",value:(!_vm.temprojecao),expression:"!temprojecao"}],attrs:{"title":"Parece que você não tem uma projeção ainda!"}}),_vm._v(" "),_vm._l((_vm.globalstore.usuario.projecao),function(proj){return _c('mu-list-item',{directives:[{name:"show",rawName:"v-show",value:(_vm.globalstore.usuario && _vm.globalstore.usuario.projecao),expression:"globalstore.usuario && globalstore.usuario.projecao"}],key:proj.nome,attrs:{"title":proj.categoria.nome,"describeText":'$ ' + proj.montante}},[(proj.categoria.tipo == 'Saída')?_c('mu-icon',{staticClass:"r",attrs:{"value":"monetization_on"},slot:"left"}):_vm._e(),_vm._v(" "),(proj.categoria.tipo == 'Entrada')?_c('mu-icon',{staticClass:"g",attrs:{"value":"monetization_on"},slot:"left"}):_vm._e(),_vm._v(" "),_c('mu-icon',{attrs:{"value":"indeterminate_check_box"},on:{"click":function($event){_vm.removecategoria(proj)}},slot:"right"})],1)})],2),_vm._v(" "),_c('div',[_c('mu-select-field',{attrs:{"label":"Categoria","fullWidth":""},model:{value:(_vm.catsel),callback:function ($$v) {_vm.catsel=$$v},expression:"catsel"}},_vm._l((_vm.globalstore.categorias),function(cat){return _c('mu-menu-item',{key:cat.nome,attrs:{"value":cat,"title":'[' + cat.tipo + '] ' + cat.nome}})})),_vm._v(" "),_c('mu-text-field',{attrs:{"label":"Montante","type":"number","labelFloat":"","fullWidth":""},model:{value:(_vm.montante),callback:function ($$v) {_vm.montante=$$v},expression:"montante"}}),_vm._v(" "),_c('mu-raised-button',{attrs:{"label":"Adicionar categoria","icon":"add_box","type":"submit","primary":"","fullWidth":""}}),_vm._v(" "),_c('br'),_vm._v(" "),_c('br'),_vm._v(" "),_c('br')],1)],1)])])}
+__vue__options__.staticRenderFns = [function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"row center-xs top-xs"},[_c('div',{staticClass:"col-xs-10 col-xs-offset-1"},[_c('h1',{staticClass:"r"},[_vm._v("Projeções")]),_vm._v(" "),_c('p',[_vm._v("Como você espera que seja o seu perfil de gastos e ganhos? Como você distribui\n        seus lançamentos através das categorias?")]),_vm._v(" "),_c('p',[_vm._v("Projeções são pensadas para lhe ajudar a pensar no período de um mês. Elas\n        que vão dizer se o mês é apertado ou não.")])])])}]
 
-},{"../../components/globalstore":16,"vue":13}],26:[function(require,module,exports){
+},{"../../components/globalstore":64,"vue":61}],75:[function(require,module,exports){
 ;(function(){
 "use strict";
 
@@ -15213,9 +28011,9 @@ var __vue__options__ = (typeof module.exports === "function"? module.exports.opt
 __vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_vm._m(0),_vm._v(" "),_c('div',{staticClass:"row top-xs"},[_c('div',{staticClass:"col-xs-10 col-xs-offset-1"},[_c('saldo-parcial')],1),_vm._v(" "),_c('div',{staticClass:"col-xs-10 col-xs-offset-1"},[_c('novo-lancamento')],1)])])}
 __vue__options__.staticRenderFns = [function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"row center-xs top-xs"},[_c('div',{staticClass:"col-xs-10 col-xs-offset-1"},[_c('h1',{staticClass:"r"},[_vm._v("Lançamentos")]),_vm._v(" "),_c('p',[_vm._v("Papo rápido. Quanto foi, quando foi e, opcionalmente, uma descrição.")])])])}]
 
-},{"../../components/globalstore":16,"moment":9,"vue":13}],27:[function(require,module,exports){
+},{"../../components/globalstore":64,"moment":57,"vue":61}],76:[function(require,module,exports){
 var css = "/* Uncomment and set these variables to customize the grid. */\n.container-fluid {\n  margin-right: auto;\n  margin-left: auto;\n  padding-right: 2rem;\n  padding-left: 2rem;\n}\n.row {\n  box-sizing: border-box;\n  display: -ms-flexbox;\n  display: -webkit-box;\n  display: flex;\n  -ms-flex: 0 1 auto;\n  -webkit-box-flex: 0;\n  flex: 0 1 auto;\n  -ms-flex-direction: row;\n  -webkit-box-orient: horizontal;\n  -webkit-box-direction: normal;\n  flex-direction: row;\n  -ms-flex-wrap: wrap;\n  flex-wrap: wrap;\n  margin-right: -1rem;\n  margin-left: -1rem;\n}\n.row.reverse {\n  -ms-flex-direction: row-reverse;\n  -webkit-box-orient: horizontal;\n  -webkit-box-direction: reverse;\n  flex-direction: row-reverse;\n}\n.col.reverse {\n  -ms-flex-direction: column-reverse;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: reverse;\n  flex-direction: column-reverse;\n}\n.col-xs,\n.col-xs-1,\n.col-xs-2,\n.col-xs-3,\n.col-xs-4,\n.col-xs-5,\n.col-xs-6,\n.col-xs-7,\n.col-xs-8,\n.col-xs-9,\n.col-xs-10,\n.col-xs-11,\n.col-xs-12 {\n  box-sizing: border-box;\n  -ms-flex: 0 0 auto;\n  -webkit-box-flex: 0;\n  flex: 0 0 auto;\n  padding-right: 1rem;\n  padding-left: 1rem;\n}\n.col-xs {\n  -webkit-flex-grow: 1;\n  -ms-flex-positive: 1;\n  -webkit-box-flex: 1;\n  flex-grow: 1;\n  -ms-flex-preferred-size: 0;\n  flex-basis: 0;\n  max-width: 100%;\n}\n.col-xs-1 {\n  -ms-flex-preferred-size: 8.333%;\n  flex-basis: 8.333%;\n  max-width: 8.333%;\n}\n.col-xs-2 {\n  -ms-flex-preferred-size: 16.667%;\n  flex-basis: 16.667%;\n  max-width: 16.667%;\n}\n.col-xs-3 {\n  -ms-flex-preferred-size: 25%;\n  flex-basis: 25%;\n  max-width: 25%;\n}\n.col-xs-4 {\n  -ms-flex-preferred-size: 33.333%;\n  flex-basis: 33.333%;\n  max-width: 33.333%;\n}\n.col-xs-5 {\n  -ms-flex-preferred-size: 41.667%;\n  flex-basis: 41.667%;\n  max-width: 41.667%;\n}\n.col-xs-6 {\n  -ms-flex-preferred-size: 50%;\n  flex-basis: 50%;\n  max-width: 50%;\n}\n.col-xs-7 {\n  -ms-flex-preferred-size: 58.333%;\n  flex-basis: 58.333%;\n  max-width: 58.333%;\n}\n.col-xs-8 {\n  -ms-flex-preferred-size: 66.667%;\n  flex-basis: 66.667%;\n  max-width: 66.667%;\n}\n.col-xs-9 {\n  -ms-flex-preferred-size: 75%;\n  flex-basis: 75%;\n  max-width: 75%;\n}\n.col-xs-10 {\n  -ms-flex-preferred-size: 83.333%;\n  flex-basis: 83.333%;\n  max-width: 83.333%;\n}\n.col-xs-11 {\n  -ms-flex-preferred-size: 91.667%;\n  flex-basis: 91.667%;\n  max-width: 91.667%;\n}\n.col-xs-12 {\n  -ms-flex-preferred-size: 100%;\n  flex-basis: 100%;\n  max-width: 100%;\n}\n.col-xs-offset-1 {\n  margin-left: 8.333%;\n}\n.col-xs-offset-2 {\n  margin-left: 16.667%;\n}\n.col-xs-offset-3 {\n  margin-left: 25%;\n}\n.col-xs-offset-4 {\n  margin-left: 33.333%;\n}\n.col-xs-offset-5 {\n  margin-left: 41.667%;\n}\n.col-xs-offset-6 {\n  margin-left: 50%;\n}\n.col-xs-offset-7 {\n  margin-left: 58.333%;\n}\n.col-xs-offset-8 {\n  margin-left: 66.667%;\n}\n.col-xs-offset-9 {\n  margin-left: 75%;\n}\n.col-xs-offset-10 {\n  margin-left: 83.333%;\n}\n.col-xs-offset-11 {\n  margin-left: 91.667%;\n}\n.start-xs {\n  -ms-flex-pack: start;\n  -webkit-box-pack: start;\n  justify-content: flex-start;\n  text-align: start;\n}\n.center-xs {\n  -ms-flex-pack: center;\n  -webkit-box-pack: center;\n  justify-content: center;\n  text-align: center;\n}\n.end-xs {\n  -ms-flex-pack: end;\n  -webkit-box-pack: end;\n  justify-content: flex-end;\n  text-align: end;\n}\n.top-xs {\n  -ms-flex-align: start;\n  -webkit-box-align: start;\n  align-items: flex-start;\n}\n.middle-xs {\n  -ms-flex-align: center;\n  -webkit-box-align: center;\n  align-items: center;\n}\n.bottom-xs {\n  -ms-flex-align: end;\n  -webkit-box-align: end;\n  align-items: flex-end;\n}\n.around-xs {\n  -ms-flex-pack: distribute;\n  justify-content: space-around;\n}\n.between-xs {\n  -ms-flex-pack: justify;\n  -webkit-box-pack: justify;\n  justify-content: space-between;\n}\n.first-xs {\n  -ms-flex-order: -1;\n  -webkit-box-ordinal-group: 0;\n  order: -1;\n}\n.last-xs {\n  -ms-flex-order: 1;\n  -webkit-box-ordinal-group: 2;\n  order: 1;\n}\n@media only screen and (min-width: 48em) {\n  .container {\n    width: 46rem;\n  }\n\n  .col-sm,\n  .col-sm-1,\n  .col-sm-2,\n  .col-sm-3,\n  .col-sm-4,\n  .col-sm-5,\n  .col-sm-6,\n  .col-sm-7,\n  .col-sm-8,\n  .col-sm-9,\n  .col-sm-10,\n  .col-sm-11,\n  .col-sm-12 {\n    box-sizing: border-box;\n    -ms-flex: 0 0 auto;\n    -webkit-box-flex: 0;\n    flex: 0 0 auto;\n    padding-right: 1rem;\n    padding-left: 1rem;\n  }\n\n  .col-sm {\n    -webkit-flex-grow: 1;\n    -ms-flex-positive: 1;\n    -webkit-box-flex: 1;\n    flex-grow: 1;\n    -ms-flex-preferred-size: 0;\n    flex-basis: 0;\n    max-width: 100%;\n  }\n\n  .col-sm-1 {\n    -ms-flex-preferred-size: 8.333%;\n    flex-basis: 8.333%;\n    max-width: 8.333%;\n  }\n\n  .col-sm-2 {\n    -ms-flex-preferred-size: 16.667%;\n    flex-basis: 16.667%;\n    max-width: 16.667%;\n  }\n\n  .col-sm-3 {\n    -ms-flex-preferred-size: 25%;\n    flex-basis: 25%;\n    max-width: 25%;\n  }\n\n  .col-sm-4 {\n    -ms-flex-preferred-size: 33.333%;\n    flex-basis: 33.333%;\n    max-width: 33.333%;\n  }\n\n  .col-sm-5 {\n    -ms-flex-preferred-size: 41.667%;\n    flex-basis: 41.667%;\n    max-width: 41.667%;\n  }\n\n  .col-sm-6 {\n    -ms-flex-preferred-size: 50%;\n    flex-basis: 50%;\n    max-width: 50%;\n  }\n\n  .col-sm-7 {\n    -ms-flex-preferred-size: 58.333%;\n    flex-basis: 58.333%;\n    max-width: 58.333%;\n  }\n\n  .col-sm-8 {\n    -ms-flex-preferred-size: 66.667%;\n    flex-basis: 66.667%;\n    max-width: 66.667%;\n  }\n\n  .col-sm-9 {\n    -ms-flex-preferred-size: 75%;\n    flex-basis: 75%;\n    max-width: 75%;\n  }\n\n  .col-sm-10 {\n    -ms-flex-preferred-size: 83.333%;\n    flex-basis: 83.333%;\n    max-width: 83.333%;\n  }\n\n  .col-sm-11 {\n    -ms-flex-preferred-size: 91.667%;\n    flex-basis: 91.667%;\n    max-width: 91.667%;\n  }\n\n  .col-sm-12 {\n    -ms-flex-preferred-size: 100%;\n    flex-basis: 100%;\n    max-width: 100%;\n  }\n\n  .col-sm-offset-1 {\n    margin-left: 8.333%;\n  }\n\n  .col-sm-offset-2 {\n    margin-left: 16.667%;\n  }\n\n  .col-sm-offset-3 {\n    margin-left: 25%;\n  }\n\n  .col-sm-offset-4 {\n    margin-left: 33.333%;\n  }\n\n  .col-sm-offset-5 {\n    margin-left: 41.667%;\n  }\n\n  .col-sm-offset-6 {\n    margin-left: 50%;\n  }\n\n  .col-sm-offset-7 {\n    margin-left: 58.333%;\n  }\n\n  .col-sm-offset-8 {\n    margin-left: 66.667%;\n  }\n\n  .col-sm-offset-9 {\n    margin-left: 75%;\n  }\n\n  .col-sm-offset-10 {\n    margin-left: 83.333%;\n  }\n\n  .col-sm-offset-11 {\n    margin-left: 91.667%;\n  }\n\n  .start-sm {\n    -ms-flex-pack: start;\n    -webkit-box-pack: start;\n    justify-content: flex-start;\n    text-align: start;\n  }\n\n  .center-sm {\n    -ms-flex-pack: center;\n    -webkit-box-pack: center;\n    justify-content: center;\n    text-align: center;\n  }\n\n  .end-sm {\n    -ms-flex-pack: end;\n    -webkit-box-pack: end;\n    justify-content: flex-end;\n    text-align: end;\n  }\n\n  .top-sm {\n    -ms-flex-align: start;\n    -webkit-box-align: start;\n    align-items: flex-start;\n  }\n\n  .middle-sm {\n    -ms-flex-align: center;\n    -webkit-box-align: center;\n    align-items: center;\n  }\n\n  .bottom-sm {\n    -ms-flex-align: end;\n    -webkit-box-align: end;\n    align-items: flex-end;\n  }\n\n  .around-sm {\n    -ms-flex-pack: distribute;\n    justify-content: space-around;\n  }\n\n  .between-sm {\n    -ms-flex-pack: justify;\n    -webkit-box-pack: justify;\n    justify-content: space-between;\n  }\n\n  .first-sm {\n    -ms-flex-order: -1;\n    -webkit-box-ordinal-group: 0;\n    order: -1;\n  }\n\n  .last-sm {\n    -ms-flex-order: 1;\n    -webkit-box-ordinal-group: 2;\n    order: 1;\n  }\n}\n@media only screen and (min-width: 62em) {\n  .container {\n    width: 61rem;\n  }\n\n  .col-md,\n  .col-md-1,\n  .col-md-2,\n  .col-md-3,\n  .col-md-4,\n  .col-md-5,\n  .col-md-6,\n  .col-md-7,\n  .col-md-8,\n  .col-md-9,\n  .col-md-10,\n  .col-md-11,\n  .col-md-12 {\n    box-sizing: border-box;\n    -ms-flex: 0 0 auto;\n    -webkit-box-flex: 0;\n    flex: 0 0 auto;\n    padding-right: 1rem;\n    padding-left: 1rem;\n  }\n\n  .col-md {\n    -webkit-flex-grow: 1;\n    -ms-flex-positive: 1;\n    -webkit-box-flex: 1;\n    flex-grow: 1;\n    -ms-flex-preferred-size: 0;\n    flex-basis: 0;\n    max-width: 100%;\n  }\n\n  .col-md-1 {\n    -ms-flex-preferred-size: 8.333%;\n    flex-basis: 8.333%;\n    max-width: 8.333%;\n  }\n\n  .col-md-2 {\n    -ms-flex-preferred-size: 16.667%;\n    flex-basis: 16.667%;\n    max-width: 16.667%;\n  }\n\n  .col-md-3 {\n    -ms-flex-preferred-size: 25%;\n    flex-basis: 25%;\n    max-width: 25%;\n  }\n\n  .col-md-4 {\n    -ms-flex-preferred-size: 33.333%;\n    flex-basis: 33.333%;\n    max-width: 33.333%;\n  }\n\n  .col-md-5 {\n    -ms-flex-preferred-size: 41.667%;\n    flex-basis: 41.667%;\n    max-width: 41.667%;\n  }\n\n  .col-md-6 {\n    -ms-flex-preferred-size: 50%;\n    flex-basis: 50%;\n    max-width: 50%;\n  }\n\n  .col-md-7 {\n    -ms-flex-preferred-size: 58.333%;\n    flex-basis: 58.333%;\n    max-width: 58.333%;\n  }\n\n  .col-md-8 {\n    -ms-flex-preferred-size: 66.667%;\n    flex-basis: 66.667%;\n    max-width: 66.667%;\n  }\n\n  .col-md-9 {\n    -ms-flex-preferred-size: 75%;\n    flex-basis: 75%;\n    max-width: 75%;\n  }\n\n  .col-md-10 {\n    -ms-flex-preferred-size: 83.333%;\n    flex-basis: 83.333%;\n    max-width: 83.333%;\n  }\n\n  .col-md-11 {\n    -ms-flex-preferred-size: 91.667%;\n    flex-basis: 91.667%;\n    max-width: 91.667%;\n  }\n\n  .col-md-12 {\n    -ms-flex-preferred-size: 100%;\n    flex-basis: 100%;\n    max-width: 100%;\n  }\n\n  .col-md-offset-1 {\n    margin-left: 8.333%;\n  }\n\n  .col-md-offset-2 {\n    margin-left: 16.667%;\n  }\n\n  .col-md-offset-3 {\n    margin-left: 25%;\n  }\n\n  .col-md-offset-4 {\n    margin-left: 33.333%;\n  }\n\n  .col-md-offset-5 {\n    margin-left: 41.667%;\n  }\n\n  .col-md-offset-6 {\n    margin-left: 50%;\n  }\n\n  .col-md-offset-7 {\n    margin-left: 58.333%;\n  }\n\n  .col-md-offset-8 {\n    margin-left: 66.667%;\n  }\n\n  .col-md-offset-9 {\n    margin-left: 75%;\n  }\n\n  .col-md-offset-10 {\n    margin-left: 83.333%;\n  }\n\n  .col-md-offset-11 {\n    margin-left: 91.667%;\n  }\n\n  .start-md {\n    -ms-flex-pack: start;\n    -webkit-box-pack: start;\n    justify-content: flex-start;\n    text-align: start;\n  }\n\n  .center-md {\n    -ms-flex-pack: center;\n    -webkit-box-pack: center;\n    justify-content: center;\n    text-align: center;\n  }\n\n  .end-md {\n    -ms-flex-pack: end;\n    -webkit-box-pack: end;\n    justify-content: flex-end;\n    text-align: end;\n  }\n\n  .top-md {\n    -ms-flex-align: start;\n    -webkit-box-align: start;\n    align-items: flex-start;\n  }\n\n  .middle-md {\n    -ms-flex-align: center;\n    -webkit-box-align: center;\n    align-items: center;\n  }\n\n  .bottom-md {\n    -ms-flex-align: end;\n    -webkit-box-align: end;\n    align-items: flex-end;\n  }\n\n  .around-md {\n    -ms-flex-pack: distribute;\n    justify-content: space-around;\n  }\n\n  .between-md {\n    -ms-flex-pack: justify;\n    -webkit-box-pack: justify;\n    justify-content: space-between;\n  }\n\n  .first-md {\n    -ms-flex-order: -1;\n    -webkit-box-ordinal-group: 0;\n    order: -1;\n  }\n\n  .last-md {\n    -ms-flex-order: 1;\n    -webkit-box-ordinal-group: 2;\n    order: 1;\n  }\n}\n@media only screen and (min-width: 75em) {\n  .container {\n    width: 71rem;\n  }\n\n  .col-lg,\n  .col-lg-1,\n  .col-lg-2,\n  .col-lg-3,\n  .col-lg-4,\n  .col-lg-5,\n  .col-lg-6,\n  .col-lg-7,\n  .col-lg-8,\n  .col-lg-9,\n  .col-lg-10,\n  .col-lg-11,\n  .col-lg-12 {\n    box-sizing: border-box;\n    -ms-flex: 0 0 auto;\n    -webkit-box-flex: 0;\n    flex: 0 0 auto;\n    padding-right: 1rem;\n    padding-left: 1rem;\n  }\n\n  .col-lg {\n    -webkit-flex-grow: 1;\n    -ms-flex-positive: 1;\n    -webkit-box-flex: 1;\n    flex-grow: 1;\n    -ms-flex-preferred-size: 0;\n    flex-basis: 0;\n    max-width: 100%;\n  }\n\n  .col-lg-1 {\n    -ms-flex-preferred-size: 8.333%;\n    flex-basis: 8.333%;\n    max-width: 8.333%;\n  }\n\n  .col-lg-2 {\n    -ms-flex-preferred-size: 16.667%;\n    flex-basis: 16.667%;\n    max-width: 16.667%;\n  }\n\n  .col-lg-3 {\n    -ms-flex-preferred-size: 25%;\n    flex-basis: 25%;\n    max-width: 25%;\n  }\n\n  .col-lg-4 {\n    -ms-flex-preferred-size: 33.333%;\n    flex-basis: 33.333%;\n    max-width: 33.333%;\n  }\n\n  .col-lg-5 {\n    -ms-flex-preferred-size: 41.667%;\n    flex-basis: 41.667%;\n    max-width: 41.667%;\n  }\n\n  .col-lg-6 {\n    -ms-flex-preferred-size: 50%;\n    flex-basis: 50%;\n    max-width: 50%;\n  }\n\n  .col-lg-7 {\n    -ms-flex-preferred-size: 58.333%;\n    flex-basis: 58.333%;\n    max-width: 58.333%;\n  }\n\n  .col-lg-8 {\n    -ms-flex-preferred-size: 66.667%;\n    flex-basis: 66.667%;\n    max-width: 66.667%;\n  }\n\n  .col-lg-9 {\n    -ms-flex-preferred-size: 75%;\n    flex-basis: 75%;\n    max-width: 75%;\n  }\n\n  .col-lg-10 {\n    -ms-flex-preferred-size: 83.333%;\n    flex-basis: 83.333%;\n    max-width: 83.333%;\n  }\n\n  .col-lg-11 {\n    -ms-flex-preferred-size: 91.667%;\n    flex-basis: 91.667%;\n    max-width: 91.667%;\n  }\n\n  .col-lg-12 {\n    -ms-flex-preferred-size: 100%;\n    flex-basis: 100%;\n    max-width: 100%;\n  }\n\n  .col-lg-offset-1 {\n    margin-left: 8.333%;\n  }\n\n  .col-lg-offset-2 {\n    margin-left: 16.667%;\n  }\n\n  .col-lg-offset-3 {\n    margin-left: 25%;\n  }\n\n  .col-lg-offset-4 {\n    margin-left: 33.333%;\n  }\n\n  .col-lg-offset-5 {\n    margin-left: 41.667%;\n  }\n\n  .col-lg-offset-6 {\n    margin-left: 50%;\n  }\n\n  .col-lg-offset-7 {\n    margin-left: 58.333%;\n  }\n\n  .col-lg-offset-8 {\n    margin-left: 66.667%;\n  }\n\n  .col-lg-offset-9 {\n    margin-left: 75%;\n  }\n\n  .col-lg-offset-10 {\n    margin-left: 83.333%;\n  }\n\n  .col-lg-offset-11 {\n    margin-left: 91.667%;\n  }\n\n  .start-lg {\n    -ms-flex-pack: start;\n    -webkit-box-pack: start;\n    justify-content: flex-start;\n    text-align: start;\n  }\n\n  .center-lg {\n    -ms-flex-pack: center;\n    -webkit-box-pack: center;\n    justify-content: center;\n    text-align: center;\n  }\n\n  .end-lg {\n    -ms-flex-pack: end;\n    -webkit-box-pack: end;\n    justify-content: flex-end;\n    text-align: end;\n  }\n\n  .top-lg {\n    -ms-flex-align: start;\n    -webkit-box-align: start;\n    align-items: flex-start;\n  }\n\n  .middle-lg {\n    -ms-flex-align: center;\n    -webkit-box-align: center;\n    align-items: center;\n  }\n\n  .bottom-lg {\n    -ms-flex-align: end;\n    -webkit-box-align: end;\n    align-items: flex-end;\n  }\n\n  .around-lg {\n    -ms-flex-pack: distribute;\n    justify-content: space-around;\n  }\n\n  .between-lg {\n    -ms-flex-pack: justify;\n    -webkit-box-pack: justify;\n    justify-content: space-between;\n  }\n\n  .first-lg {\n    -ms-flex-order: -1;\n    -webkit-box-ordinal-group: 0;\n    order: -1;\n  }\n\n  .last-lg {\n    -ms-flex-order: 1;\n    -webkit-box-ordinal-group: 2;\n    order: 1;\n  }\n}\n/*!\n * Muse UI v2.0.3 (https://github.com/myronliu347/vue-carbon)\n * (c) 2017 Myron Liu \n * Released under the MIT License.\n */\n/*! normalize.css v4.1.1 | MIT License | github.com/necolas/normalize.css */\nhtml {\n  font-family: sans-serif;\n  -ms-text-size-adjust: 100%;\n  -webkit-text-size-adjust: 100%;\n}\nbody {\n  margin: 0;\n}\narticle,\naside,\ndetails,\nfigcaption,\nfigure,\nfooter,\nheader,\nmain,\nmenu,\nnav,\nsection,\nsummary {\n  display: block;\n}\naudio,\ncanvas,\nprogress,\nvideo {\n  display: inline-block;\n}\naudio:not([controls]) {\n  display: none;\n  height: 0;\n}\nprogress {\n  vertical-align: baseline;\n}\n[hidden],\ntemplate {\n  display: none;\n}\na {\n  background-color: transparent;\n  -webkit-text-decoration-skip: objects;\n}\na:active,\na:hover {\n  outline-width: 0;\n}\nabbr[title] {\n  border-bottom: none;\n  text-decoration: underline;\n  text-decoration: underline dotted;\n}\nb,\nstrong {\n  font-weight: inherit;\n  font-weight: bolder;\n}\ndfn {\n  font-style: italic;\n}\nh1 {\n  font-size: 2em;\n  margin: .67em 0;\n}\nmark {\n  background-color: #ff0;\n  color: #000;\n}\nsmall {\n  font-size: 80%;\n}\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline;\n}\nsub {\n  bottom: -.25em;\n}\nsup {\n  top: -.5em;\n}\nimg {\n  border-style: none;\n}\nsvg:not(:root) {\n  overflow: hidden;\n}\ncode,\nkbd,\npre,\nsamp {\n  font-family: monospace,monospace;\n  font-size: 1em;\n}\nfigure {\n  margin: 1em 40px;\n}\nhr {\n  box-sizing: content-box;\n  height: 0;\n  overflow: visible;\n}\nbutton,\ninput,\nselect,\ntextarea {\n  font: inherit;\n  margin: 0;\n}\noptgroup {\n  font-weight: 700;\n}\nbutton,\ninput {\n  overflow: visible;\n}\nbutton,\nselect {\n  text-transform: none;\n}\n[type=reset],\n[type=submit],\nbutton,\nhtml [type=button] {\n  -webkit-appearance: button;\n}\n[type=button]::-moz-focus-inner,\n[type=reset]::-moz-focus-inner,\n[type=submit]::-moz-focus-inner,\nbutton::-moz-focus-inner {\n  border-style: none;\n  padding: 0;\n}\n[type=button]:-moz-focusring,\n[type=reset]:-moz-focusring,\n[type=submit]:-moz-focusring,\nbutton:-moz-focusring {\n  outline: 1px dotted ButtonText;\n}\nfieldset {\n  border: 1px solid silver;\n  margin: 0 2px;\n  padding: .35em .625em .75em;\n}\nlegend {\n  box-sizing: border-box;\n  color: inherit;\n  display: table;\n  max-width: 100%;\n  padding: 0;\n  white-space: normal;\n}\ntextarea {\n  overflow: auto;\n}\n[type=checkbox],\n[type=radio] {\n  box-sizing: border-box;\n  padding: 0;\n}\n[type=number]::-webkit-inner-spin-button,\n[type=number]::-webkit-outer-spin-button {\n  height: auto;\n}\n[type=search] {\n  -webkit-appearance: textfield;\n  outline-offset: -2px;\n}\n[type=search]::-webkit-search-cancel-button,\n[type=search]::-webkit-search-decoration {\n  -webkit-appearance: none;\n}\n::-webkit-input-placeholder {\n  color: inherit;\n  opacity: .54;\n}\n::-webkit-file-upload-button {\n  -webkit-appearance: button;\n  font: inherit;\n}\n*,\n:after,\n:before {\n  box-sizing: border-box;\n}\nhtml {\n  font-size: 62.5%;\n}\nbody {\n  font-family: Roboto,Lato,sans-serif;\n  line-height: 1.5;\n  font-size: 14px;\n  font-weight: 400;\n  width: 100%;\n  -webkit-tap-highlight-color: rgba(0,0,0,0);\n  background-color: #fff;\n  color: rgba(0,0,0,.87);\n}\nbody,\nhtml {\n  overflow-x: hidden;\n  overflow-y: auto;\n}\npre {\n  white-space: pre-wrap;\n  word-break: break-all;\n  margin: 0;\n}\na {\n  text-decoration: none;\n  color: #ff4081;\n  user-select: none;\n  -webkit-user-select: none;\n}\n.mu-icon {\n  font-size: 24px;\n  cursor: inherit;\n}\n.mu-badge-container {\n  display: inline-block;\n  position: relative;\n}\n.mu-badge {\n  font-size: 10px;\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: center;\n  -webkit-justify-content: center;\n  -ms-flex-pack: center;\n  justify-content: center;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center;\n  padding: 0 6px;\n  line-height: 1.5;\n  font-size: 12px;\n  font-style: normal;\n  background-color: #bdbdbd;\n  color: #fff;\n  border-radius: 3px;\n  overflow: hidden;\n}\n.mu-badge-float {\n  position: absolute;\n  top: -12px;\n  right: -12px;\n}\n.mu-badge-circle {\n  border-radius: 50%;\n  padding: 0;\n  width: 24px;\n  height: 24px;\n  overflow: hidden;\n}\n.mu-badge-primary {\n  background-color: #7e57c2;\n}\n.mu-badge-secondary {\n  background-color: #ff4081;\n}\n.mu-appbar {\n  -webkit-align-self: flex-start;\n  -ms-flex-item-align: start;\n  align-self: flex-start;\n  color: #fff;\n  background-color: #7e57c2;\n  height: 56px;\n  padding: 0 8px;\n  width: 100%;\n  z-index: 3;\n}\n.mu-appbar,\n.mu-appbar>.left,\n.mu-appbar>.right {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: start;\n  -webkit-justify-content: flex-start;\n  -ms-flex-pack: start;\n  justify-content: flex-start;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center;\n  -webkit-box-flex: 0;\n  -webkit-flex-shrink: 0;\n  -ms-flex: 0 0 auto;\n  -ms-flex-negative: 0;\n  flex-shrink: 0;\n}\n.mu-appbar>.left,\n.mu-appbar>.right {\n  height: 100%;\n}\n.mu-appbar .mu-icon-button {\n  color: inherit;\n}\n.mu-appbar .mu-flat-button {\n  color: inherit;\n  height: 100%;\n  line-height: 100%;\n  min-width: auto;\n}\n.mu-appbar-title {\n  -webkit-box-flex: 1;\n  -webkit-flex: 1;\n  -ms-flex: 1;\n  flex: 1;\n  padding-left: 8px;\n  padding-right: 8px;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  overflow: hidden;\n  font-size: 20px;\n  font-weight: 400;\n  line-height: 56px;\n}\n@media (min-width:480px) {\n  .mu-appbar-title {\n    line-height: 64px;\n  }\n\n  .mu-appbar {\n    height: 64px;\n  }\n\n  .mu-appbar-title {\n    font-size: 24px;\n  }\n}\n.mu-icon-button {\n  position: relative;\n  display: inline-block;\n  overflow: visible;\n  line-height: 1;\n  width: 48px;\n  height: 48px;\n  border-radius: 50%;\n  font-size: 24px;\n  padding: 12px;\n  border: none;\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  appearance: none;\n  background: none;\n  color: inherit;\n  text-decoration: none;\n  -webkit-transition-duration: .3s;\n  transition-duration: .3s;\n  -webkit-transition-timing-function: cubic-bezier(.23,1,.32,1);\n  transition-timing-function: cubic-bezier(.23,1,.32,1);\n  -webkit-transform: translateZ(0);\n  transform: translateZ(0);\n  -webkit-box-flex: 0;\n  -webkit-flex-shrink: 0;\n  -ms-flex: 0 0 auto;\n  -ms-flex-negative: 0;\n  flex-shrink: 0;\n  margin: 0;\n  outline: 0;\n  cursor: pointer;\n}\n.mu-icon-button .mu-circle-ripple {\n  color: rgba(0,0,0,.87);\n}\n.mu-icon-button.disabled {\n  color: rgba(0,0,0,.38);\n  cursor: not-allowed;\n}\n.mu-ripple-wrapper {\n  overflow: hidden;\n}\n.mu-circle-ripple,\n.mu-ripple-wrapper {\n  height: 100%;\n  width: 100%;\n  position: absolute;\n  top: 0;\n  left: 0;\n}\n.mu-circle-ripple {\n  pointer-events: none;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n  border-radius: 50%;\n  background-color: currentColor;\n  background-clip: padding-box;\n  opacity: .1;\n}\n.mu-ripple-enter-active,\n.mu-ripple-leave-active {\n  -webkit-transition: opacity 2s cubic-bezier(.23,1,.32,1),-webkit-transform .45s cubic-bezier(.23,1,.32,1);\n  transition: opacity 2s cubic-bezier(.23,1,.32,1),-webkit-transform .45s cubic-bezier(.23,1,.32,1);\n  transition: opacity 2s cubic-bezier(.23,1,.32,1),transform .45s cubic-bezier(.23,1,.32,1);\n  transition: opacity 2s cubic-bezier(.23,1,.32,1),transform .45s cubic-bezier(.23,1,.32,1),-webkit-transform .45s cubic-bezier(.23,1,.32,1);\n}\n.mu-ripple-enter {\n  -webkit-transform: scale(0);\n  -ms-transform: scale(0);\n  transform: scale(0);\n}\n.mu-ripple-leave-active {\n  opacity: 0!important;\n}\n.mu-focus-ripple-wrapper {\n  height: 100%;\n  width: 100%;\n  position: absolute;\n  top: 0;\n  left: 0;\n  overflow: hidden;\n}\n.mu-focus-ripple {\n  position: absolute;\n  height: 100%;\n  width: 100%;\n  border-radius: 50%;\n  opacity: .16;\n  background-color: currentColor;\n  -webkit-animation: a .75s cubic-bezier(.445,.05,.55,.95);\n  animation: a .75s cubic-bezier(.445,.05,.55,.95);\n  -webkit-animation-iteration-count: infinite;\n  animation-iteration-count: infinite;\n  -webkit-animation-direction: alternate;\n  animation-direction: alternate;\n}\n@-webkit-keyframes a {\n  0% {\n    -webkit-transform: scale(.72);\n    transform: scale(.72);\n  }\n\n  to {\n    -webkit-transform: scale(.85);\n    transform: scale(.85);\n  }\n}\n@keyframes a {\n  0% {\n    -webkit-transform: scale(.72);\n    transform: scale(.72);\n  }\n\n  to {\n    -webkit-transform: scale(.85);\n    transform: scale(.85);\n  }\n}\n.mu-tooltip {\n  position: absolute;\n  font-size: 10px;\n  line-height: 22px;\n  padding: 0 8px;\n  z-index: 5;\n  color: #fff;\n  overflow: hidden;\n  top: -1000px;\n  border-radius: 2px;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n  opacity: 0;\n  -webkit-transition: top 0ms cubic-bezier(.23,1,.32,1) .45s,opacity .45s cubic-bezier(.23,1,.32,1) 0ms,-webkit-transform .45s cubic-bezier(.23,1,.32,1) 0ms;\n  transition: top 0ms cubic-bezier(.23,1,.32,1) .45s,opacity .45s cubic-bezier(.23,1,.32,1) 0ms,-webkit-transform .45s cubic-bezier(.23,1,.32,1) 0ms;\n  transition: top 0ms cubic-bezier(.23,1,.32,1) .45s,transform .45s cubic-bezier(.23,1,.32,1) 0ms,opacity .45s cubic-bezier(.23,1,.32,1) 0ms;\n  transition: top 0ms cubic-bezier(.23,1,.32,1) .45s,transform .45s cubic-bezier(.23,1,.32,1) 0ms,opacity .45s cubic-bezier(.23,1,.32,1) 0ms,-webkit-transform .45s cubic-bezier(.23,1,.32,1) 0ms;\n}\n.mu-tooltip.when-shown {\n  opacity: .9;\n  -webkit-transition: top 0ms cubic-bezier(.23,1,.32,1) 0ms,opacity .45s cubic-bezier(.23,1,.32,1) 0ms,-webkit-transform .45s cubic-bezier(.23,1,.32,1) 0ms;\n  transition: top 0ms cubic-bezier(.23,1,.32,1) 0ms,opacity .45s cubic-bezier(.23,1,.32,1) 0ms,-webkit-transform .45s cubic-bezier(.23,1,.32,1) 0ms;\n  transition: top 0ms cubic-bezier(.23,1,.32,1) 0ms,transform .45s cubic-bezier(.23,1,.32,1) 0ms,opacity .45s cubic-bezier(.23,1,.32,1) 0ms;\n  transition: top 0ms cubic-bezier(.23,1,.32,1) 0ms,transform .45s cubic-bezier(.23,1,.32,1) 0ms,opacity .45s cubic-bezier(.23,1,.32,1) 0ms,-webkit-transform .45s cubic-bezier(.23,1,.32,1) 0ms;\n}\n.mu-tooltip.touched {\n  font-size: 14px;\n  line-height: 32px;\n  padding: 0 16px;\n}\n.mu-tooltip-ripple {\n  position: absolute;\n  -webkit-transform: translate(-50%,-50%);\n  -ms-transform: translate(-50%,-50%);\n  transform: translate(-50%,-50%);\n  border-radius: 50%;\n  background-color: transparent;\n  -webkit-transition: width 0ms cubic-bezier(.23,1,.32,1) .45s,height 0ms cubic-bezier(.23,1,.32,1) .45s,background-color .45s cubic-bezier(.23,1,.32,1) 0ms;\n  transition: width 0ms cubic-bezier(.23,1,.32,1) .45s,height 0ms cubic-bezier(.23,1,.32,1) .45s,background-color .45s cubic-bezier(.23,1,.32,1) 0ms;\n}\n.mu-tooltip-ripple.when-shown {\n  background-color: #616161;\n  -webkit-transition: width .45s cubic-bezier(.23,1,.32,1) 0ms,height .45s cubic-bezier(.23,1,.32,1) 0ms,background-color .45s cubic-bezier(.23,1,.32,1) 0ms;\n  transition: width .45s cubic-bezier(.23,1,.32,1) 0ms,height .45s cubic-bezier(.23,1,.32,1) 0ms,background-color .45s cubic-bezier(.23,1,.32,1) 0ms;\n}\n.mu-tooltip-label {\n  white-space: nowrap;\n  position: relative;\n}\n.mu-flat-button {\n  display: inline-block;\n  overflow: hidden;\n  position: relative;\n  border-radius: 2px;\n  height: 36px;\n  line-height: 36px;\n  min-width: 88px;\n  -webkit-transition-duration: .3s;\n  transition-duration: .3s;\n  -webkit-transition-timing-function: cubic-bezier(.23,1,.32,1);\n  transition-timing-function: cubic-bezier(.23,1,.32,1);\n  -webkit-transform: translateZ(0);\n  transform: translateZ(0);\n  text-decoration: none;\n  text-transform: uppercase;\n  border: none;\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  appearance: none;\n  background: none;\n  color: rgba(0,0,0,.87);\n  -webkit-box-flex: 0;\n  -webkit-flex-shrink: 0;\n  -ms-flex: 0 0 auto;\n  -ms-flex-negative: 0;\n  flex-shrink: 0;\n  margin: 0;\n  outline: 0;\n  padding: 0;\n  cursor: pointer;\n}\n.mu-flat-button.hover {\n  background-color: rgba(0,0,0,.1);\n}\n.mu-flat-button.disabled {\n  color: rgba(0,0,0,.38);\n  cursor: not-allowed;\n  background: none;\n}\n.mu-flat-button .mu-icon {\n  vertical-align: middle;\n  margin-left: 12px;\n  margin-right: 0;\n}\n.mu-flat-button .mu-icon+.mu-flat-button-label {\n  padding-left: 8px;\n}\n.mu-flat-button.no-label .mu-icon {\n  margin-left: 0;\n}\n.mu-flat-button .mu-circle-ripple {\n  color: rgba(0,0,0,.87);\n}\n.mu-flat-button.label-before {\n  padding-right: 8px;\n}\n.mu-flat-button.label-before .mu-icon {\n  margin-right: 4px;\n  margin-left: 0;\n}\n.mu-flat-button.label-before .mu-flat-button-label {\n  padding-right: 8px;\n}\n.mu-flat-button-wrapper {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: center;\n  -webkit-justify-content: center;\n  -ms-flex-pack: center;\n  justify-content: center;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center;\n  width: 100%;\n  height: 100%;\n}\n.mu-flat-button-primary {\n  color: #7e57c2;\n}\n.mu-flat-button-secondary {\n  color: #ff4081;\n}\n.mu-flat-button-label {\n  vertical-align: middle;\n  padding-right: 16px;\n  padding-left: 16px;\n  font-size: 14px;\n}\n.mu-raised-button {\n  display: inline-block;\n  overflow: hidden;\n  position: relative;\n  border-radius: 2px;\n  height: 36px;\n  line-height: 36px;\n  min-width: 88px;\n  -webkit-transition-duration: .3s;\n  transition-duration: .3s;\n  -webkit-transition-timing-function: cubic-bezier(.23,1,.32,1);\n  transition-timing-function: cubic-bezier(.23,1,.32,1);\n  -webkit-transform: translateZ(0);\n  transform: translateZ(0);\n  text-decoration: none;\n  text-transform: uppercase;\n  border: none;\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  appearance: none;\n  background-color: #fff;\n  color: rgba(0,0,0,.87);\n  -webkit-box-flex: 0;\n  -webkit-flex-shrink: 0;\n  -ms-flex: 0 0 auto;\n  -ms-flex-negative: 0;\n  flex-shrink: 0;\n  margin: 0;\n  outline: 0;\n  padding: 0;\n  cursor: pointer;\n  box-shadow: 0 1px 6px rgba(0,0,0,.117647),0 1px 4px rgba(0,0,0,.117647);\n}\n.mu-raised-button.focus {\n  box-shadow: 0 3px 10px rgba(0,0,0,.156863),0 3px 10px rgba(0,0,0,.227451);\n}\n.mu-raised-button.hover .mu-raised-button-wrapper {\n  background-color: rgba(0,0,0,.1);\n}\n.mu-raised-button.disabled {\n  color: rgba(0,0,0,.3);\n  cursor: not-allowed;\n  background-color: #e6e6e6;\n  box-shadow: none;\n}\n.mu-raised-button.disabled.hover,\n.mu-raised-button.disabled:active,\n.mu-raised-button.disabled:hover {\n  box-shadow: none;\n}\n.mu-raised-button.disabled.hover .mu-raised-button-wrapper,\n.mu-raised-button.disabled:active .mu-raised-button-wrapper,\n.mu-raised-button.disabled:hover .mu-raised-button-wrapper {\n  background-color: transparent;\n}\n.mu-raised-button .mu-icon {\n  vertical-align: middle;\n  margin-left: 12px;\n  margin-right: 0;\n}\n.mu-raised-button .mu-icon+.mu-raised-button-label {\n  padding-left: 8px;\n}\n.mu-raised-button.no-label .mu-icon {\n  margin: 0;\n}\n.mu-raised-button.label-before .mu-raised-button-wrapper {\n  padding-right: 8px;\n}\n.mu-raised-button.label-before .mu-icon {\n  margin-right: 4px;\n  margin-left: 0;\n}\n.mu-raised-button.label-before .mu-raised-button-label {\n  padding-right: 8px;\n}\n.mu-raised-button:active {\n  box-shadow: 0 3px 10px rgba(0,0,0,.156863),0 3px 10px rgba(0,0,0,.227451);\n}\n.mu-raised-button-wrapper {\n  border-radius: 2px;\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: center;\n  -webkit-justify-content: center;\n  -ms-flex-pack: center;\n  justify-content: center;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center;\n  width: 100%;\n  height: 100%;\n}\n.mu-raised-button-primary {\n  background-color: #7e57c2;\n}\n.mu-raised-button-secondary {\n  background-color: #ff4081;\n}\n.mu-raised-button-full {\n  width: 100%;\n}\n.mu-raised-button.mu-raised-button-inverse {\n  color: #fff;\n}\n.mu-raised-button.mu-raised-button-inverse .mu-circle-ripple {\n  opacity: .3;\n}\n.mu-raised-button.mu-raised-button-inverse.hover .mu-raised-button-wrapper {\n  background-color: hsla(0,0%,100%,.3);\n}\n.mu-raised-button-label {\n  vertical-align: middle;\n  padding-right: 16px;\n  padding-left: 16px;\n}\n.mu-float-button {\n  position: relative;\n  display: inline-block;\n  overflow: visible;\n  line-height: 1;\n  width: 56px;\n  height: 56px;\n  border-radius: 50%;\n  border: none;\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  appearance: none;\n  background-color: #7e57c2;\n  color: #fff;\n  text-decoration: none;\n  -webkit-transition-duration: .3s;\n  transition-duration: .3s;\n  -webkit-transition-timing-function: cubic-bezier(.23,1,.32,1);\n  transition-timing-function: cubic-bezier(.23,1,.32,1);\n  -webkit-transform: translateZ(0);\n  transform: translateZ(0);\n  -webkit-box-flex: 0;\n  -webkit-flex-shrink: 0;\n  -ms-flex: 0 0 auto;\n  -ms-flex-negative: 0;\n  flex-shrink: 0;\n  margin: 0;\n  outline: 0;\n  padding: 0;\n  cursor: pointer;\n  box-shadow: 0 3px 10px rgba(0,0,0,.156863),0 3px 10px rgba(0,0,0,.227451);\n}\n.mu-float-button .mu-circle-ripple {\n  opacity: .3;\n}\n.mu-float-button.disabled {\n  color: rgba(0,0,0,.3);\n  cursor: not-allowed;\n  background-color: #e6e6e6;\n  box-shadow: none;\n}\n.mu-float-button.disabled.hover,\n.mu-float-button.disabled:active,\n.mu-float-button.disabled:hover {\n  box-shadow: none;\n}\n.mu-float-button.disabled.hover .mu-float-button-wrapper,\n.mu-float-button.disabled:active .mu-float-button-wrapper,\n.mu-float-button.disabled:hover .mu-float-button-wrapper {\n  background-color: transparent;\n}\n.mu-float-button.hover,\n.mu-float-button:active {\n  box-shadow: 0 10px 30px rgba(0,0,0,.188235),0 6px 10px rgba(0,0,0,.227451);\n}\n.mu-float-button.hover .mu-float-button-wrapper,\n.mu-float-button:active .mu-float-button-wrapper {\n  background-color: hsla(0,0%,100%,.3);\n}\n.mu-float-button-wrapper {\n  border-radius: 50%;\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: center;\n  -webkit-justify-content: center;\n  -ms-flex-pack: center;\n  justify-content: center;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center;\n  position: absolute;\n  left: 0;\n  top: 0;\n  right: 0;\n  bottom: 0;\n}\n.mu-float-button-mini {\n  width: 40px;\n  height: 40px;\n}\n.mu-float-button-secondary {\n  background-color: #ff4081;\n}\n.mu-content-block {\n  padding: 8px 16px;\n  width: 100%;\n}\n.mu-content-block p {\n  margin-top: 1em;\n  margin-bottom: 1em;\n}\n.mu-content-block p:first-child {\n  margin-top: 0;\n}\n.mu-content-block p:last-child {\n  margin-bottom: 0;\n}\n.mu-list {\n  padding: 8px 0;\n  width: 100%;\n  position: relative;\n  overflow-x: hidden;\n  overflow-y: visible;\n}\n.mu-list .mu-sub-header:first-child {\n  margin-top: -8px;\n}\n.mu-item-wrapper {\n  display: block;\n  color: inherit;\n  position: relative;\n  outline: none;\n  cursor: pointer;\n}\n.mu-item-wrapper.hover {\n  background-color: rgba(0,0,0,.1);\n}\n.mu-item-wrapper.disabled {\n  cursor: default;\n}\n.mu-item {\n  min-height: 48px;\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  padding: 16px;\n  color: rgba(0,0,0,.87);\n  position: relative;\n}\n.mu-item.show-left {\n  padding-left: 72px;\n}\n.mu-item.show-right {\n  padding-right: 56px;\n}\n.mu-item.has-avatar {\n  min-height: 56px;\n}\n.mu-item.selected {\n  color: #7e57c2;\n}\n.mu-item-toggle-button {\n  color: rgba(0,0,0,.87);\n  position: absolute;\n  right: 4px;\n  top: 0;\n}\n.mu-item-left,\n.mu-item-right {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center;\n  -webkit-box-pack: start;\n  -webkit-justify-content: flex-start;\n  -ms-flex-pack: start;\n  justify-content: flex-start;\n  width: 40px;\n  height: 100%;\n  position: absolute;\n  color: #757575;\n  top: 0;\n  max-height: 72px;\n}\n.mu-item-left {\n  left: 16px;\n}\n.mu-item.selected .mu-item-left {\n  color: #7e57c2;\n}\n.mu-item-right {\n  right: 12px;\n  -webkit-box-pack: center;\n  -webkit-justify-content: center;\n  -ms-flex-pack: center;\n  justify-content: center;\n}\n.mu-item-right>.mu-icon-button,\n.mu-item-right>.mu-icon-menu {\n  -webkit-align-self: flex-start;\n  -ms-flex-item-align: start;\n  align-self: flex-start;\n}\n.mu-item-content {\n  width: 100%;\n  -webkit-align-self: center;\n  -ms-flex-item-align: center;\n  -ms-grid-row-align: center;\n  align-self: center;\n}\n.mu-item-title-row {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: start;\n  -webkit-justify-content: flex-start;\n  -ms-flex-pack: start;\n  justify-content: flex-start;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center;\n  position: relative;\n  width: 100%;\n  line-height: 1;\n}\n.mu-item-title {\n  -webkit-box-flex: 1;\n  -webkit-flex: 1;\n  -ms-flex: 1;\n  flex: 1;\n  display: block;\n  font-size: 16px;\n  max-width: 100%;\n}\n.mu-item-sub-title {\n  line-height: 1;\n  margin-top: 4px;\n}\n.mu-item-after {\n  margin-left: auto;\n  color: rgba(0,0,0,.54);\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center;\n}\n.mu-item-text {\n  display: -webkit-box;\n  -webkit-line-clamp: 2;\n  -webkit-box-orient: vertical;\n  position: relative;\n  overflow: hidden;\n  font-size: 14px;\n  line-height: 18px;\n  margin-top: 4px;\n  max-height: 40px;\n  max-width: 100%;\n  text-overflow: ellipsis;\n  word-break: break-all;\n  color: rgba(0,0,0,.54);\n}\n.mu-item-svg-icon {\n  display: inline-block;\n  width: 24px;\n  height: 24px;\n  stroke-width: 2;\n  fill: none;\n  stroke: currentColor;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n}\n.mu-expand-enter-active,\n.mu-expand-leave-active {\n  -webkit-transition: height .45s cubic-bezier(.23,1,.32,1),padding .45s cubic-bezier(.23,1,.32,1);\n  transition: height .45s cubic-bezier(.23,1,.32,1),padding .45s cubic-bezier(.23,1,.32,1);\n  -webkit-backface-visibility: hidden;\n  backface-visibility: hidden;\n  -webkit-transform: translateZ(0);\n  transform: translateZ(0);\n}\n.mu-sub-header {\n  color: rgba(0,0,0,.54);\n  font-size: 14px;\n  line-height: 48px;\n  padding-left: 16px;\n  width: 100%;\n}\n.mu-sub-header.inset {\n  padding-left: 72px;\n}\n.mu-divider {\n  margin: 0;\n  height: 1px;\n  border: none;\n  background-color: rgba(0,0,0,.12);\n  width: 100%;\n}\n.mu-divider.inset {\n  margin-left: 72px;\n}\n.mu-divider.shallow-inset {\n  margin-left: 16px;\n}\nhtml.pixel-ratio-2 .mu-divider {\n  -webkit-transform: scaleY(.5);\n  -ms-transform: scaleY(.5);\n  transform: scaleY(.5);\n}\nhtml.pixel-ratio-3 .mu-divider {\n  -webkit-transform: scaleY(.33);\n  -ms-transform: scaleY(.33);\n  transform: scaleY(.33);\n}\n.mu-refresh-control {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  margin: 0 auto;\n  width: 40px;\n  height: 40px;\n  color: #7e57c2;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center;\n  -webkit-box-pack: center;\n  -webkit-justify-content: center;\n  -ms-flex-pack: center;\n  justify-content: center;\n  background-color: #fff;\n  border-radius: 50%;\n  box-shadow: 0 1px 6px rgba(0,0,0,.117647),0 1px 4px rgba(0,0,0,.117647);\n  position: absolute;\n  left: 50%;\n  margin-left: -18px;\n  margin-top: 24px;\n  z-index: 2;\n}\n.mu-refresh-control .mu-icon {\n  display: inline-block;\n  vertical-align: middle;\n}\n.mu-refresh-svg-icon {\n  display: inline-block;\n  width: 28px;\n  height: 28px;\n  fill: currentColor;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n}\n.mu-refresh-control-animate {\n  -webkit-transition: all .45s ease;\n  transition: all .45s ease;\n}\n.mu-refresh-control-hide {\n  opacity: 1;\n  -webkit-transform: translate3d(0,-68px,0);\n  transform: translate3d(0,-68px,0);\n}\n.mu-refresh-control-noshow {\n  opacity: 0;\n  -webkit-transform: scale(.01);\n  -ms-transform: scale(.01);\n  transform: scale(.01);\n}\n.mu-refresh-control-refreshing {\n  -webkit-transform: scale(1);\n  -ms-transform: scale(1);\n  transform: scale(1);\n  opacity: 1;\n}\n.mu-circle-wrapper {\n  display: inline-block;\n  position: relative;\n  width: 48px;\n  height: 48px;\n}\n.mu-circle-wrapper.active {\n  -webkit-animation: e 1568ms linear infinite;\n  animation: e 1568ms linear infinite;\n}\n.mu-circle-wrapper .mu-circle {\n  border-radius: 50%;\n}\n.mu-circle-wrapper .left {\n  float: left!important;\n}\n.mu-circle-wrapper .right {\n  float: right!important;\n}\n.mu-circle-spinner {\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  opacity: 0;\n  border-color: #7e57c2;\n  opacity: 1;\n  -webkit-animation: b 5332ms cubic-bezier(.4,0,.2,1) infinite both;\n  animation: b 5332ms cubic-bezier(.4,0,.2,1) infinite both;\n}\n.mu-circle-secondary {\n  border-color: #ff4081;\n}\n.mu-circle-clipper {\n  display: inline-block;\n  position: relative;\n  width: 50%;\n}\n.mu-circle-clipper,\n.mu-circle-gap-patch {\n  height: 100%;\n  overflow: hidden;\n  border-color: inherit;\n}\n.mu-circle-gap-patch {\n  position: absolute;\n  top: 0;\n  left: 45%;\n  width: 10%;\n}\n.mu-circle-gap-patch .mu-circle {\n  width: 1000%;\n  left: -450%;\n}\n.mu-circle-clipper .mu-circle {\n  width: 200%;\n  height: 100%;\n  border-width: 3px;\n  border-style: solid;\n  border-color: inherit;\n  border-bottom-color: transparent!important;\n  border-radius: 50%;\n  -webkit-animation: none;\n  animation: none;\n  position: absolute;\n  top: 0;\n  right: 0;\n  bottom: 0;\n}\n.mu-circle-spinner.active .mu-circle-clipper.left .mu-circle {\n  -webkit-animation: c 1333ms cubic-bezier(.4,0,.2,1) infinite both;\n  animation: c 1333ms cubic-bezier(.4,0,.2,1) infinite both;\n}\n.mu-circle-spinner.active .mu-circle-clipper.right .mu-circle {\n  -webkit-animation: d 1333ms cubic-bezier(.4,0,.2,1) infinite both;\n  animation: d 1333ms cubic-bezier(.4,0,.2,1) infinite both;\n}\n.mu-circle-clipper.left .mu-circle {\n  left: 0;\n  border-right-color: transparent!important;\n  -webkit-transform: rotate(129deg);\n  -ms-transform: rotate(129deg);\n  transform: rotate(129deg);\n}\n.mu-circle-clipper.right .mu-circle {\n  left: -100%;\n  border-left-color: transparent!important;\n  -webkit-transform: rotate(-129deg);\n  -ms-transform: rotate(-129deg);\n  transform: rotate(-129deg);\n}\n@-webkit-keyframes b {\n  12.5% {\n    -webkit-transform: rotate(135deg);\n  }\n\n  25% {\n    -webkit-transform: rotate(270deg);\n  }\n\n  37.5% {\n    -webkit-transform: rotate(405deg);\n  }\n\n  50% {\n    -webkit-transform: rotate(540deg);\n  }\n\n  62.5% {\n    -webkit-transform: rotate(675deg);\n  }\n\n  75% {\n    -webkit-transform: rotate(810deg);\n  }\n\n  87.5% {\n    -webkit-transform: rotate(945deg);\n  }\n\n  to {\n    -webkit-transform: rotate(3turn);\n  }\n}\n@keyframes b {\n  12.5% {\n    -webkit-transform: rotate(135deg);\n    transform: rotate(135deg);\n  }\n\n  25% {\n    -webkit-transform: rotate(270deg);\n    transform: rotate(270deg);\n  }\n\n  37.5% {\n    -webkit-transform: rotate(405deg);\n    transform: rotate(405deg);\n  }\n\n  50% {\n    -webkit-transform: rotate(540deg);\n    transform: rotate(540deg);\n  }\n\n  62.5% {\n    -webkit-transform: rotate(675deg);\n    transform: rotate(675deg);\n  }\n\n  75% {\n    -webkit-transform: rotate(810deg);\n    transform: rotate(810deg);\n  }\n\n  87.5% {\n    -webkit-transform: rotate(945deg);\n    transform: rotate(945deg);\n  }\n\n  to {\n    -webkit-transform: rotate(3turn);\n    transform: rotate(3turn);\n  }\n}\n@-webkit-keyframes c {\n  0% {\n    -webkit-transform: rotate(130deg);\n  }\n\n  50% {\n    -webkit-transform: rotate(-5deg);\n  }\n\n  to {\n    -webkit-transform: rotate(130deg);\n  }\n}\n@keyframes c {\n  0% {\n    -webkit-transform: rotate(130deg);\n    transform: rotate(130deg);\n  }\n\n  50% {\n    -webkit-transform: rotate(-5deg);\n    transform: rotate(-5deg);\n  }\n\n  to {\n    -webkit-transform: rotate(130deg);\n    transform: rotate(130deg);\n  }\n}\n@-webkit-keyframes d {\n  0% {\n    -webkit-transform: rotate(-130deg);\n  }\n\n  50% {\n    -webkit-transform: rotate(5deg);\n  }\n\n  to {\n    -webkit-transform: rotate(-130deg);\n  }\n}\n@keyframes d {\n  0% {\n    -webkit-transform: rotate(-130deg);\n    transform: rotate(-130deg);\n  }\n\n  50% {\n    -webkit-transform: rotate(5deg);\n    transform: rotate(5deg);\n  }\n\n  to {\n    -webkit-transform: rotate(-130deg);\n    transform: rotate(-130deg);\n  }\n}\n@-webkit-keyframes e {\n  to {\n    -webkit-transform: rotate(1turn);\n  }\n}\n@keyframes e {\n  to {\n    -webkit-transform: rotate(1turn);\n    transform: rotate(1turn);\n  }\n}\n.mu-infinite-scroll {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: center;\n  -webkit-justify-content: center;\n  -ms-flex-pack: center;\n  justify-content: center;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center;\n  padding-bottom: 8px;\n  line-height: 36px;\n  width: 100%;\n}\n.mu-infinite-scroll-text {\n  margin-left: 16px;\n  font-size: 16px;\n}\n.mu-avatar {\n  display: inline-block;\n  height: 40px;\n  width: 40px;\n  font-size: 20px;\n  color: #fff;\n  background-color: #bdbdbd;\n  text-align: center;\n  border-radius: 50%;\n}\n.mu-avatar img {\n  border-radius: 50%;\n  width: 100%;\n  height: 100%;\n  display: block;\n}\n.mu-avatar-inner {\n  height: 100%;\n  -webkit-box-pack: center;\n  -webkit-justify-content: center;\n  -ms-flex-pack: center;\n  justify-content: center;\n}\n.mu-avatar-inner,\n.mu-tabs {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  width: 100%;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center;\n}\n.mu-tabs {\n  -webkit-box-pack: justify;\n  -webkit-justify-content: space-between;\n  -ms-flex-pack: justify;\n  justify-content: space-between;\n  background-color: #7e57c2;\n  color: #fff;\n  text-align: center;\n  position: relative;\n  z-index: 3;\n}\n.mu-tab-link-highlight {\n  position: absolute;\n  left: 0;\n  bottom: 0;\n  height: 2px;\n  background-color: #ff4081;\n  -webkit-transition: -webkit-transform .3s;\n  transition: -webkit-transform .3s;\n  transition: transform .3s;\n  transition: transform .3s,-webkit-transform .3s;\n  -webkit-backface-visibility: hidden;\n  backface-visibility: hidden;\n}\n.mu-tab-link {\n  min-height: 48px;\n  padding-top: 12px;\n  padding-bottom: 12px;\n  font-size: 14px;\n  background: none;\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  appearance: none;\n  text-decoration: none;\n  border: none;\n  outline: none;\n  -webkit-box-flex: 1;\n  -webkit-flex: 1;\n  -ms-flex: 1;\n  flex: 1;\n  color: inherit;\n  position: relative;\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n  -webkit-flex-direction: column;\n  -ms-flex-direction: column;\n  flex-direction: column;\n  -webkit-box-pack: center;\n  -webkit-justify-content: center;\n  -ms-flex-pack: center;\n  justify-content: center;\n  line-height: normal;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center;\n  color: hsla(0,0%,100%,.7);\n  -webkit-transition: all .45s cubic-bezier(.445,.05,.55,.95);\n  transition: all .45s cubic-bezier(.445,.05,.55,.95);\n  cursor: pointer;\n}\n.mu-tab-active {\n  color: #fff;\n}\n.mu-tab-text.has-icon {\n  margin-top: 8px;\n}\n.mu-paper {\n  -webkit-transition: all .45s cubic-bezier(.23,1,.32,1);\n  transition: all .45s cubic-bezier(.23,1,.32,1);\n  color: rgba(0,0,0,.87);\n  background-color: #fff;\n  box-shadow: 0 1px 6px rgba(0,0,0,.117647),0 1px 4px rgba(0,0,0,.117647);\n}\n.mu-paper-round {\n  border-radius: 2px;\n}\n.mu-paper-circle {\n  border-radius: 50%;\n}\n.mu-paper-1 {\n  box-shadow: 0 1px 6px rgba(0,0,0,.117647),0 1px 4px rgba(0,0,0,.117647);\n}\n.mu-paper-2 {\n  box-shadow: 0 3px 10px rgba(0,0,0,.156863),0 3px 10px rgba(0,0,0,.227451);\n}\n.mu-paper-3,\n.mu-paper-4 {\n  box-shadow: 0 14px 45px rgba(0,0,0,.247059),0 10px 18px rgba(0,0,0,.219608);\n}\n.mu-paper-5 {\n  box-shadow: 0 19px 60px rgba(0,0,0,.298039),0 15px 20px rgba(0,0,0,.219608);\n}\n.mu-bottom-nav {\n  height: 56px;\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: center;\n  -webkit-justify-content: center;\n  -ms-flex-pack: center;\n  justify-content: center;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center;\n  background-color: #fff;\n  text-align: center;\n  position: relative;\n  width: 100%;\n  color: #fff;\n}\n.mu-bottom-nav-shift {\n  background-color: #7e57c2;\n}\n.mu-bottom-nav-shift-wrapper {\n  height: 100%;\n  width: 100%;\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: center;\n  -webkit-justify-content: center;\n  -ms-flex-pack: center;\n  justify-content: center;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center;\n  text-align: center;\n}\n.mu-buttom-item {\n  -webkit-box-flex: 1;\n  -webkit-flex: 1;\n  -ms-flex: 1;\n  flex: 1;\n  min-width: 80px;\n  max-width: 168px;\n  position: relative;\n  height: 100%;\n  color: rgba(0,0,0,.54);\n  padding: 0;\n  background: none;\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  appearance: none;\n  text-decoration: none;\n  border: none;\n  outline: none;\n  -webkit-transition: all .4s cubic-bezier(.445,.05,.55,.95);\n  transition: all .4s cubic-bezier(.445,.05,.55,.95);\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n  padding: 6px;\n}\n.mu-bottom-nav-shift .mu-buttom-item {\n  color: hsla(0,0%,100%,.7);\n  padding: 8px 12px 10px;\n  min-width: 56px;\n  max-width: 168px;\n}\n.mu-buttom-item-wrapper {\n  display: block;\n  height: 100%;\n}\n.mu-bottom-item-active {\n  padding-top: 6px;\n  padding-bottom: 5px;\n}\n.mu-bottom-item-active .mu-bottom-item-text {\n  font-size: 14px;\n}\n.mu-bottom-nav-shift .mu-bottom-item-active {\n  -webkit-box-flex: 1.7;\n  -webkit-flex: 1.7;\n  -ms-flex: 1.7;\n  flex: 1.7;\n  min-width: 96px;\n  max-width: 168px;\n  padding-top: 6px;\n  padding-bottom: 5px;\n}\n.mu-bottom-item-text {\n  display: block;\n  text-align: center;\n  font-size: 12px;\n  -webkit-transition: all .4s cubic-bezier(.23,1,.32,1),color .3s,font-size .3s;\n  transition: all .4s cubic-bezier(.23,1,.32,1),color .3s,font-size .3s;\n  -webkit-backface-visibility: hidden;\n  backface-visibility: hidden;\n}\n.mu-bottom-item-active .mu-bottom-item-text {\n  color: #7e57c2;\n}\n.mu-bottom-nav-shift .mu-bottom-item-active .mu-bottom-item-text {\n  color: #fff;\n}\n.mu-bottom-nav-shift .mu-bottom-item-text {\n  opacity: 0;\n  -webkit-transform: scale(1) translate3d(0,6px,0);\n  transform: scale(1) translate3d(0,6px,0);\n}\n.mu-bottom-nav-shift .mu-bottom-item-active .mu-bottom-item-text {\n  -webkit-transform: scale(1) translate3d(0,2px,0);\n  transform: scale(1) translate3d(0,2px,0);\n  opacity: 1;\n}\n.mu-bottom-item-icon {\n  display: block;\n  margin: auto;\n  -webkit-transition: all .45s cubic-bezier(.23,1,.32,1);\n  transition: all .45s cubic-bezier(.23,1,.32,1);\n  -webkit-backface-visibility: hidden;\n  backface-visibility: hidden;\n  width: 24px;\n}\n.mu-bottom-item-active .mu-bottom-item-icon {\n  color: #7e57c2;\n}\n.mu-bottom-nav-shift .mu-bottom-item-active .mu-bottom-item-icon {\n  color: #fff;\n}\n.mu-bottom-nav-shift .mu-bottom-item-icon {\n  -webkit-transform: translate3d(0,8px,0);\n  transform: translate3d(0,8px,0);\n}\n.mu-bottom-nav-shift .mu-bottom-item-active .mu-bottom-item-icon {\n  -webkit-transform: scale(1) translateZ(0);\n  transform: scale(1) translateZ(0);\n}\n.mu-card {\n  background-color: #fff;\n  position: relative;\n  border-radius: 2px;\n  box-shadow: 0 1px 6px rgba(0,0,0,.117647),0 1px 4px rgba(0,0,0,.117647);\n}\n.mu-card-header {\n  padding: 16px;\n  font-weight: 500;\n  position: relative;\n  white-space: nowrap;\n}\n.mu-card-header .mu-avatar {\n  margin-right: 16px;\n}\n.mu-card-header-title {\n  display: inline-block;\n  vertical-align: top;\n  white-space: normal;\n  padding-right: 90px;\n}\n.mu-card-header-title .mu-card-title {\n  font-size: 15px;\n  color: rgba(0,0,0,.87);\n}\n.mu-card-header-title .mu-card-sub-title {\n  font-size: 14px;\n  color: rgba(0,0,0,.57);\n}\n.mu-card-media {\n  position: relative;\n}\n.mu-card-media>img {\n  width: 100%;\n  max-width: 100%;\n  min-width: 100%;\n  display: block;\n  vertical-align: top;\n}\n.mu-card-media-title {\n  position: absolute;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  padding: 16px;\n  background-color: rgba(0,0,0,.54);\n}\n.mu-card-media-title .mu-card-title {\n  font-size: 24px;\n  color: hsla(0,0%,100%,.87);\n  line-height: 36px;\n}\n.mu-card-media-title .mu-card-sub-title {\n  color: hsla(0,0%,100%,.54);\n  font-size: 14px;\n}\n.mu-card-title-container {\n  padding: 16px;\n  position: relative;\n}\n.mu-card-title-container .mu-card-title {\n  font-size: 24px;\n  color: rgba(0,0,0,.87);\n  line-height: 36px;\n}\n.mu-card-title-container .mu-card-sub-title {\n  font-size: 14px;\n  color: rgba(0,0,0,.54);\n  display: block;\n}\n.mu-card-text {\n  padding: 16px;\n  font-size: 14px;\n  color: rgba(0,0,0,.87);\n}\n.mu-card-actions {\n  padding: 8px;\n  position: relative;\n}\n.mu-chip {\n  border-radius: 16px;\n  line-height: 32px;\n  white-space: nowrap;\n  display: -webkit-inline-box;\n  display: -webkit-inline-flex;\n  display: -ms-inline-flexbox;\n  display: inline-flex;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center;\n  background-color: #e0e0e0;\n  color: rgba(0,0,0,.87);\n  padding: 0 12px;\n  cursor: default;\n}\n.mu-chip .mu-avatar:first-child {\n  margin-left: -12px;\n  margin-right: 4px;\n}\n.mu-chip.active {\n  box-shadow: 0 1px 6px rgba(0,0,0,.12),0 1px 4px rgba(0,0,0,.12);\n}\n.mu-chip.hover {\n  background-color: #cecece;\n  cursor: pointer;\n}\n.mu-chip.hover .mu-chip-delete-icon {\n  color: rgba(0,0,0,.4);\n}\n.mu-chip-delete-icon {\n  display: inline-block;\n  margin-right: -8px;\n  margin-left: 4px;\n  color: rgba(0,0,0,.26);\n  fill: currentColor;\n  height: 24px;\n  width: 24px;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n  -webkit-transition: all .45s cubic-bezier(.23,1,.32,1);\n  transition: all .45s cubic-bezier(.23,1,.32,1);\n}\n.mu-overlay {\n  position: absolute;\n  left: 0;\n  right: 0;\n  top: 0;\n  bottom: 0;\n  background-color: #000;\n  opacity: .4;\n  z-index: 6;\n}\n.mu-overlay-fade-enter-active,\n.mu-overlay-fade-leave-active {\n  -webkit-transition: opacity .45s cubic-bezier(.23,1,.32,1);\n  transition: opacity .45s cubic-bezier(.23,1,.32,1);\n}\n.mu-overlay-fade-enter,\n.mu-overlay-fade-leave-active {\n  opacity: 0!important;\n}\n.mu-dialog-wrapper {\n  position: fixed;\n  left: 0;\n  top: 0;\n  right: 0;\n  bottom: 0;\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: center;\n  -webkit-justify-content: center;\n  -ms-flex-pack: center;\n  justify-content: center;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center;\n}\n.mu-dialog {\n  width: 75%;\n  max-width: 768px;\n  padding: 0;\n  background-color: #fff;\n  border-radius: 2px;\n  font-size: 16px;\n  box-shadow: 0 19px 60px rgba(0,0,0,.298039),0 15px 20px rgba(0,0,0,.219608);\n}\n.mu-dialog-title {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center;\n  -webkit-box-pack: justify;\n  -webkit-justify-content: space-between;\n  -ms-flex-pack: justify;\n  justify-content: space-between;\n  padding: 24px 24px 20px;\n  margin: 0;\n  font-size: 22px;\n  font-weight: 400;\n  line-height: 32px;\n  color: rgba(0,0,0,.87);\n}\n.mu-dialog-title+.mu-dialog-body {\n  padding-top: 0;\n}\n.mu-dialog-title.scrollable {\n  border-bottom: 1px solid rgba(0,0,0,.12);\n}\n.mu-dialog-body {\n  padding: 24px 24px 20px;\n  color: rgba(0,0,0,.6);\n}\n.mu-dialog-actions {\n  min-height: 48px;\n  padding: 8px;\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center;\n  -webkit-box-pack: end;\n  -webkit-justify-content: flex-end;\n  -ms-flex-pack: end;\n  justify-content: flex-end;\n}\n.mu-dialog-actions .mu-raised-button+.mu-raised-button {\n  margin-left: 10px;\n}\n.mu-dialog-actions.scrollable {\n  border-top: 1px solid rgba(0,0,0,.12);\n}\n.mu-dialog-slide-enter-active,\n.mu-dialog-slide-leave-active {\n  -webkit-transition: opacity .45s cubic-bezier(.23,1,.32,1);\n  transition: opacity .45s cubic-bezier(.23,1,.32,1);\n}\n.mu-dialog-slide-enter-active .mu-dialog,\n.mu-dialog-slide-leave-active .mu-dialog {\n  -webkit-backface-visibility: hidden;\n  backface-visibility: hidden;\n  -webkit-transition: -webkit-transform .45s cubic-bezier(.23,1,.32,1);\n  transition: -webkit-transform .45s cubic-bezier(.23,1,.32,1);\n  transition: transform .45s cubic-bezier(.23,1,.32,1);\n  transition: transform .45s cubic-bezier(.23,1,.32,1),-webkit-transform .45s cubic-bezier(.23,1,.32,1);\n}\n.mu-dialog-slide-enter,\n.mu-dialog-slide-leave-active {\n  opacity: 0;\n}\n.mu-dialog-slide-enter .mu-dialog {\n  -webkit-transform: translate3d(0,-64px,0);\n  transform: translate3d(0,-64px,0);\n}\n.mu-dialog-slide-leave-active .mu-dialog {\n  -webkit-transform: translate3d(0,64px,0);\n  transform: translate3d(0,64px,0);\n}\n.mu-toast {\n  height: 48px;\n  line-height: 48px;\n  padding: 0 24px;\n  background-color: rgba(0,0,0,.87);\n  color: #fff;\n  border-radius: 24px;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  overflow: hidden;\n  word-wrap: break-word;\n  max-width: 568px;\n  width: 100%;\n  position: fixed;\n  left: 0;\n  bottom: 0;\n}\n@media only screen and (max-width:992px) and (min-width:601px) {\n  .mu-toast {\n    width: auto;\n    min-width: 288px;\n    left: 5%;\n    bottom: 7%;\n  }\n}\n@media only screen and (min-width:993px) {\n  .mu-toast {\n    width: auto;\n    min-width: 8%;\n    top: 10%;\n    right: 7%;\n    left: auto;\n    bottom: auto;\n    min-width: 288px;\n  }\n}\n.mu-toast-enter-active,\n.mu-toast-leave-active {\n  -webkit-transition: opacity .4s cubic-bezier(.23,1,.32,1),-webkit-transform .4s cubic-bezier(.23,1,.32,1);\n  transition: opacity .4s cubic-bezier(.23,1,.32,1),-webkit-transform .4s cubic-bezier(.23,1,.32,1);\n  transition: transform .4s cubic-bezier(.23,1,.32,1),opacity .4s cubic-bezier(.23,1,.32,1);\n  transition: transform .4s cubic-bezier(.23,1,.32,1),opacity .4s cubic-bezier(.23,1,.32,1),-webkit-transform .4s cubic-bezier(.23,1,.32,1);\n  -webkit-backface-visibility: hidden;\n  backface-visibility: hidden;\n}\n.mu-toast-enter,\n.mu-toast-leave-active {\n  -webkit-transform: translate3d(0,100%,0);\n  transform: translate3d(0,100%,0);\n  opacity: 0;\n}\n.mu-snackbar {\n  position: fixed;\n  bottom: 0;\n  left: 0;\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: justify;\n  -webkit-justify-content: space-between;\n  -ms-flex-pack: justify;\n  justify-content: space-between;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center;\n  color: #fff;\n  background-color: rgba(0,0,0,.87);\n  padding: 0 24px;\n  min-height: 48px;\n  width: 100%;\n  max-width: 568px;\n}\n.mu-snackbar-action {\n  margin: 0 -16px 0 24px;\n}\n.mu-snackbar-message {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-flex: 1;\n  -webkit-flex: 1;\n  -ms-flex: 1;\n  flex: 1;\n  padding-top: 8px;\n  padding-bottom: 8px;\n}\n@media only screen and (max-width:992px) and (min-width:601px) {\n  .mu-snackbar {\n    width: auto;\n    min-width: 288px;\n    left: 5%;\n    bottom: 7%;\n  }\n}\n@media only screen and (min-width:993px) {\n  .mu-snackbar {\n    width: auto;\n    min-width: 8%;\n    top: 10%;\n    right: 7%;\n    left: auto;\n    bottom: auto;\n    min-width: 288px;\n  }\n}\n.mu-snackbar-enter-active,\n.mu-snackbar-leave-active {\n  -webkit-transition: opacity .4s cubic-bezier(.23,1,.32,1),-webkit-transform .4s cubic-bezier(.23,1,.32,1);\n  transition: opacity .4s cubic-bezier(.23,1,.32,1),-webkit-transform .4s cubic-bezier(.23,1,.32,1);\n  transition: transform .4s cubic-bezier(.23,1,.32,1),opacity .4s cubic-bezier(.23,1,.32,1);\n  transition: transform .4s cubic-bezier(.23,1,.32,1),opacity .4s cubic-bezier(.23,1,.32,1),-webkit-transform .4s cubic-bezier(.23,1,.32,1);\n  -webkit-backface-visibility: hidden;\n  backface-visibility: hidden;\n}\n.mu-snackbar-enter,\n.mu-snackbar-leave-active {\n  -webkit-transform: translate3d(0,100%,0);\n  transform: translate3d(0,100%,0);\n  opacity: 0;\n}\n.mu-popup {\n  position: fixed;\n  background-color: #fff;\n  top: 50%;\n  left: 50%;\n  -webkit-transform: translate3d(-50%,-50%,0);\n  transform: translate3d(-50%,-50%,0);\n  -webkit-backface-visibility: hidden;\n  backface-visibility: hidden;\n}\n.mu-popup-top {\n  top: 0;\n  right: auto;\n  bottom: auto;\n  left: 50%;\n  -webkit-transform: translate3d(-50%,0,0);\n  transform: translate3d(-50%,0,0);\n}\n.mu-popup-right {\n  top: 50%;\n  right: 0;\n  bottom: auto;\n  left: auto;\n  -webkit-transform: translate3d(0,-50%,0);\n  transform: translate3d(0,-50%,0);\n}\n.mu-popup-bottom {\n  top: auto;\n  right: auto;\n  bottom: 0;\n  left: 50%;\n  -webkit-transform: translate3d(-50%,0,0);\n  transform: translate3d(-50%,0,0);\n}\n.mu-popup-left {\n  top: 50%;\n  right: auto;\n  bottom: auto;\n  left: 0;\n  -webkit-transform: translate3d(0,-50%,0);\n  transform: translate3d(0,-50%,0);\n}\n.popup-slide-bottom-enter-active,\n.popup-slide-bottom-leave-active,\n.popup-slide-left-enter-active,\n.popup-slide-left-leave-active,\n.popup-slide-right-enter-active,\n.popup-slide-right-leave-active,\n.popup-slide-top-enter-active,\n.popup-slide-top-leave-active {\n  -webkit-transition: -webkit-transform .3s ease;\n  transition: -webkit-transform .3s ease;\n  transition: transform .3s ease;\n  transition: transform .3s ease,-webkit-transform .3s ease;\n}\n.popup-slide-top-enter,\n.popup-slide-top-leave-active {\n  -webkit-transform: translate3d(-50%,-100%,0);\n  transform: translate3d(-50%,-100%,0);\n}\n.popup-slide-right-enter,\n.popup-slide-right-leave-active {\n  -webkit-transform: translate3d(100%,-50%,0);\n  transform: translate3d(100%,-50%,0);\n}\n.popup-slide-bottom-enter,\n.popup-slide-bottom-leave-active {\n  -webkit-transform: translate3d(-50%,100%,0);\n  transform: translate3d(-50%,100%,0);\n}\n.popup-slide-left-enter,\n.popup-slide-left-leave-active {\n  -webkit-transform: translate3d(-100%,-50%,0);\n  transform: translate3d(-100%,-50%,0);\n}\n.popup-fade-enter-active,\n.popup-fade-leave-active {\n  -webkit-transition: opacity .3s;\n  transition: opacity .3s;\n}\n.popup-fade-enter,\n.popup-fade-leave-active {\n  opacity: 0;\n}\n.mu-menu {\n  z-index: 2;\n  outline: none;\n}\n.mu-menu-list {\n  padding: 8px 0;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n  overflow-y: auto;\n  -webkit-overflow-scrolling: touch;\n}\n.mu-menu-list>.mu-divider {\n  margin: 7px 0 8px;\n}\n.mu-menu-list>.mu-sub-header {\n  padding-left: 24px;\n  margin-top: -8px;\n}\n.mu-menu-destop {\n  padding: 16px 0;\n}\n.mu-menu-destop>.mu-sub-header {\n  margin-top: -16px;\n}\n.mu-menu-item-wrapper {\n  display: block;\n  font-size: 16px;\n  height: 48px;\n  line-height: 48px;\n  -webkit-transition: all .45s cubic-bezier(.23,1,.32,1);\n  transition: all .45s cubic-bezier(.23,1,.32,1);\n  color: rgba(0,0,0,.87);\n  position: relative;\n  cursor: pointer;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n}\n.mu-menu-destop .mu-menu-item-wrapper {\n  height: 32px;\n  line-height: 32px;\n  font-size: 15px;\n}\n.mu-menu-item-wrapper.hover {\n  background-color: rgba(0,0,0,.1);\n}\n.mu-menu-item-wrapper.active {\n  color: #ff4081;\n}\n.mu-menu-item-wrapper.disabled {\n  color: rgba(0,0,0,.38);\n  cursor: not-allowed;\n}\n.mu-menu-item {\n  padding: 0 16px;\n  position: relative;\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: justify;\n  -webkit-justify-content: space-between;\n  -ms-flex-pack: justify;\n  justify-content: space-between;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center;\n}\n.mu-menu-destop .mu-menu-item {\n  padding: 0 24px;\n}\n.mu-menu-item.have-left-icon {\n  padding-left: 72px;\n}\n.mu-menu-item-title {\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  word-wrap: break-word;\n}\n.mu-menu-item-left-icon {\n  position: absolute;\n  top: 0;\n  left: 4px;\n  margin: 12px;\n  color: #757575;\n}\n.mu-menu-destop .mu-menu-item-left-icon {\n  top: 4px;\n  left: 24px;\n  margin: 0;\n}\n.mu-menu-item-right-icon {\n  position: absolute;\n  top: 0;\n  right: 4px;\n  margin: 12px;\n  color: #757575;\n}\n.mu-menu-destop .mu-menu-item-right-icon {\n  top: 4px;\n  right: 24px;\n  margin: 0;\n}\n.mu-popover {\n  position: fixed;\n  background: #fff;\n  border-radius: 2px;\n  max-height: 100%;\n  overflow: visible;\n  -webkit-overflow-scrolling: touch;\n  box-shadow: 0 1px 6px rgba(0,0,0,.117647),0 1px 4px rgba(0,0,0,.117647);\n  -webkit-transform-origin: center top;\n  -ms-transform-origin: center top;\n  transform-origin: center top;\n}\n.mu-popover-enter-active,\n.mu-popover-leave-active {\n  -webkit-transition-duration: .3s;\n  transition-duration: .3s;\n  -webkit-transition-property: opacity,-webkit-transform;\n  transition-property: opacity,-webkit-transform;\n  transition-property: opacity,transform;\n  transition-property: opacity,transform,-webkit-transform;\n}\n.mu-popover-enter,\n.mu-popover-leave-active {\n  -webkit-transform: scaleY(0);\n  -ms-transform: scaleY(0);\n  transform: scaleY(0);\n  opacity: 0;\n}\n.mu-bottom-sheet {\n  background-color: #fff;\n  position: fixed;\n  left: 0;\n  right: 0;\n  bottom: 0;\n}\n.mu-bottom-sheet-enter-active,\n.mu-bottom-sheet-leave-active {\n  -webkit-transition: -webkit-transform .3s cubic-bezier(.23,1,.32,1);\n  transition: -webkit-transform .3s cubic-bezier(.23,1,.32,1);\n  transition: transform .3s cubic-bezier(.23,1,.32,1);\n  transition: transform .3s cubic-bezier(.23,1,.32,1),-webkit-transform .3s cubic-bezier(.23,1,.32,1);\n  -webkit-backface-visibility: hidden;\n  backface-visibility: hidden;\n}\n.mu-bottom-sheet-enter,\n.mu-bottom-sheet-leave-active {\n  -webkit-transform: translate3d(0,100%,0);\n  transform: translate3d(0,100%,0);\n}\n.mu-dropDown-menu,\n.mu-icon-menu {\n  display: inline-block;\n  position: relative;\n}\n.mu-dropDown-menu {\n  font-size: 15px;\n  height: 48px;\n  -webkit-transition: all .45s cubic-bezier(.23,1,.32,1);\n  transition: all .45s cubic-bezier(.23,1,.32,1);\n  cursor: pointer;\n  overflow: hidden;\n}\n.mu-dropDown-menu.disabled {\n  color: rgba(0,0,0,.38);\n  cursor: not-allowed;\n}\n.mu-dropDown-menu-icon {\n  position: absolute;\n  right: 16px;\n  top: 16px;\n  color: rgba(0,0,0,.12);\n  fill: currentColor;\n  display: inline-block;\n  width: 24px;\n  height: 24px;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n}\n.mu-dropDown-menu-text {\n  padding-left: 24px;\n  padding-right: 48px;\n  line-height: 56px;\n  opacity: 1;\n  position: relative;\n  color: rgba(0,0,0,.87);\n}\n.mu-dropDown-menu.disabled .mu-dropDown-menu-text {\n  color: rgba(0,0,0,.38);\n}\n.mu-dropDown-menu-text-overflow {\n  white-space: nowrap;\n  overflow: hidden;\n  width: 100%;\n}\n.mu-dropDown-menu-line {\n  bottom: 1px;\n  left: 0;\n  margin: -1px 24px;\n  right: 0;\n  position: absolute;\n  height: 1px;\n  background-color: rgba(0,0,0,.12);\n  -webkit-transition: all .45s cubic-bezier(.23,1,.32,1);\n  transition: all .45s cubic-bezier(.23,1,.32,1);\n}\nhtml.pixel-ratio-2 .mu-dropDown-menu-line {\n  -webkit-transform: scaleY(.5);\n  -ms-transform: scaleY(.5);\n  transform: scaleY(.5);\n}\nhtml.pixel-ratio-3 .mu-dropDown-menu-line {\n  -webkit-transform: scaleY(.33);\n  -ms-transform: scaleY(.33);\n  transform: scaleY(.33);\n}\n.mu-drawer {\n  width: 256px;\n  position: fixed;\n  top: 0;\n  bottom: 0;\n  overflow: auto;\n  -webkit-overflow-scrolling: touch;\n  -webkit-transition-property: visibility,-webkit-transform;\n  transition-property: visibility,-webkit-transform;\n  transition-property: transform,visibility;\n  transition-property: transform,visibility,-webkit-transform;\n  -webkit-transition-duration: .45s;\n  transition-duration: .45s;\n  -webkit-transform: translate3d(-100%,0,0);\n  transform: translate3d(-100%,0,0);\n  border-radius: 0;\n  left: 0;\n  visibility: hidden;\n  z-index: 4;\n}\n.mu-drawer::-webkit-scrollbar {\n  display: none!important;\n  width: 0!important;\n  height: 0!important;\n  -webkit-appearance: none;\n  opacity: 0!important;\n}\n.mu-drawer.right {\n  right: 0;\n  left: auto;\n  -webkit-transform: translate3d(100%,0,0);\n  transform: translate3d(100%,0,0);\n}\n.mu-drawer.open {\n  -webkit-transform: translateZ(0);\n  transform: translateZ(0);\n  visibility: visible;\n}\n.mu-picker {\n  background: #fff;\n  overflow: hidden;\n  width: 100%;\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: center;\n  -webkit-justify-content: center;\n  -ms-flex-pack: center;\n  justify-content: center;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center;\n  position: relative;\n  -webkit-mask-box-image: -webkit-linear-gradient(bottom,transparent,transparent 5%,#fff 20%,#fff 80%,transparent 95%,transparent);\n  -webkit-mask-box-image: linear-gradient(0deg,transparent,transparent 5%,#fff 20%,#fff 80%,transparent 95%,transparent);\n}\n.mu-picker-center-highlight {\n  height: 36px;\n  box-sizing: border-box;\n  position: absolute;\n  left: 0;\n  width: 100%;\n  top: 50%;\n  margin-top: -18px;\n  pointer-events: none;\n  border-top: 1px solid rgba(0,0,0,.12);\n  border-bottom: 1px solid rgba(0,0,0,.12);\n}\n.mu-picker-center-highlight:before {\n  left: 0;\n  top: 0;\n  bottom: auto;\n  right: auto;\n}\n.mu-picker-center-highlight:after {\n  left: 0;\n  bottom: 0;\n  right: auto;\n  top: auto;\n}\n.mu-picker-slot {\n  -webkit-box-flex: 1;\n  -webkit-flex-shrink: 1;\n  -ms-flex: 0 1 auto;\n  -ms-flex-negative: 1;\n  flex-shrink: 1;\n  font-size: 18px;\n  overflow: hidden;\n  position: relative;\n  max-height: 100%;\n  text-align: center;\n}\n.mu-picker-slot.mu-picker-slot-divider {\n  color: rgba(0,0,0,.87);\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center;\n  line-height: 36px;\n}\n.mu-picker-slot-wrapper.animate {\n  -webkit-transition: -webkit-transform .45s cubic-bezier(.23,1,.32,1);\n  transition: -webkit-transform .45s cubic-bezier(.23,1,.32,1);\n  transition: transform .45s cubic-bezier(.23,1,.32,1);\n  transition: transform .45s cubic-bezier(.23,1,.32,1),-webkit-transform .45s cubic-bezier(.23,1,.32,1);\n}\n.mu-picker-item,\n.mu-picker-slot-wrapper.animate {\n  -webkit-backface-visibility: hidden;\n  backface-visibility: hidden;\n}\n.mu-picker-item {\n  line-height: 36px;\n  padding: 0 10px;\n  font-size: 20px;\n  white-space: nowrap;\n  position: relative;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  color: rgba(0,0,0,.54);\n  left: 0;\n  top: 0;\n  width: 100%;\n  box-sizing: border-box;\n  -webkit-transition-duration: .3s;\n  transition-duration: .3s;\n}\n.mu-picker-item.selected {\n  color: rgba(0,0,0,.87);\n  -webkit-transform: translateZ(0) rotateX(0);\n  transform: translateZ(0) rotateX(0);\n}\n.mu-text-field {\n  font-size: 16px;\n  width: 256px;\n  min-height: 48px;\n  display: inline-block;\n  position: relative;\n  color: rgba(0,0,0,.54);\n  margin-bottom: 8px;\n}\n.mu-text-field.full-width {\n  width: 100%;\n}\n.mu-text-field.has-icon {\n  padding-left: 56px;\n}\n.mu-text-field.focus-state {\n  color: #7e57c2;\n}\n.mu-text-field.focus-state.error {\n  color: #f44336;\n}\n.mu-text-field.has-label {\n  min-height: 72px;\n}\n.mu-text-field-icon {\n  position: absolute;\n  left: 16px;\n  top: 12px;\n}\n.mu-text-field.has-label .mu-text-field-icon {\n  top: 36px;\n}\n.mu-text-field-content {\n  display: block;\n  height: 100%;\n  padding-bottom: 12px;\n  padding-top: 4px;\n}\n.mu-text-field.disabled .mu-text-field-content {\n  color: rgba(0,0,0,.38);\n  cursor: not-allowed;\n}\n.mu-text-field.has-label .mu-text-field-content {\n  padding-top: 28px;\n  padding-bottom: 12px;\n}\n.mu-text-field-input {\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  appearance: none;\n  outline: none;\n  border: none;\n  background: none;\n  border-radius: 0 0 0 0;\n  box-shadow: none;\n  display: block;\n  padding: 0;\n  margin: 0;\n  width: 100%;\n  height: 32px;\n  font-style: inherit;\n  font-variant: inherit;\n  font-weight: inherit;\n  font-stretch: inherit;\n  font-size: inherit;\n  color: rgba(0,0,0,.87);\n  font-family: inherit;\n  position: relative;\n}\n.mu-text-field-help {\n  position: absolute;\n  margin-top: 6px;\n  font-size: 12px;\n  line-height: 12px;\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: justify;\n  -webkit-justify-content: space-between;\n  -ms-flex-pack: justify;\n  justify-content: space-between;\n  left: 0;\n  right: 0;\n}\n.mu-text-field.has-icon .mu-text-field-help {\n  left: 56px;\n}\n.mu-text-field.error .mu-text-field-help {\n  color: #f44336;\n}\n.mu-text-field.disabled .mu-text-field-help {\n  color: inherit;\n}\n.mu-text-field-line {\n  margin: 0;\n  height: 1px;\n  border: none;\n  background-color: rgba(0,0,0,.12);\n  left: 0;\n  right: 0;\n  position: absolute;\n}\n.mu-text-field.has-icon .mu-text-field-line {\n  left: 56px;\n}\n.mu-text-field-line.disabled {\n  height: auto;\n  background-color: transparent;\n  border-bottom: 2px dotted rgba(0,0,0,.38);\n}\n.mu-text-field-focus-line {\n  margin: 0;\n  height: 2px;\n  border: none;\n  background-color: #7e57c2;\n  position: absolute;\n  left: 0;\n  right: 0;\n  margin-top: -1px;\n  -webkit-transform: scaleX(0);\n  -ms-transform: scaleX(0);\n  transform: scaleX(0);\n  -webkit-transition: -webkit-transform .45s cubic-bezier(.23,1,.32,1);\n  transition: -webkit-transform .45s cubic-bezier(.23,1,.32,1);\n  transition: transform .45s cubic-bezier(.23,1,.32,1);\n  transition: transform .45s cubic-bezier(.23,1,.32,1),-webkit-transform .45s cubic-bezier(.23,1,.32,1);\n}\n.mu-text-field.has-icon .mu-text-field-focus-line {\n  left: 56px;\n}\n.mu-text-field-focus-line.error,\n.mu-text-field-focus-line.focus {\n  -webkit-transform: scaleX(1);\n  -ms-transform: scaleX(1);\n  transform: scaleX(1);\n}\n.mu-text-field-focus-line.error {\n  background-color: #f44336;\n}\n.mu-text-field-textarea {\n  resize: vertical;\n  line-height: 1.5;\n  position: relative;\n  height: 100%;\n  resize: none;\n}\n.mu-text-field-multiline {\n  width: 100%;\n  position: relative;\n}\n.mu-text-field-textarea-hide {\n  width: 100%;\n  height: auto;\n  resize: none;\n  position: absolute;\n  padding: 0;\n  overflow: auto;\n  visibility: hidden;\n}\n.mu-text-field-label {\n  line-height: 20px;\n  -webkit-transition: all .45s cubic-bezier(.23,1,.32,1);\n  transition: all .45s cubic-bezier(.23,1,.32,1);\n  z-index: 1;\n  cursor: text;\n  -webkit-transform: translateZ(0) scale(.75);\n  transform: translateZ(0) scale(.75);\n  -webkit-transform-origin: left top;\n  -ms-transform-origin: left top;\n  transform-origin: left top;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n  pointer-events: none;\n  -webkit-backface-visibility: hidden;\n  backface-visibility: hidden;\n}\n.mu-text-field.has-label .mu-text-field-label {\n  top: 8px;\n  position: absolute;\n}\n.mu-text-field.has-label .mu-text-field-label.float {\n  -webkit-transform: translate3d(0,28px,0) scale(1);\n  transform: translate3d(0,28px,0) scale(1);\n  color: rgba(0,0,0,.38);\n}\n.mu-text-field-hint {\n  position: absolute;\n  opacity: 0;\n  -webkit-transition: opacity .45s cubic-bezier(.23,1,.32,1);\n  transition: opacity .45s cubic-bezier(.23,1,.32,1);\n  color: rgba(0,0,0,.38);\n  line-height: 34px;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n  cursor: text;\n}\n.mu-text-field-hint.show {\n  opacity: 1;\n}\n.mu-text-field.multi-line .mu-text-field-hint {\n  line-height: 1.5;\n}\n.mu-select-field .mu-dropDown-menu {\n  display: block;\n  width: 100%;\n  height: 32px;\n}\n.mu-select-field .mu-dropDown-menu-text {\n  line-height: 32px;\n  height: 32px;\n  padding-left: 0;\n  padding-right: 24px;\n  word-wrap: break-word;\n  overflow: hidden;\n}\n.mu-select-field .mu-dropDown-menu-line {\n  display: none;\n}\n.mu-select-field .mu-dropDown-menu-icon {\n  right: 0;\n  top: 6px;\n}\n.mu-checkbox {\n  position: relative;\n  display: inline-block;\n  height: 24px;\n  line-height: 24px;\n  cursor: pointer;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n}\n.mu-checkbox input[type=checkbox] {\n  display: none;\n}\n.mu-checkbox input[type=checkbox]:checked+.mu-checkbox-wrapper .mu-checkbox-icon-uncheck {\n  opacity: 0;\n  -webkit-transition: opacity .65s cubic-bezier(.23,1,.32,1) .15s;\n  transition: opacity .65s cubic-bezier(.23,1,.32,1) .15s;\n  color: #7e57c2;\n}\n.mu-checkbox input[type=checkbox]:checked+.mu-checkbox-wrapper .mu-checkbox-icon-checked {\n  opacity: 1;\n  -webkit-transform: scale(1);\n  -ms-transform: scale(1);\n  transform: scale(1);\n  -webkit-transition: opacity 0ms cubic-bezier(.23,1,.32,1),-webkit-transform .8s cubic-bezier(.23,1,.32,1);\n  transition: opacity 0ms cubic-bezier(.23,1,.32,1),-webkit-transform .8s cubic-bezier(.23,1,.32,1);\n  transition: opacity 0ms cubic-bezier(.23,1,.32,1),transform .8s cubic-bezier(.23,1,.32,1);\n  transition: opacity 0ms cubic-bezier(.23,1,.32,1),transform .8s cubic-bezier(.23,1,.32,1),-webkit-transform .8s cubic-bezier(.23,1,.32,1);\n}\n.mu-checkbox input[type=checkbox]:checked+.mu-checkbox-wrapper .mu-checkbox-ripple-wrapper {\n  color: #7e57c2;\n}\n.mu-checkbox * {\n  pointer-events: none;\n}\n.mu-checkbox.disabled {\n  cursor: not-allowed;\n}\n.mu-checkbox-wrapper {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  width: 100%;\n  height: 24px;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center;\n  -webkit-box-pack: justify;\n  -webkit-justify-content: space-between;\n  -ms-flex-pack: justify;\n  justify-content: space-between;\n}\n.mu-checkbox-icon {\n  width: 24px;\n  height: 24px;\n  vertical-align: middle;\n  position: relative;\n  margin-right: 16px;\n}\n.mu-checkbox.label-left .mu-checkbox-icon {\n  margin-right: 0;\n  margin-left: 16px;\n}\n.mu-checkbox.no-label .mu-checkbox-icon {\n  margin-left: 0;\n  margin-right: 0;\n}\n.mu-checkbox-label {\n  color: rgba(0,0,0,.87);\n}\n.mu-checkbox.disabled .mu-checkbox-label {\n  color: rgba(0,0,0,.38);\n}\n.mu-checkbox-svg-icon {\n  display: inline-block;\n  fill: currentColor;\n  height: 24px;\n  width: 24px;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n}\n.mu-checkbox-icon-uncheck {\n  position: absolute;\n  left: 0;\n  top: 0;\n  opacity: 1;\n  -webkit-transition: opacity 1s cubic-bezier(.23,1,.32,1) .2s;\n  transition: opacity 1s cubic-bezier(.23,1,.32,1) .2s;\n  color: rgba(0,0,0,.87);\n}\n.mu-checkbox.disabled .mu-checkbox-icon-uncheck {\n  color: rgba(0,0,0,.38);\n}\n.mu-checkbox-icon-checked {\n  position: absolute;\n  left: 0;\n  top: 0;\n  opacity: 0;\n  color: #7e57c2;\n  -webkit-transform: scale(0);\n  -ms-transform: scale(0);\n  transform: scale(0);\n  -webkit-transition: opacity .45s cubic-bezier(.23,1,.32,1),-webkit-transform 0ms cubic-bezier(.23,1,.32,1) .45s;\n  transition: opacity .45s cubic-bezier(.23,1,.32,1),-webkit-transform 0ms cubic-bezier(.23,1,.32,1) .45s;\n  transition: opacity .45s cubic-bezier(.23,1,.32,1),transform 0ms cubic-bezier(.23,1,.32,1) .45s;\n  transition: opacity .45s cubic-bezier(.23,1,.32,1),transform 0ms cubic-bezier(.23,1,.32,1) .45s,-webkit-transform 0ms cubic-bezier(.23,1,.32,1) .45s;\n}\n.mu-checkbox.disabled .mu-checkbox-icon-checked {\n  color: rgba(0,0,0,.38);\n}\n.mu-checkbox-ripple-wrapper {\n  width: 48px;\n  height: 48px;\n  top: -12px;\n  left: -12px;\n}\n.mu-checkbox.label-left .mu-checkbox-ripple-wrapper {\n  right: -12px;\n  left: auto;\n}\n.mu-radio {\n  position: relative;\n  display: inline-block;\n  height: 24px;\n  line-height: 24px;\n  cursor: pointer;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n}\n.mu-radio input[type=radio] {\n  display: none;\n}\n.mu-radio input[type=radio]:checked+.mu-radio-wrapper .mu-radio-icon-uncheck {\n  opacity: 0;\n  -webkit-transform: scale(0);\n  -ms-transform: scale(0);\n  transform: scale(0);\n  color: #7e57c2;\n}\n.mu-radio input[type=radio]:checked+.mu-radio-wrapper .mu-radio-icon-checked {\n  opacity: 1;\n  -webkit-transform: scale(1);\n  -ms-transform: scale(1);\n  transform: scale(1);\n}\n.mu-radio input[type=radio]:checked+.mu-radio-wrapper .mu-radio-ripple-wrapper {\n  color: #7e57c2;\n}\n.mu-radio * {\n  pointer-events: none;\n}\n.mu-radio.disabled {\n  cursor: not-allowed;\n}\n.mu-radio-wrapper {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  width: 100%;\n  height: 24px;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center;\n  -webkit-box-pack: justify;\n  -webkit-justify-content: space-between;\n  -ms-flex-pack: justify;\n  justify-content: space-between;\n}\n.mu-radio-icon {\n  width: 24px;\n  height: 24px;\n  vertical-align: middle;\n  position: relative;\n  margin-right: 16px;\n}\n.mu-radio.label-left .mu-radio-icon {\n  margin-right: 0;\n  margin-left: 16px;\n}\n.mu-radio.no-label .mu-radio-icon {\n  margin-left: 0;\n  margin-right: 0;\n}\n.mu-radio-label {\n  color: rgba(0,0,0,.87);\n  -webkit-box-flex: 1;\n  -webkit-flex: 1;\n  -ms-flex: 1;\n  flex: 1;\n  font-size: 16px;\n}\n.mu-radio.disabled .mu-radio-label {\n  color: rgba(0,0,0,.38);\n}\n.mu-radio-svg-icon {\n  display: inline-block;\n  fill: currentColor;\n  height: 24px;\n  width: 24px;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n}\n.mu-radio-icon-uncheck {\n  position: absolute;\n  left: 0;\n  top: 0;\n  opacity: 1;\n  -webkit-transition: all .45s cubic-bezier(.23,1,.32,1);\n  transition: all .45s cubic-bezier(.23,1,.32,1);\n  color: rgba(0,0,0,.87);\n}\n.mu-radio.disabled .mu-radio-icon-uncheck {\n  color: rgba(0,0,0,.38);\n}\n.mu-radio-icon-checked {\n  position: absolute;\n  left: 0;\n  top: 0;\n  opacity: 0;\n  color: #7e57c2;\n  -webkit-transform: scale(0);\n  -ms-transform: scale(0);\n  transform: scale(0);\n  -webkit-transition: all .45s cubic-bezier(.23,1,.32,1);\n  transition: all .45s cubic-bezier(.23,1,.32,1);\n}\n.mu-radio.disabled .mu-radio-icon-checked {\n  color: rgba(0,0,0,.38);\n}\n.mu-radio-ripple-wrapper {\n  width: 48px;\n  height: 48px;\n  top: -12px;\n  left: -12px;\n}\n.mu-radio.label-left .mu-radio-ripple-wrapper {\n  right: -12px;\n  left: auto;\n}\n.mu-switch {\n  position: relative;\n  display: inline-block;\n  height: 24px;\n  line-height: 24px;\n  cursor: pointer;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n}\n.mu-switch input[type=checkbox] {\n  display: none;\n}\n.mu-switch input[type=checkbox]:checked+.mu-switch-wrapper .mu-switch-track {\n  background-color: rgba(126,87,194,.5);\n}\n.mu-switch input[type=checkbox]:checked+.mu-switch-wrapper .mu-switch-thumb {\n  background-color: #7e57c2;\n  color: #7e57c2;\n  -webkit-transform: translate3d(18px,0,0);\n  transform: translate3d(18px,0,0);\n}\n.mu-switch.disabled input[type=checkbox]:checked+.mu-switch-wrapper .mu-switch-track {\n  background-color: #bdbdbd;\n}\n.mu-switch.disabled input[type=checkbox]:checked+.mu-switch-wrapper .mu-switch-thumb {\n  background-color: #e0e0e0;\n}\n.mu-switch * {\n  pointer-events: none;\n}\n.mu-switch.disabled {\n  cursor: not-allowed;\n}\n.mu-switch-wrapper {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  width: 100%;\n  height: 24px;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center;\n  -webkit-box-pack: justify;\n  -webkit-justify-content: space-between;\n  -ms-flex-pack: justify;\n  justify-content: space-between;\n}\n.mu-switch-container {\n  width: 38px;\n  padding: 4px 0 4px 2px;\n  position: relative;\n  margin-right: 8px;\n  -webkit-transition: all .45s cubic-bezier(.23,1,.32,1);\n  transition: all .45s cubic-bezier(.23,1,.32,1);\n}\n.mu-switch.label-left .mu-switch-container {\n  margin-right: 0;\n  margin-left: 8px;\n}\n.mu-switch.no-label .mu-switch-container {\n  margin-left: 0;\n  margin-right: 0;\n}\n.mu-switch-label {\n  color: rgba(0,0,0,.87);\n}\n.mu-switch.disabled .mu-switch-label {\n  color: rgba(0,0,0,.38);\n}\n.mu-switch-track {\n  width: 100%;\n  height: 14px;\n  border-radius: 30px;\n  -webkit-transition: all .45s cubic-bezier(.23,1,.32,1);\n  transition: all .45s cubic-bezier(.23,1,.32,1);\n}\n.mu-switch-track,\n.mu-switch.disabled .mu-switch-track {\n  background-color: #bdbdbd;\n}\n.mu-switch-thumb {\n  position: absolute;\n  top: 1px;\n  left: 0;\n  width: 20px;\n  height: 20px;\n  line-height: 24px;\n  color: rgba(0,0,0,.87);\n  background-color: #f5f5f5;\n  border-radius: 50%;\n  box-shadow: 0 1px 6px rgba(0,0,0,.117647),0 1px 4px rgba(0,0,0,.117647);\n  -webkit-transition: all .45s cubic-bezier(.23,1,.32,1);\n  transition: all .45s cubic-bezier(.23,1,.32,1);\n  -webkit-backface-visibility: hidden;\n  backface-visibility: hidden;\n}\n.mu-switch.disabled .mu-switch-thumb {\n  background-color: #e0e0e0;\n}\n.mu-switch-ripple-wrapper {\n  height: 200%;\n  width: 200%;\n  top: -10px;\n  left: -10px;\n}\n.mu-slider {\n  width: 100%;\n  position: relative;\n  height: 24px;\n  margin-bottom: 16px;\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center;\n  cursor: default;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n  outline: none;\n}\n.mu-slider-track {\n  right: 0;\n  background-color: #bdbdbd;\n}\n.mu-slider-fill,\n.mu-slider-track {\n  position: absolute;\n  height: 2px;\n  left: 0;\n  top: 50%;\n  margin-top: -1px;\n}\n.mu-slider-fill {\n  width: 100%;\n  background-color: #7e57c2;\n}\n.mu-slider.disabled .mu-slider-fill {\n  background-color: #bdbdbd;\n}\n.mu-slider-thumb {\n  position: absolute;\n  top: 50%;\n  width: 12px;\n  height: 12px;\n  background-color: #7e57c2;\n  color: #7e57c2;\n  border-radius: 50%;\n  -webkit-transform: translate(-50%,-50%);\n  -ms-transform: translate(-50%,-50%);\n  transform: translate(-50%,-50%);\n  -webkit-transition: background .45s cubic-bezier(.23,1,.32,1),border-color .45s cubic-bezier(.23,1,.32,1),width .45s cubic-bezier(.23,1,.32,1),height .45s cubic-bezier(.23,1,.32,1);\n  transition: background .45s cubic-bezier(.23,1,.32,1),border-color .45s cubic-bezier(.23,1,.32,1),width .45s cubic-bezier(.23,1,.32,1),height .45s cubic-bezier(.23,1,.32,1);\n  cursor: pointer;\n}\n.mu-slider.active .mu-slider-thumb {\n  width: 20px;\n  height: 20px;\n}\n.mu-slider.disabled .mu-slider-thumb,\n.mu-slider.zero .mu-slider-thumb {\n  border: 2px solid #bdbdbd;\n  color: #bdbdbd;\n  background-color: #fff;\n}\n.mu-slider.disabled .mu-slider-thumb .mu-focus-ripple-wrapper,\n.mu-slider.zero .mu-slider-thumb .mu-focus-ripple-wrapper {\n  top: -14px;\n  left: -14px;\n}\n.mu-slider.disabled .mu-slider-thumb {\n  cursor: default;\n}\n.mu-slider-thumb .mu-focus-ripple-wrapper {\n  width: 36px;\n  height: 36px;\n  top: -12px;\n  left: -12px;\n}\n.mu-linear-progress {\n  position: relative;\n  height: 4px;\n  display: block;\n  width: 100%;\n  background-color: #bdbdbd;\n  border-radius: 2px;\n  margin: 0;\n  overflow: hidden;\n}\n.mu-linear-progress-indeterminate {\n  width: 40%;\n  -webkit-animation: f .84s cubic-bezier(.445,.05,.55,.95);\n  animation: f .84s cubic-bezier(.445,.05,.55,.95);\n  -webkit-animation-iteration-count: infinite;\n  animation-iteration-count: infinite;\n}\n.mu-linear-progress-determinate,\n.mu-linear-progress-indeterminate {\n  position: absolute;\n  top: 0;\n  bottom: 0;\n  border-radius: 2px;\n  background-color: #7e57c2;\n}\n.mu-linear-progress-determinate {\n  left: 0;\n  -webkit-transition: width .3s linear;\n  transition: width .3s linear;\n}\n@-webkit-keyframes f {\n  0% {\n    left: -40%;\n  }\n\n  to {\n    left: 100%;\n  }\n}\n@keyframes f {\n  0% {\n    left: -40%;\n  }\n\n  to {\n    left: 100%;\n  }\n}\n.mu-circular-progress {\n  display: inline-block;\n  position: relative;\n  overflow: hidden;\n}\n.mu-circular-progress-determinate {\n  position: relative;\n}\n.mu-circular-progress-determinate-path {\n  stroke: #7e57c2;\n  stroke-linecap: round;\n  -webkit-transition: all .3s linear;\n  transition: all .3s linear;\n}\n.mu-grid-list {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-flex-wrap: wrap;\n  -ms-flex-wrap: wrap;\n  flex-wrap: wrap;\n}\n.mu-grid-tile {\n  position: relative;\n  display: block;\n  height: 100%;\n  overflow: hidden;\n}\n.mu-grid-tile>img {\n  height: 100%;\n  -webkit-transform: translateX(-50%);\n  -ms-transform: translateX(-50%);\n  transform: translateX(-50%);\n  position: relative;\n  left: 50%;\n}\n.mu-grid-tile-titlebar {\n  position: absolute;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  height: 48px;\n  background-color: rgba(0,0,0,.4);\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center;\n}\n.mu-grid-tile.multiline .mu-grid-tile-titlebar {\n  height: 68px;\n}\n.mu-grid-tile.top .mu-grid-tile-titlebar {\n  bottom: auto;\n  top: 0;\n}\n.mu-grid-tile-title-container {\n  margin-left: 16px;\n  margin-right: 0;\n  color: #fff;\n  -webkit-box-flex: 1;\n  -webkit-flex: 1;\n  -ms-flex: 1;\n  flex: 1;\n  overflow: hidden;\n}\n.mu-grid-tile.action-left .mu-grid-tile-title-container {\n  margin-right: 16px;\n  margin-left: 0;\n}\n.mu-grid-tile-action {\n  -webkit-box-ordinal-group: 2;\n  -webkit-order: 1;\n  -ms-flex-order: 1;\n  order: 1;\n}\n.mu-grid-tile.action-left .mu-grid-tile-action {\n  -webkit-box-ordinal-group: 0;\n  -webkit-order: -1;\n  -ms-flex-order: -1;\n  order: -1;\n}\n.mu-grid-tile-action .mu-icon {\n  color: #fff;\n}\n.mu-grid-tile-title {\n  font-size: 16px;\n}\n.mu-grid-tile-subtitle,\n.mu-grid-tile-title {\n  text-overflow: ellipsis;\n  overflow: hidden;\n  white-space: nowrap;\n  word-wrap: break-word;\n}\n.mu-grid-tile-subtitle {\n  font-size: 12px;\n}\n.mu-table {\n  background-color: #fff;\n  padding: 0 24px;\n  width: 100%;\n  border-collapse: collapse;\n  border-spacing: 0;\n  table-layout: fixed;\n}\n.mu-thead,\n.mu-tr {\n  border-bottom: 1px solid rgba(0,0,0,.12);\n}\n.mu-tr {\n  color: rgba(0,0,0,.87);\n  height: 48px;\n}\n.mu-tr:last-child {\n  border-bottom: none;\n}\n.mu-tr.selected {\n  background-color: #f5f5f5;\n}\n.mu-tr.hover {\n  background-color: #eee;\n}\n.mu-tr.stripe {\n  background-color: hsla(0,0%,100%,.4);\n}\n.mu-tfoot .mu-tr {\n  border-top: 1px solid rgba(0,0,0,.12);\n}\n.mu-tr .mu-checkbox {\n  vertical-align: middle;\n}\n.mu-checkbox-col {\n  width: 72px;\n}\n.mu-td {\n  height: 48px;\n  font-size: 13px;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.mu-td,\n.mu-th {\n  padding-left: 24px;\n  padding-right: 24px;\n  text-align: left;\n}\n.mu-th {\n  font-weight: 400;\n  font-size: 12px;\n  height: 56px;\n  color: rgba(0,0,0,.54);\n  position: relative;\n}\n.mu-th-wrapper {\n  position: relative;\n  padding-top: 12px;\n  padding-bottom: 12px;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  overflow: hidden;\n}\n.mu-date-picker {\n  display: inline-block;\n  position: relative;\n  width: 256px;\n}\n.mu-date-picker.fullWidth {\n  width: 100%;\n}\n.mu-date-picker-dialog {\n  width: 310px;\n}\n.mu-date-picker-dialog.landscape {\n  width: 479px;\n}\n.mu-date-picker-dialog.landscape .mu-dialog-body {\n  min-height: 330px;\n  min-width: 479px;\n}\n.mu-date-picker-dialog .mu-dialog-body {\n  padding: 0;\n  min-height: 434px;\n  min-width: 310px;\n}\n.mu-calendar {\n  color: rgba(0,0,0,.87);\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n  width: 310px;\n}\n.mu-calendar-landspace {\n  width: 479px;\n}\n.mu-calendar-container {\n  -webkit-flex-direction: column;\n  -ms-flex-direction: column;\n  flex-direction: column;\n}\n.mu-calendar-container,\n.mu-calendar-monthday-container {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n}\n.mu-calendar-monthday-container {\n  -webkit-align-content: space-between;\n  -ms-flex-line-pack: justify;\n  align-content: space-between;\n  -webkit-flex-direction: column;\n  -ms-flex-direction: column;\n  flex-direction: column;\n  font-size: 12px;\n  font-weight: 400;\n  padding: 0 8px;\n  -webkit-transition: all .45s cubic-bezier(.23,1,.32,1);\n  transition: all .45s cubic-bezier(.23,1,.32,1);\n}\n.mu-calendar-monthday-container,\n.mu-calendar-week {\n  -webkit-box-pack: justify;\n  -webkit-justify-content: space-between;\n  -ms-flex-pack: justify;\n  justify-content: space-between;\n}\n.mu-calendar-week {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-orient: horizontal;\n  -webkit-box-direction: normal;\n  -webkit-flex-direction: row;\n  -ms-flex-direction: row;\n  flex-direction: row;\n  font-weight: 500;\n  height: 20px;\n  line-height: 15px;\n  opacity: .5;\n  text-align: center;\n}\n.mu-calendar-week-day {\n  width: 42px;\n}\n.mu-calendar-monthday {\n  position: relative;\n  overflow: hidden;\n  height: 214px;\n}\n.mu-calendar-monthday-slide {\n  height: 100%;\n  width: 100%;\n}\n.mu-calendar-actions {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-orient: horizontal;\n  -webkit-box-direction: normal;\n  -webkit-flex-direction: row;\n  -ms-flex-direction: row;\n  flex-direction: row;\n  -webkit-box-pack: end;\n  -webkit-justify-content: flex-end;\n  -ms-flex-pack: end;\n  justify-content: flex-end;\n  margin: 0;\n  max-height: 48px;\n  padding: 0;\n}\n.mu-calendar-actions .mu-flat-button {\n  min-width: 64px;\n  margin: 4px 8px 8px 0;\n}\n.mu-calendar-slide-next-enter-active,\n.mu-calendar-slide-next-leave-active,\n.mu-calendar-slide-prev-enter-active,\n.mu-calendar-slide-prev-leave-active {\n  -webkit-transition: opacity .45s cubic-bezier(.23,1,.32,1),-webkit-transform .45s cubic-bezier(.23,1,.32,1);\n  transition: opacity .45s cubic-bezier(.23,1,.32,1),-webkit-transform .45s cubic-bezier(.23,1,.32,1);\n  transition: transform .45s cubic-bezier(.23,1,.32,1),opacity .45s cubic-bezier(.23,1,.32,1);\n  transition: transform .45s cubic-bezier(.23,1,.32,1),opacity .45s cubic-bezier(.23,1,.32,1),-webkit-transform .45s cubic-bezier(.23,1,.32,1);\n  -webkit-backface-visibility: hidden;\n  backface-visibility: hidden;\n  position: absolute;\n  left: 0;\n  right: 0;\n  top: 0;\n}\n.mu-calendar-slide-next-enter {\n  -webkit-transform: translate3d(100%,0,0);\n  transform: translate3d(100%,0,0);\n}\n.mu-calendar-slide-next-leave-active {\n  opacity: 0;\n}\n.mu-calendar-slide-next-leave-active,\n.mu-calendar-slide-prev-enter {\n  -webkit-transform: translate3d(-100%,0,0);\n  transform: translate3d(-100%,0,0);\n}\n.mu-calendar-slide-prev-leave-active {\n  -webkit-transform: translate3d(100%,0,0);\n  transform: translate3d(100%,0,0);\n  opacity: 0;\n}\n.mu-date-display {\n  width: 100%;\n  font-weight: 700;\n  display: block;\n  background-color: #7e57c2;\n  border-top-left-radius: 2px;\n  border-top-right-radius: 2px;\n  border-bottom-left-radius: 0;\n  color: #fff;\n  padding: 20px;\n}\n.mu-calendar-landspace .mu-date-display {\n  width: 165px;\n  height: 330px;\n  float: left;\n  border-top-right-radius: 0;\n  border-bottom-left-radius: 2px;\n}\n.mu-date-display-year {\n  position: relative;\n  overflow: hidden;\n  margin: 0;\n  font-size: 16px;\n  font-weight: 500;\n  line-height: 16px;\n  height: 16px;\n  opacity: .7;\n  -webkit-transition: all .45s cubic-bezier(.23,1,.32,1);\n  transition: all .45s cubic-bezier(.23,1,.32,1);\n  margin-bottom: 10px;\n}\n.mu-date-display.selected-year .mu-date-display-year {\n  opacity: 1;\n}\n.mu-date-display-year-title {\n  cursor: pointer;\n}\n.mu-date-display-year.disabled .mu-date-display-year-title {\n  cursor: not-allowed;\n}\n.mu-date-display-year-title .mu-date-display.selected-year {\n  cursor: default;\n}\n.mu-date-display-monthday {\n  position: relative;\n  display: block;\n  overflow: hidden;\n  font-size: 36px;\n  line-height: 36px;\n  height: 38px;\n  -webkit-transition: all .45s cubic-bezier(.23,1,.32,1);\n  transition: all .45s cubic-bezier(.23,1,.32,1);\n  width: 100%;\n  font-weight: 500;\n}\n.mu-date-display.selected-year .mu-date-display-monthday {\n  opacity: .7;\n}\n.mu-calendar-landspace .mu-date-display-monthday {\n  height: 100%;\n}\n.mu-date-display-slideIn-wrapper {\n  position: absolute;\n  height: 100%;\n  width: 100%;\n  top: 0;\n  left: 0;\n}\n.mu-date-display-monthday-title {\n  cursor: default;\n  width: 100%;\n  display: block;\n}\n.mu-date-display.selected-year .mu-date-display-monthday-title {\n  cursor: pointer;\n}\n.mu-date-display-next-enter-active,\n.mu-date-display-next-leave-active,\n.mu-date-display-prev-enter-active,\n.mu-date-display-prev-leave-active {\n  -webkit-transition: opacity .45s cubic-bezier(.23,1,.32,1),-webkit-transform .45s cubic-bezier(.23,1,.32,1);\n  transition: opacity .45s cubic-bezier(.23,1,.32,1),-webkit-transform .45s cubic-bezier(.23,1,.32,1);\n  transition: transform .45s cubic-bezier(.23,1,.32,1),opacity .45s cubic-bezier(.23,1,.32,1);\n  transition: transform .45s cubic-bezier(.23,1,.32,1),opacity .45s cubic-bezier(.23,1,.32,1),-webkit-transform .45s cubic-bezier(.23,1,.32,1);\n  -webkit-backface-visibility: hidden;\n  backface-visibility: hidden;\n}\n.mu-date-display-next-enter {\n  -webkit-transform: translate3d(0,-100%,0);\n  transform: translate3d(0,-100%,0);\n  opacity: 0;\n}\n.mu-date-display-next-leave-active,\n.mu-date-display-prev-enter {\n  -webkit-transform: translate3d(0,100%,0);\n  transform: translate3d(0,100%,0);\n  opacity: 0;\n}\n.mu-date-display-prev-leave-active {\n  -webkit-transform: translate3d(0,-100%,0);\n  transform: translate3d(0,-100%,0);\n  opacity: 0;\n}\n.mu-calendar-toolbar {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: justify;\n  -webkit-justify-content: space-between;\n  -ms-flex-pack: justify;\n  justify-content: space-between;\n  height: 48px;\n}\n.mu-calendar-toolbar-title-wrapper {\n  position: relative;\n  overflow: hidden;\n  height: 100%;\n  font-size: 14px;\n  font-weight: 500;\n  text-align: center;\n  width: 100%;\n}\n.mu-calendar-toolbar-title {\n  position: absolute;\n  height: 100%;\n  width: 100%;\n  top: 0;\n  left: 0;\n  line-height: 48px;\n}\n.mu-calendar-svg-icon {\n  display: block;\n  fill: currentColor;\n  height: 24px;\n  width: 24px;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n}\n.mu-calendar-monthday-content {\n  -webkit-box-orient: vertical;\n  -webkit-flex-direction: column;\n  -ms-flex-direction: column;\n  flex-direction: column;\n  -webkit-box-pack: start;\n  -webkit-justify-content: flex-start;\n  -ms-flex-pack: start;\n  justify-content: flex-start;\n  font-weight: 400;\n  height: 228px;\n  line-height: 2;\n  position: relative;\n  text-align: center;\n}\n.mu-calendar-monthday-content,\n.mu-calendar-monthday-row {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-direction: normal;\n}\n.mu-calendar-monthday-row {\n  -webkit-box-orient: horizontal;\n  -webkit-flex-direction: row;\n  -ms-flex-direction: row;\n  flex-direction: row;\n  -webkit-justify-content: space-around;\n  -ms-flex-pack: distribute;\n  justify-content: space-around;\n  height: 34px;\n  margin-bottom: 2px;\n}\n.mu-day-button {\n  display: inline-block;\n  background: none;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n  outline: none;\n  text-decoration: none;\n  cursor: pointer;\n  margin: 0;\n  padding: 4px 0;\n  font-size: inherit;\n  font-weight: 400;\n  position: relative;\n  border: 10px;\n  width: 42px;\n}\n.mu-day-button.disabled {\n  opacity: .4;\n}\n.mu-day-empty {\n  font-weight: 400;\n  padding: 4px 0;\n  position: relative;\n  width: 42px;\n}\n.mu-day-button-bg {\n  position: absolute;\n  top: 0;\n  left: 4px;\n  height: 34px;\n  background-color: #7e57c2;\n  border-radius: 50%;\n  opacity: 0;\n  -webkit-transform: scale(0);\n  -ms-transform: scale(0);\n  transform: scale(0);\n  -webkit-transition: all .45s cubic-bezier(.23,1,.32,1);\n  transition: all .45s cubic-bezier(.23,1,.32,1);\n  width: 34px;\n}\n.mu-day-button.hover .mu-day-button-bg,\n.mu-day-button.selected .mu-day-button-bg {\n  -webkit-transform: scale(1);\n  -ms-transform: scale(1);\n  transform: scale(1);\n}\n.mu-day-button.hover .mu-day-button-bg {\n  opacity: .6;\n}\n.mu-day-button.selected .mu-day-button-bg {\n  opacity: 1;\n}\n.mu-day-button-text {\n  font-weight: 400;\n  position: relative;\n  color: rgba(0,0,0,.87);\n}\n.mu-day-button.now .mu-day-button-text {\n  color: #7e57c2;\n}\n.mu-day-button.hover .mu-day-button-text,\n.mu-day-button.selected .mu-day-button-text {\n  color: #fff;\n}\n.mu-calendar-year-container {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: justify;\n  -webkit-justify-content: space-between;\n  -ms-flex-pack: justify;\n  justify-content: space-between;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n  -webkit-flex-direction: column;\n  -ms-flex-direction: column;\n  flex-direction: column;\n  margin-top: 10px;\n  width: 310px;\n  height: 272px;\n  overflow: hidden;\n}\n.mu-calendar-year {\n  background-color: #fff;\n  height: inherit;\n  line-height: 35px;\n  overflow-x: hidden;\n  overflow-y: auto;\n  -webkit-overflow-scrolling: touch;\n  position: relative;\n}\n.mu-calendar-year-list {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n  -webkit-flex-direction: column;\n  -ms-flex-direction: column;\n  flex-direction: column;\n  -webkit-box-pack: center;\n  -webkit-justify-content: center;\n  -ms-flex-pack: center;\n  justify-content: center;\n  min-height: 100%;\n}\n.mu-year-button {\n  position: relative;\n  display: block;\n  background: none;\n  cursor: pointer;\n  outline: none;\n  text-decoration: none;\n  margin: 0 auto;\n  padding: 0;\n  border: 10px;\n  font-size: 14px;\n  font-weight: inherit;\n  text-align: center;\n  line-height: inherit;\n}\n.mu-year-button-text {\n  -webkit-align-self: center;\n  -ms-flex-item-align: center;\n  -ms-grid-row-align: center;\n  align-self: center;\n  color: rgba(0,0,0,.87);\n  font-size: 17px;\n  font-weight: 400;\n  position: relative;\n  top: -1px;\n}\n.mu-year-button.selected .mu-year-button-text {\n  color: #7e57c2;\n  font-size: 26px;\n  font-weight: 500;\n}\n.mu-year-button.hover .mu-year-button-text {\n  color: #7e57c2;\n}\n.mu-time-picker {\n  display: inline-block;\n  position: relative;\n  width: 256px;\n}\n.mu-time-picker.fullWidth {\n  width: 100%;\n}\n.mu-time-picker-dialog {\n  width: 280px;\n}\n.mu-time-picker-dialog.landscape {\n  width: 479px;\n}\n.mu-time-picker-dialog.landscape .mu-dialog-body {\n  min-height: 352px;\n  min-width: 479px;\n}\n.mu-time-picker-dialog .mu-dialog-body {\n  padding: 0;\n  min-height: 450px;\n  min-width: 280px;\n}\n.mu-clock {\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n  width: 280px;\n}\n.mu-clock-landspace {\n  width: 479px;\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: justify;\n  -webkit-justify-content: space-between;\n  -ms-flex-pack: justify;\n  justify-content: space-between;\n}\n.mu-clock-container {\n  height: 280px;\n  padding: 10px;\n  box-sizing: content-box;\n  position: relative;\n  padding-bottom: 62px;\n}\n.mu-clock-landspace .mu-clock-container {\n  width: 300px;\n}\n.mu-clock-circle {\n  position: absolute;\n  top: 20px;\n  width: 260px;\n  height: 260px;\n  border-radius: 100%;\n  background-color: rgba(0,0,0,.07);\n}\n.mu-clock-landspace .mu-clock-circle {\n  left: 50%;\n  margin-left: -130px;\n}\n.mu-clock-actions {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-orient: horizontal;\n  -webkit-box-direction: normal;\n  -webkit-flex-direction: row;\n  -ms-flex-direction: row;\n  flex-direction: row;\n  -webkit-box-pack: end;\n  -webkit-justify-content: flex-end;\n  -ms-flex-pack: end;\n  justify-content: flex-end;\n  padding: 8px;\n  position: absolute;\n  left: 0;\n  bottom: 0;\n  right: 0;\n}\n.mu-time-display {\n  padding: 14px 0;\n  border-top-left-radius: 2px;\n  border-top-right-radius: 2px;\n  background-color: #7e57c2;\n  color: #fff;\n}\n.mu-clock-landspace .mu-time-display {\n  width: 179px;\n  position: relative;\n}\n.mu-time-display-text {\n  margin: 6px 0;\n  line-height: 58px;\n  height: 58px;\n  font-size: 58px;\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-align: baseline;\n  -webkit-align-items: baseline;\n  -ms-flex-align: baseline;\n  align-items: baseline;\n}\n.mu-clock-landspace .mu-time-display-text,\n.mu-time-display-text {\n  -webkit-box-pack: center;\n  -webkit-justify-content: center;\n  -ms-flex-pack: center;\n  justify-content: center;\n}\n.mu-clock-landspace .mu-time-display-text {\n  margin: 0;\n  position: absolute;\n  left: 0;\n  right: 0;\n  top: 0;\n  bottom: 0;\n  height: auto;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n  -webkit-flex-direction: column;\n  -ms-flex-direction: column;\n  flex-direction: column;\n  font-size: 48px;\n}\n.mu-time-display-affix {\n  -webkit-box-flex: 1;\n  -webkit-flex: 1 1;\n  -ms-flex: 1 1;\n  flex: 1 1;\n  position: relative;\n  line-height: 17px;\n  height: 17px;\n  font-size: 17px;\n}\n.mu-clock-landspace .mu-time-display-affix {\n  -webkit-box-flex: 0;\n  -webkit-flex: none;\n  -ms-flex: none;\n  flex: none;\n  height: auto;\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n  -webkit-flex-direction: column;\n  -ms-flex-direction: column;\n  flex-direction: column;\n}\n.mu-time-display-time {\n  margin: 0 10px;\n}\n.mu-clock-landspace .mu-time-display-time {\n  margin-top: -28px;\n}\n.mu-time-display-clickable {\n  cursor: pointer;\n}\n.mu-time-display-clickable.inactive {\n  opacity: .7;\n}\n.mu-clock-landspace .mu-time-display-clickable {\n  margin-top: 8px;\n}\n.mu-time-display-affix-top {\n  position: absolute;\n  top: -20px;\n  left: 0;\n}\n.mu-clock-landspace .mu-time-display-affix-top {\n  position: static;\n  -webkit-box-ordinal-group: 0;\n  -webkit-order: -1;\n  -ms-flex-order: -1;\n  order: -1;\n}\n.mu-clock-hours {\n  height: 100%;\n  width: 100%;\n  border-radius: 100%;\n  position: relative;\n  pointer-events: none;\n  box-sizing: border-box;\n}\n.mu-clock-hours-mask {\n  height: 100%;\n  width: 100%;\n  pointer-events: auto;\n}\n.mu-clock-number {\n  display: inline-block;\n  width: 32px;\n  height: 32px;\n  line-height: 24px;\n  position: absolute;\n  top: 10px;\n  text-align: center;\n  padding-top: 5px;\n  font-size: 1.1em;\n  pointer-events: none;\n  border-radius: 100%;\n  box-sizing: border-box;\n  -webkit-transform: translateY(5px);\n  -ms-transform: translateY(5px);\n  transform: translateY(5px);\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n}\n.mu-clock-number.selected {\n  background-color: #7e57c2;\n  color: #fff;\n}\n.mu-clock-number.inner {\n  width: 28px;\n  height: 28px;\n}\n.mu-clock-pointer {\n  height: 40%;\n  background-color: #7e57c2;\n  width: 2px;\n  left: 49%;\n  position: absolute;\n  bottom: 50%;\n  -webkit-transform-origin: center bottom 0;\n  -ms-transform-origin: center bottom 0;\n  transform-origin: center bottom 0;\n  pointer-events: none;\n}\n.mu-clock-pointer.inner {\n  height: 30%;\n}\n.mu-clock-pointer-mark {\n  box-sizing: content-box;\n  background-color: #fff;\n  border: 4px solid #7e57c2;\n  width: 7px;\n  height: 7px;\n  position: absolute;\n  top: -5px;\n  left: -6px;\n  border-radius: 100%;\n}\n.mu-clock-pointer-mark.has-selected {\n  display: none;\n}\n.mu-clock-minutes {\n  height: 100%;\n  width: 100%;\n  border-radius: 100%;\n  position: relative;\n  pointer-events: none;\n  box-sizing: border-box;\n}\n.mu-clock-minutes-mask {\n  height: 100%;\n  width: 100%;\n  pointer-events: auto;\n}\n.mu-step {\n  -webkit-box-flex: 0;\n  -webkit-flex: 0 0 auto;\n  -ms-flex: 0 0 auto;\n  flex: 0 0 auto;\n  margin-left: -6px;\n}\n.mu-stepper-vertical .mu-step {\n  margin-top: -14px;\n  margin-left: 0;\n}\n.mu-step:first-child {\n  margin-left: 0;\n}\n.mu-step-button {\n  border: 10px;\n  display: inline-block;\n  cursor: pointer;\n  text-decoration: none;\n  margin: 0;\n  padding: 0;\n  outline: none;\n  font-size: inherit;\n  font-weight: inherit;\n  -webkit-transform: translate(0);\n  -ms-transform: translate(0);\n  transform: translate(0);\n  background-color: transparent;\n  -webkit-transition: all .45s cubic-bezier(.23,1,.32,1) 0ms;\n  transition: all .45s cubic-bezier(.23,1,.32,1) 0ms;\n}\n.mu-stepper-vertical .mu-step-button {\n  width: 100%;\n}\n.mu-step-button.hover {\n  background-color: rgba(0,0,0,.06);\n}\n.mu-step-label {\n  height: 72px;\n  color: rgba(0,0,0,.87);\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center;\n  font-size: 14px;\n  padding-left: 14px;\n  padding-right: 14px;\n}\n.mu-stepper-vertical .mu-step-label {\n  height: 64px;\n}\n.mu-step-label.disabled {\n  color: rgba(0,0,0,.38);\n  cursor: not-allowed;\n}\n.mu-step-label.active {\n  font-weight: 500;\n}\n.mu-step-label-icon-container {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center;\n  margin-right: 8px;\n  width: 24px;\n}\n.mu-step-label-icon {\n  display: block;\n  font-size: 24px;\n  width: 24px;\n  height: 24px;\n  color: #9e9e9e;\n  fill: currentColor;\n}\n.mu-step-label.disabled .mu-step-label-icon {\n  color: #9e9e9e;\n}\n.mu-step-label.active .mu-step-label-icon,\n.mu-step-label.completed .mu-step-label-icon {\n  color: #7e57c2;\n}\n.mu-step-label-circle {\n  width: 20px;\n  height: 20px;\n  font-size: 12px;\n  line-height: 20px;\n  text-align: center;\n  overflow: hidden;\n  border-radius: 100%;\n  color: #fff;\n}\n.mu-step-label-circle,\n.mu-step-label.disabled .mu-step-label-circle {\n  background-color: #9e9e9e;\n}\n.mu-step-label.active .mu-step-label-circle,\n.mu-step-label.completed .mu-step-label-circle {\n  background-color: #7e57c2;\n}\n.mu-step-content {\n  margin-top: -14px;\n  margin-left: 25px;\n  padding-left: 21px;\n  padding-right: 16px;\n  overflow: hidden;\n}\n.mu-stepper-vertical .mu-step-content {\n  border-left: 1px solid #bdbdbd;\n}\n.mu-step-content.last {\n  border-left: none;\n}\n.mu-step-content-inner {\n  position: relative;\n  width: 100%;\n  top: 0;\n  left: 0;\n  overflow: hidden;\n}\n.mu-stepper {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-orient: horizontal;\n  -webkit-box-direction: normal;\n  -webkit-flex-direction: row;\n  -ms-flex-direction: row;\n  flex-direction: row;\n  -webkit-align-content: center;\n  -ms-flex-line-pack: center;\n  align-content: center;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center;\n  -webkit-box-pack: justify;\n  -webkit-justify-content: space-between;\n  -ms-flex-pack: justify;\n  justify-content: space-between;\n}\n.mu-stepper-vertical {\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n  -webkit-flex-direction: column;\n  -ms-flex-direction: column;\n  flex-direction: column;\n  -webkit-box-align: stretch;\n  -webkit-align-items: stretch;\n  -ms-flex-align: stretch;\n  align-items: stretch;\n}\n.mu-step-connector {\n  -webkit-box-flex: 1;\n  -webkit-flex: 1 1 auto;\n  -ms-flex: 1 1 auto;\n  flex: 1 1 auto;\n}\n.mu-stepper-vertical .mu-step-connector {\n  margin-left: 25px;\n}\n.mu-step-connector-line {\n  display: block;\n  border-color: #bdbdbd;\n  margin-left: -6px;\n  border-top-style: solid;\n  border-top-width: 1px;\n}\n.mu-stepper-vertical .mu-step-connector-line {\n  border-top: none;\n  border-left-style: solid;\n  border-left-width: 1px;\n  min-height: 28px;\n  margin-left: 0;\n}\n.mu-auto-complete {\n  display: inline-block;\n  position: relative;\n  width: 256px;\n}\n.mu-auto-complete.fullWidth {\n  width: 100%;\n}\n.mu-auto-complete-menu-item {\n  width: 100%;\n  overflow: hidden;\n}\n.mu-pagination {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: start;\n  -webkit-justify-content: flex-start;\n  -ms-flex-pack: start;\n  justify-content: flex-start;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center;\n}\n.mu-pagination-svg-icon {\n  display: inline-block;\n  width: 24px;\n  height: 24px;\n  fill: currentColor;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n}\n.mu-pagination-item,\n.mu-pagination-svg-icon {\n  -webkit-transition: all .45s cubic-bezier(.23,1,.32,1);\n  transition: all .45s cubic-bezier(.23,1,.32,1);\n}\n.mu-pagination-item {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: center;\n  -webkit-justify-content: center;\n  -ms-flex-pack: center;\n  justify-content: center;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center;\n  font-size: 16px;\n  height: 32px;\n  min-width: 32px;\n  padding-left: 8px;\n  padding-right: 8px;\n  line-height: 32px;\n  margin: 0 8px;\n  color: rgba(0,0,0,.87);\n  position: relative;\n  cursor: pointer;\n  border-radius: 2px;\n}\n.mu-pagination-item.hover {\n  background-color: rgba(0,0,0,.1);\n}\n.mu-pagination-item.active {\n  color: #fff;\n  background-color: #7e57c2;\n}\n.mu-pagination-item.disabled {\n  color: rgba(0,0,0,.38);\n  cursor: not-allowed;\n}\n.mu-pagination-item.circle,\n.mu-pagination-item.circle .mu-ripple-wrapper {\n  border-radius: 50%;\n}\n.mu-pagination-item-wrapper {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center;\n  height: 100%;\n  width: 100%;\n  -webkit-box-pack: center;\n  -webkit-justify-content: center;\n  -ms-flex-pack: center;\n  justify-content: center;\n}\n.row {\n  display: flex;\n  justify-content: space-between;\n  flex-wrap: wrap;\n  align-items: flex-start;\n}\n.row>[class*=col-] {\n  box-sizing: border-box;\n}\n@media (max-width:600px) {\n  .row .col-auto {\n    width: 100%;\n  }\n\n  .row .col-100 {\n    width: 100%;\n    width: calc((100% - 16px*0) / 1);\n  }\n\n  .row.no-gutter .col-100 {\n    width: 100%;\n  }\n\n  .row .col-95 {\n    width: 95%;\n    width: calc((100% - 16px*0.05263157894736836) / 1.0526315789473684);\n  }\n\n  .row.no-gutter .col-95 {\n    width: 95%;\n  }\n\n  .row .col-90 {\n    width: 90%;\n    width: calc((100% - 16px*0.11111111111111116) / 1.1111111111111112);\n  }\n\n  .row.no-gutter .col-90 {\n    width: 90%;\n  }\n\n  .row .col-85 {\n    width: 85%;\n    width: calc((100% - 16px*0.17647058823529416) / 1.1764705882352942);\n  }\n\n  .row.no-gutter .col-85 {\n    width: 85%;\n  }\n\n  .row .col-80 {\n    width: 80%;\n    width: calc((100% - 16px*0.25) / 1.25);\n  }\n\n  .row.no-gutter .col-80 {\n    width: 80%;\n  }\n\n  .row .col-75 {\n    width: 75%;\n    width: calc((100% - 16px*0.33333333333333326) / 1.3333333333333333);\n  }\n\n  .row.no-gutter .col-75 {\n    width: 75%;\n  }\n\n  .row .col-70 {\n    width: 70%;\n    width: calc((100% - 16px*0.4285714285714286) / 1.4285714285714286);\n  }\n\n  .row.no-gutter .col-70 {\n    width: 70%;\n  }\n\n  .row .col-66 {\n    width: 66.66666666666666%;\n    width: calc((100% - 16px*0.5000000000000002) / 1.5000000000000002);\n  }\n\n  .row.no-gutter .col-66 {\n    width: 66.66666666666666%;\n  }\n\n  .row .col-65 {\n    width: 65%;\n    width: calc((100% - 16px*0.5384615384615385) / 1.5384615384615385);\n  }\n\n  .row.no-gutter .col-65 {\n    width: 65%;\n  }\n\n  .row .col-60 {\n    width: 60%;\n    width: calc((100% - 16px*0.6666666666666667) / 1.6666666666666667);\n  }\n\n  .row.no-gutter .col-60 {\n    width: 60%;\n  }\n\n  .row .col-55 {\n    width: 55%;\n    width: calc((100% - 16px*0.8181818181818181) / 1.8181818181818181);\n  }\n\n  .row.no-gutter .col-55 {\n    width: 55%;\n  }\n\n  .row .col-50 {\n    width: 50%;\n    width: calc((100% - 16px*1) / 2);\n  }\n\n  .row.no-gutter .col-50 {\n    width: 50%;\n  }\n\n  .row .col-45 {\n    width: 45%;\n    width: calc((100% - 16px*1.2222222222222223) / 2.2222222222222223);\n  }\n\n  .row.no-gutter .col-45 {\n    width: 45%;\n  }\n\n  .row .col-40 {\n    width: 40%;\n    width: calc((100% - 16px*1.5) / 2.5);\n  }\n\n  .row.no-gutter .col-40 {\n    width: 40%;\n  }\n\n  .row .col-35 {\n    width: 35%;\n    width: calc((100% - 16px*1.8571428571428572) / 2.857142857142857);\n  }\n\n  .row.no-gutter .col-35 {\n    width: 35%;\n  }\n\n  .row .col-33 {\n    width: 33.333333333333336%;\n    width: calc((100% - 16px*2) / 3);\n  }\n\n  .row.no-gutter .col-33 {\n    width: 33.333333333333336%;\n  }\n\n  .row .col-30 {\n    width: 30%;\n    width: calc((100% - 16px*2.3333333333333335) / 3.3333333333333335);\n  }\n\n  .row.no-gutter .col-30 {\n    width: 30%;\n  }\n\n  .row .col-25 {\n    width: 25%;\n    width: calc((100% - 16px*3) / 4);\n  }\n\n  .row.no-gutter .col-25 {\n    width: 25%;\n  }\n\n  .row .col-20 {\n    width: 20%;\n    width: calc((100% - 16px*4) / 5);\n  }\n\n  .row.no-gutter .col-20 {\n    width: 20%;\n  }\n\n  .row .col-15 {\n    width: 15%;\n    width: calc((100% - 16px*5.666666666666667) / 6.666666666666667);\n  }\n\n  .row.no-gutter .col-15 {\n    width: 15%;\n  }\n\n  .row .col-10 {\n    width: 10%;\n    width: calc((100% - 16px*9) / 10);\n  }\n\n  .row.no-gutter .col-10 {\n    width: 10%;\n  }\n\n  .row .col-5 {\n    width: 5%;\n    width: calc((100% - 16px*19) / 20);\n  }\n\n  .row.no-gutter .col-5 {\n    width: 5%;\n  }\n\n  .row .col-auto:last-child,\n  .row .col-auto:last-child~.col-auto {\n    width: 100%;\n    width: calc((100% - 16px*0) / 1);\n  }\n\n  .row.no-gutter .col-auto:last-child,\n  .row.no-gutter .col-auto:last-child~.col-auto {\n    width: 100%;\n  }\n\n  .row .col-auto:nth-last-child(2),\n  .row .col-auto:nth-last-child(2)~.col-auto {\n    width: 50%;\n    width: calc((100% - 16px*1) / 2);\n  }\n\n  .row.no-gutter .col-auto:nth-last-child(2),\n  .row.no-gutter .col-auto:nth-last-child(2)~.col-auto {\n    width: 50%;\n  }\n\n  .row .col-auto:nth-last-child(3),\n  .row .col-auto:nth-last-child(3)~.col-auto {\n    width: 33.33333333%;\n    width: calc((100% - 16px*2) / 3);\n  }\n\n  .row.no-gutter .col-auto:nth-last-child(3),\n  .row.no-gutter .col-auto:nth-last-child(3)~.col-auto {\n    width: 33.33333333%;\n  }\n\n  .row .col-auto:nth-last-child(4),\n  .row .col-auto:nth-last-child(4)~.col-auto {\n    width: 25%;\n    width: calc((100% - 16px*3) / 4);\n  }\n\n  .row.no-gutter .col-auto:nth-last-child(4),\n  .row.no-gutter .col-auto:nth-last-child(4)~.col-auto {\n    width: 25%;\n  }\n\n  .row .col-auto:nth-last-child(5),\n  .row .col-auto:nth-last-child(5)~.col-auto {\n    width: 20%;\n    width: calc((100% - 16px*4) / 5);\n  }\n\n  .row.no-gutter .col-auto:nth-last-child(5),\n  .row.no-gutter .col-auto:nth-last-child(5)~.col-auto {\n    width: 20%;\n  }\n\n  .row .col-auto:nth-last-child(6),\n  .row .col-auto:nth-last-child(6)~.col-auto {\n    width: 16.66666667%;\n    width: calc((100% - 16px*5) / 6);\n  }\n\n  .row.no-gutter .col-auto:nth-last-child(6),\n  .row.no-gutter .col-auto:nth-last-child(6)~.col-auto {\n    width: 16.66666667%;\n  }\n\n  .row .col-auto:nth-last-child(7),\n  .row .col-auto:nth-last-child(7)~.col-auto {\n    width: 14.28571429%;\n    width: calc((100% - 16px*6) / 7);\n  }\n\n  .row.no-gutter .col-auto:nth-last-child(7),\n  .row.no-gutter .col-auto:nth-last-child(7)~.col-auto {\n    width: 14.28571429%;\n  }\n\n  .row .col-auto:nth-last-child(8),\n  .row .col-auto:nth-last-child(8)~.col-auto {\n    width: 12.5%;\n    width: calc((100% - 16px*7) / 8);\n  }\n\n  .row.no-gutter .col-auto:nth-last-child(8),\n  .row.no-gutter .col-auto:nth-last-child(8)~.col-auto {\n    width: 12.5%;\n  }\n\n  .row .col-auto:nth-last-child(9),\n  .row .col-auto:nth-last-child(9)~.col-auto {\n    width: 11.11111111%;\n    width: calc((100% - 16px*8) / 9);\n  }\n\n  .row.no-gutter .col-auto:nth-last-child(9),\n  .row.no-gutter .col-auto:nth-last-child(9)~.col-auto {\n    width: 11.11111111%;\n  }\n\n  .row .col-auto:nth-last-child(10),\n  .row .col-auto:nth-last-child(10)~.col-auto {\n    width: 10%;\n    width: calc((100% - 16px*9) / 10);\n  }\n\n  .row.no-gutter .col-auto:nth-last-child(10),\n  .row.no-gutter .col-auto:nth-last-child(10)~.col-auto {\n    width: 10%;\n  }\n\n  .row .col-auto:nth-last-child(11),\n  .row .col-auto:nth-last-child(11)~.col-auto {\n    width: 9.09090909%;\n    width: calc((100% - 16px*10) / 11);\n  }\n\n  .row.no-gutter .col-auto:nth-last-child(11),\n  .row.no-gutter .col-auto:nth-last-child(11)~.col-auto {\n    width: 9.09090909%;\n  }\n\n  .row .col-auto:nth-last-child(12),\n  .row .col-auto:nth-last-child(12)~.col-auto {\n    width: 8.33333333%;\n    width: calc((100% - 16px*11) / 12);\n  }\n\n  .row.no-gutter .col-auto:nth-last-child(12),\n  .row.no-gutter .col-auto:nth-last-child(12)~.col-auto {\n    width: 8.33333333%;\n  }\n\n  .row .col-auto:nth-last-child(13),\n  .row .col-auto:nth-last-child(13)~.col-auto {\n    width: 7.69230769%;\n    width: calc((100% - 16px*12) / 13);\n  }\n\n  .row.no-gutter .col-auto:nth-last-child(13),\n  .row.no-gutter .col-auto:nth-last-child(13)~.col-auto {\n    width: 7.69230769%;\n  }\n\n  .row .col-auto:nth-last-child(14),\n  .row .col-auto:nth-last-child(14)~.col-auto {\n    width: 7.14285714%;\n    width: calc((100% - 16px*13) / 14);\n  }\n\n  .row.no-gutter .col-auto:nth-last-child(14),\n  .row.no-gutter .col-auto:nth-last-child(14)~.col-auto {\n    width: 7.14285714%;\n  }\n\n  .row .col-auto:nth-last-child(15),\n  .row .col-auto:nth-last-child(15)~.col-auto {\n    width: 6.66666667%;\n    width: calc((100% - 16px*14) / 15);\n  }\n\n  .row.no-gutter .col-auto:nth-last-child(15),\n  .row.no-gutter .col-auto:nth-last-child(15)~.col-auto {\n    width: 6.66666667%;\n  }\n\n  .row .col-auto:nth-last-child(16),\n  .row .col-auto:nth-last-child(16)~.col-auto {\n    width: 6.25%;\n    width: calc((100% - 16px*15) / 16);\n  }\n\n  .row.no-gutter .col-auto:nth-last-child(16),\n  .row.no-gutter .col-auto:nth-last-child(16)~.col-auto {\n    width: 6.25%;\n  }\n\n  .row .col-auto:nth-last-child(17),\n  .row .col-auto:nth-last-child(17)~.col-auto {\n    width: 5.88235294%;\n    width: calc((100% - 16px*16) / 17);\n  }\n\n  .row.no-gutter .col-auto:nth-last-child(17),\n  .row.no-gutter .col-auto:nth-last-child(17)~.col-auto {\n    width: 5.88235294%;\n  }\n\n  .row .col-auto:nth-last-child(18),\n  .row .col-auto:nth-last-child(18)~.col-auto {\n    width: 5.55555556%;\n    width: calc((100% - 16px*17) / 18);\n  }\n\n  .row.no-gutter .col-auto:nth-last-child(18),\n  .row.no-gutter .col-auto:nth-last-child(18)~.col-auto {\n    width: 5.55555556%;\n  }\n\n  .row .col-auto:nth-last-child(19),\n  .row .col-auto:nth-last-child(19)~.col-auto {\n    width: 5.26315789%;\n    width: calc((100% - 16px*18) / 19);\n  }\n\n  .row.no-gutter .col-auto:nth-last-child(19),\n  .row.no-gutter .col-auto:nth-last-child(19)~.col-auto {\n    width: 5.26315789%;\n  }\n\n  .row .col-auto:nth-last-child(20),\n  .row .col-auto:nth-last-child(20)~.col-auto {\n    width: 5%;\n    width: calc((100% - 16px*19) / 20);\n  }\n\n  .row.no-gutter .col-auto:nth-last-child(20),\n  .row.no-gutter .col-auto:nth-last-child(20)~.col-auto {\n    width: 5%;\n  }\n\n  .row .col-auto:nth-last-child(21),\n  .row .col-auto:nth-last-child(21)~.col-auto {\n    width: 4.76190476%;\n    width: calc((100% - 16px*20) / 21);\n  }\n\n  .row.no-gutter .col-auto:nth-last-child(21),\n  .row.no-gutter .col-auto:nth-last-child(21)~.col-auto {\n    width: 4.76190476%;\n  }\n}\n@media (max-width:992px) and (min-width:601px) {\n  .row .tablet-100 {\n    width: 100%;\n    width: calc((100% - 16px*0) / 1);\n  }\n\n  .row.no-gutter .tablet-100 {\n    width: 100%;\n  }\n\n  .row .tablet-95 {\n    width: 95%;\n    width: calc((100% - 16px*0.05263157894736836) / 1.0526315789473684);\n  }\n\n  .row.no-gutter .tablet-95 {\n    width: 95%;\n  }\n\n  .row .tablet-90 {\n    width: 90%;\n    width: calc((100% - 16px*0.11111111111111116) / 1.1111111111111112);\n  }\n\n  .row.no-gutter .tablet-90 {\n    width: 90%;\n  }\n\n  .row .tablet-85 {\n    width: 85%;\n    width: calc((100% - 16px*0.17647058823529416) / 1.1764705882352942);\n  }\n\n  .row.no-gutter .tablet-85 {\n    width: 85%;\n  }\n\n  .row .tablet-80 {\n    width: 80%;\n    width: calc((100% - 16px*0.25) / 1.25);\n  }\n\n  .row.no-gutter .tablet-80 {\n    width: 80%;\n  }\n\n  .row .tablet-75 {\n    width: 75%;\n    width: calc((100% - 16px*0.33333333333333326) / 1.3333333333333333);\n  }\n\n  .row.no-gutter .tablet-75 {\n    width: 75%;\n  }\n\n  .row .tablet-70 {\n    width: 70%;\n    width: calc((100% - 16px*0.4285714285714286) / 1.4285714285714286);\n  }\n\n  .row.no-gutter .tablet-70 {\n    width: 70%;\n  }\n\n  .row .tablet-66 {\n    width: 66.66666666666666%;\n    width: calc((100% - 16px*0.5000000000000002) / 1.5000000000000002);\n  }\n\n  .row.no-gutter .tablet-66 {\n    width: 66.66666666666666%;\n  }\n\n  .row .tablet-65 {\n    width: 65%;\n    width: calc((100% - 16px*0.5384615384615385) / 1.5384615384615385);\n  }\n\n  .row.no-gutter .tablet-65 {\n    width: 65%;\n  }\n\n  .row .tablet-60 {\n    width: 60%;\n    width: calc((100% - 16px*0.6666666666666667) / 1.6666666666666667);\n  }\n\n  .row.no-gutter .tablet-60 {\n    width: 60%;\n  }\n\n  .row .tablet-55 {\n    width: 55%;\n    width: calc((100% - 16px*0.8181818181818181) / 1.8181818181818181);\n  }\n\n  .row.no-gutter .tablet-55 {\n    width: 55%;\n  }\n\n  .row .tablet-50 {\n    width: 50%;\n    width: calc((100% - 16px*1) / 2);\n  }\n\n  .row.no-gutter .tablet-50 {\n    width: 50%;\n  }\n\n  .row .tablet-45 {\n    width: 45%;\n    width: calc((100% - 16px*1.2222222222222223) / 2.2222222222222223);\n  }\n\n  .row.no-gutter .tablet-45 {\n    width: 45%;\n  }\n\n  .row .tablet-40 {\n    width: 40%;\n    width: calc((100% - 16px*1.5) / 2.5);\n  }\n\n  .row.no-gutter .tablet-40 {\n    width: 40%;\n  }\n\n  .row .tablet-35 {\n    width: 35%;\n    width: calc((100% - 16px*1.8571428571428572) / 2.857142857142857);\n  }\n\n  .row.no-gutter .tablet-35 {\n    width: 35%;\n  }\n\n  .row .tablet-33 {\n    width: 33.333333333333336%;\n    width: calc((100% - 16px*2) / 3);\n  }\n\n  .row.no-gutter .tablet-33 {\n    width: 33.333333333333336%;\n  }\n\n  .row .tablet-30 {\n    width: 30%;\n    width: calc((100% - 16px*2.3333333333333335) / 3.3333333333333335);\n  }\n\n  .row.no-gutter .tablet-30 {\n    width: 30%;\n  }\n\n  .row .tablet-25 {\n    width: 25%;\n    width: calc((100% - 16px*3) / 4);\n  }\n\n  .row.no-gutter .tablet-25 {\n    width: 25%;\n  }\n\n  .row .tablet-20 {\n    width: 20%;\n    width: calc((100% - 16px*4) / 5);\n  }\n\n  .row.no-gutter .tablet-20 {\n    width: 20%;\n  }\n\n  .row .tablet-15 {\n    width: 15%;\n    width: calc((100% - 16px*5.666666666666667) / 6.666666666666667);\n  }\n\n  .row.no-gutter .tablet-15 {\n    width: 15%;\n  }\n\n  .row .tablet-10 {\n    width: 10%;\n    width: calc((100% - 16px*9) / 10);\n  }\n\n  .row.no-gutter .tablet-10 {\n    width: 10%;\n  }\n\n  .row .tablet-5 {\n    width: 5%;\n    width: calc((100% - 16px*19) / 20);\n  }\n\n  .row.no-gutter .tablet-5 {\n    width: 5%;\n  }\n\n  .row .tablet-auto:last-child,\n  .row .tablet-auto:last-child~.col-auto {\n    width: 100%;\n    width: calc((100% - 16px*0) / 1);\n  }\n\n  .row.no-gutter .tablet-auto:last-child,\n  .row.no-gutter .tablet-auto:last-child~.tablet-auto {\n    width: 100%;\n  }\n\n  .row .tablet-auto:nth-last-child(2),\n  .row .tablet-auto:nth-last-child(2)~.col-auto {\n    width: 50%;\n    width: calc((100% - 16px*1) / 2);\n  }\n\n  .row.no-gutter .tablet-auto:nth-last-child(2),\n  .row.no-gutter .tablet-auto:nth-last-child(2)~.tablet-auto {\n    width: 50%;\n  }\n\n  .row .tablet-auto:nth-last-child(3),\n  .row .tablet-auto:nth-last-child(3)~.col-auto {\n    width: 33.33333333%;\n    width: calc((100% - 16px*2) / 3);\n  }\n\n  .row.no-gutter .tablet-auto:nth-last-child(3),\n  .row.no-gutter .tablet-auto:nth-last-child(3)~.tablet-auto {\n    width: 33.33333333%;\n  }\n\n  .row .tablet-auto:nth-last-child(4),\n  .row .tablet-auto:nth-last-child(4)~.col-auto {\n    width: 25%;\n    width: calc((100% - 16px*3) / 4);\n  }\n\n  .row.no-gutter .tablet-auto:nth-last-child(4),\n  .row.no-gutter .tablet-auto:nth-last-child(4)~.tablet-auto {\n    width: 25%;\n  }\n\n  .row .tablet-auto:nth-last-child(5),\n  .row .tablet-auto:nth-last-child(5)~.col-auto {\n    width: 20%;\n    width: calc((100% - 16px*4) / 5);\n  }\n\n  .row.no-gutter .tablet-auto:nth-last-child(5),\n  .row.no-gutter .tablet-auto:nth-last-child(5)~.tablet-auto {\n    width: 20%;\n  }\n\n  .row .tablet-auto:nth-last-child(6),\n  .row .tablet-auto:nth-last-child(6)~.col-auto {\n    width: 16.66666667%;\n    width: calc((100% - 16px*5) / 6);\n  }\n\n  .row.no-gutter .tablet-auto:nth-last-child(6),\n  .row.no-gutter .tablet-auto:nth-last-child(6)~.tablet-auto {\n    width: 16.66666667%;\n  }\n\n  .row .tablet-auto:nth-last-child(7),\n  .row .tablet-auto:nth-last-child(7)~.col-auto {\n    width: 14.28571429%;\n    width: calc((100% - 16px*6) / 7);\n  }\n\n  .row.no-gutter .tablet-auto:nth-last-child(7),\n  .row.no-gutter .tablet-auto:nth-last-child(7)~.tablet-auto {\n    width: 14.28571429%;\n  }\n\n  .row .tablet-auto:nth-last-child(8),\n  .row .tablet-auto:nth-last-child(8)~.col-auto {\n    width: 12.5%;\n    width: calc((100% - 16px*7) / 8);\n  }\n\n  .row.no-gutter .tablet-auto:nth-last-child(8),\n  .row.no-gutter .tablet-auto:nth-last-child(8)~.tablet-auto {\n    width: 12.5%;\n  }\n\n  .row .tablet-auto:nth-last-child(9),\n  .row .tablet-auto:nth-last-child(9)~.col-auto {\n    width: 11.11111111%;\n    width: calc((100% - 16px*8) / 9);\n  }\n\n  .row.no-gutter .tablet-auto:nth-last-child(9),\n  .row.no-gutter .tablet-auto:nth-last-child(9)~.tablet-auto {\n    width: 11.11111111%;\n  }\n\n  .row .tablet-auto:nth-last-child(10),\n  .row .tablet-auto:nth-last-child(10)~.col-auto {\n    width: 10%;\n    width: calc((100% - 16px*9) / 10);\n  }\n\n  .row.no-gutter .tablet-auto:nth-last-child(10),\n  .row.no-gutter .tablet-auto:nth-last-child(10)~.tablet-auto {\n    width: 10%;\n  }\n\n  .row .tablet-auto:nth-last-child(11),\n  .row .tablet-auto:nth-last-child(11)~.col-auto {\n    width: 9.09090909%;\n    width: calc((100% - 16px*10) / 11);\n  }\n\n  .row.no-gutter .tablet-auto:nth-last-child(11),\n  .row.no-gutter .tablet-auto:nth-last-child(11)~.tablet-auto {\n    width: 9.09090909%;\n  }\n\n  .row .tablet-auto:nth-last-child(12),\n  .row .tablet-auto:nth-last-child(12)~.col-auto {\n    width: 8.33333333%;\n    width: calc((100% - 16px*11) / 12);\n  }\n\n  .row.no-gutter .tablet-auto:nth-last-child(12),\n  .row.no-gutter .tablet-auto:nth-last-child(12)~.tablet-auto {\n    width: 8.33333333%;\n  }\n\n  .row .tablet-auto:nth-last-child(13),\n  .row .tablet-auto:nth-last-child(13)~.col-auto {\n    width: 7.69230769%;\n    width: calc((100% - 16px*12) / 13);\n  }\n\n  .row.no-gutter .tablet-auto:nth-last-child(13),\n  .row.no-gutter .tablet-auto:nth-last-child(13)~.tablet-auto {\n    width: 7.69230769%;\n  }\n\n  .row .tablet-auto:nth-last-child(14),\n  .row .tablet-auto:nth-last-child(14)~.col-auto {\n    width: 7.14285714%;\n    width: calc((100% - 16px*13) / 14);\n  }\n\n  .row.no-gutter .tablet-auto:nth-last-child(14),\n  .row.no-gutter .tablet-auto:nth-last-child(14)~.tablet-auto {\n    width: 7.14285714%;\n  }\n\n  .row .tablet-auto:nth-last-child(15),\n  .row .tablet-auto:nth-last-child(15)~.col-auto {\n    width: 6.66666667%;\n    width: calc((100% - 16px*14) / 15);\n  }\n\n  .row.no-gutter .tablet-auto:nth-last-child(15),\n  .row.no-gutter .tablet-auto:nth-last-child(15)~.tablet-auto {\n    width: 6.66666667%;\n  }\n\n  .row .tablet-auto:nth-last-child(16),\n  .row .tablet-auto:nth-last-child(16)~.col-auto {\n    width: 6.25%;\n    width: calc((100% - 16px*15) / 16);\n  }\n\n  .row.no-gutter .tablet-auto:nth-last-child(16),\n  .row.no-gutter .tablet-auto:nth-last-child(16)~.tablet-auto {\n    width: 6.25%;\n  }\n\n  .row .tablet-auto:nth-last-child(17),\n  .row .tablet-auto:nth-last-child(17)~.col-auto {\n    width: 5.88235294%;\n    width: calc((100% - 16px*16) / 17);\n  }\n\n  .row.no-gutter .tablet-auto:nth-last-child(17),\n  .row.no-gutter .tablet-auto:nth-last-child(17)~.tablet-auto {\n    width: 5.88235294%;\n  }\n\n  .row .tablet-auto:nth-last-child(18),\n  .row .tablet-auto:nth-last-child(18)~.col-auto {\n    width: 5.55555556%;\n    width: calc((100% - 16px*17) / 18);\n  }\n\n  .row.no-gutter .tablet-auto:nth-last-child(18),\n  .row.no-gutter .tablet-auto:nth-last-child(18)~.tablet-auto {\n    width: 5.55555556%;\n  }\n\n  .row .tablet-auto:nth-last-child(19),\n  .row .tablet-auto:nth-last-child(19)~.col-auto {\n    width: 5.26315789%;\n    width: calc((100% - 16px*18) / 19);\n  }\n\n  .row.no-gutter .tablet-auto:nth-last-child(19),\n  .row.no-gutter .tablet-auto:nth-last-child(19)~.tablet-auto {\n    width: 5.26315789%;\n  }\n\n  .row .tablet-auto:nth-last-child(20),\n  .row .tablet-auto:nth-last-child(20)~.col-auto {\n    width: 5%;\n    width: calc((100% - 16px*19) / 20);\n  }\n\n  .row.no-gutter .tablet-auto:nth-last-child(20),\n  .row.no-gutter .tablet-auto:nth-last-child(20)~.tablet-auto {\n    width: 5%;\n  }\n\n  .row .tablet-auto:nth-last-child(21),\n  .row .tablet-auto:nth-last-child(21)~.col-auto {\n    width: 4.76190476%;\n    width: calc((100% - 16px*20) / 21);\n  }\n\n  .row.no-gutter .tablet-auto:nth-last-child(21),\n  .row.no-gutter .tablet-auto:nth-last-child(21)~.tablet-auto {\n    width: 4.76190476%;\n  }\n}\n@media (min-width:993px) {\n  .row .desktop-100 {\n    width: 100%;\n    width: calc((100% - 16px*0) / 1);\n  }\n\n  .row.no-gutter .desktop-100 {\n    width: 100%;\n  }\n\n  .row .desktop-95 {\n    width: 95%;\n    width: calc((100% - 16px*0.05263157894736836) / 1.0526315789473684);\n  }\n\n  .row.no-gutter .desktop-95 {\n    width: 95%;\n  }\n\n  .row .desktop-90 {\n    width: 90%;\n    width: calc((100% - 16px*0.11111111111111116) / 1.1111111111111112);\n  }\n\n  .row.no-gutter .desktop-90 {\n    width: 90%;\n  }\n\n  .row .desktop-85 {\n    width: 85%;\n    width: calc((100% - 16px*0.17647058823529416) / 1.1764705882352942);\n  }\n\n  .row.no-gutter .desktop-85 {\n    width: 85%;\n  }\n\n  .row .desktop-80 {\n    width: 80%;\n    width: calc((100% - 16px*0.25) / 1.25);\n  }\n\n  .row.no-gutter .desktop-80 {\n    width: 80%;\n  }\n\n  .row .desktop-75 {\n    width: 75%;\n    width: calc((100% - 16px*0.33333333333333326) / 1.3333333333333333);\n  }\n\n  .row.no-gutter .desktop-75 {\n    width: 75%;\n  }\n\n  .row .desktop-70 {\n    width: 70%;\n    width: calc((100% - 16px*0.4285714285714286) / 1.4285714285714286);\n  }\n\n  .row.no-gutter .desktop-70 {\n    width: 70%;\n  }\n\n  .row .desktop-66 {\n    width: 66.66666666666666%;\n    width: calc((100% - 16px*0.5000000000000002) / 1.5000000000000002);\n  }\n\n  .row.no-gutter .desktop-66 {\n    width: 66.66666666666666%;\n  }\n\n  .row .desktop-65 {\n    width: 65%;\n    width: calc((100% - 16px*0.5384615384615385) / 1.5384615384615385);\n  }\n\n  .row.no-gutter .desktop-65 {\n    width: 65%;\n  }\n\n  .row .desktop-60 {\n    width: 60%;\n    width: calc((100% - 16px*0.6666666666666667) / 1.6666666666666667);\n  }\n\n  .row.no-gutter .desktop-60 {\n    width: 60%;\n  }\n\n  .row .desktop-55 {\n    width: 55%;\n    width: calc((100% - 16px*0.8181818181818181) / 1.8181818181818181);\n  }\n\n  .row.no-gutter .desktop-55 {\n    width: 55%;\n  }\n\n  .row .desktop-50 {\n    width: 50%;\n    width: calc((100% - 16px*1) / 2);\n  }\n\n  .row.no-gutter .desktop-50 {\n    width: 50%;\n  }\n\n  .row .desktop-45 {\n    width: 45%;\n    width: calc((100% - 16px*1.2222222222222223) / 2.2222222222222223);\n  }\n\n  .row.no-gutter .desktop-45 {\n    width: 45%;\n  }\n\n  .row .desktop-40 {\n    width: 40%;\n    width: calc((100% - 16px*1.5) / 2.5);\n  }\n\n  .row.no-gutter .desktop-40 {\n    width: 40%;\n  }\n\n  .row .desktop-35 {\n    width: 35%;\n    width: calc((100% - 16px*1.8571428571428572) / 2.857142857142857);\n  }\n\n  .row.no-gutter .desktop-35 {\n    width: 35%;\n  }\n\n  .row .desktop-33 {\n    width: 33.333333333333336%;\n    width: calc((100% - 16px*2) / 3);\n  }\n\n  .row.no-gutter .desktop-33 {\n    width: 33.333333333333336%;\n  }\n\n  .row .desktop-30 {\n    width: 30%;\n    width: calc((100% - 16px*2.3333333333333335) / 3.3333333333333335);\n  }\n\n  .row.no-gutter .desktop-30 {\n    width: 30%;\n  }\n\n  .row .desktop-25 {\n    width: 25%;\n    width: calc((100% - 16px*3) / 4);\n  }\n\n  .row.no-gutter .desktop-25 {\n    width: 25%;\n  }\n\n  .row .desktop-20 {\n    width: 20%;\n    width: calc((100% - 16px*4) / 5);\n  }\n\n  .row.no-gutter .desktop-20 {\n    width: 20%;\n  }\n\n  .row .desktop-15 {\n    width: 15%;\n    width: calc((100% - 16px*5.666666666666667) / 6.666666666666667);\n  }\n\n  .row.no-gutter .desktop-15 {\n    width: 15%;\n  }\n\n  .row .desktop-10 {\n    width: 10%;\n    width: calc((100% - 16px*9) / 10);\n  }\n\n  .row.no-gutter .desktop-10 {\n    width: 10%;\n  }\n\n  .row .desktop-5 {\n    width: 5%;\n    width: calc((100% - 16px*19) / 20);\n  }\n\n  .row.no-gutter .desktop-5 {\n    width: 5%;\n  }\n\n  .row .desktop-auto:last-child,\n  .row .desktop-auto:last-child~.col-auto {\n    width: 100%;\n    width: calc((100% - 16px*0) / 1);\n  }\n\n  .row.no-gutter .desktop-auto:last-child,\n  .row.no-gutter .desktop-auto:last-child~.desktop-auto {\n    width: 100%;\n  }\n\n  .row .desktop-auto:nth-last-child(2),\n  .row .desktop-auto:nth-last-child(2)~.col-auto {\n    width: 50%;\n    width: calc((100% - 16px*1) / 2);\n  }\n\n  .row.no-gutter .desktop-auto:nth-last-child(2),\n  .row.no-gutter .desktop-auto:nth-last-child(2)~.desktop-auto {\n    width: 50%;\n  }\n\n  .row .desktop-auto:nth-last-child(3),\n  .row .desktop-auto:nth-last-child(3)~.col-auto {\n    width: 33.33333333%;\n    width: calc((100% - 16px*2) / 3);\n  }\n\n  .row.no-gutter .desktop-auto:nth-last-child(3),\n  .row.no-gutter .desktop-auto:nth-last-child(3)~.desktop-auto {\n    width: 33.33333333%;\n  }\n\n  .row .desktop-auto:nth-last-child(4),\n  .row .desktop-auto:nth-last-child(4)~.col-auto {\n    width: 25%;\n    width: calc((100% - 16px*3) / 4);\n  }\n\n  .row.no-gutter .desktop-auto:nth-last-child(4),\n  .row.no-gutter .desktop-auto:nth-last-child(4)~.desktop-auto {\n    width: 25%;\n  }\n\n  .row .desktop-auto:nth-last-child(5),\n  .row .desktop-auto:nth-last-child(5)~.col-auto {\n    width: 20%;\n    width: calc((100% - 16px*4) / 5);\n  }\n\n  .row.no-gutter .desktop-auto:nth-last-child(5),\n  .row.no-gutter .desktop-auto:nth-last-child(5)~.desktop-auto {\n    width: 20%;\n  }\n\n  .row .desktop-auto:nth-last-child(6),\n  .row .desktop-auto:nth-last-child(6)~.col-auto {\n    width: 16.66666667%;\n    width: calc((100% - 16px*5) / 6);\n  }\n\n  .row.no-gutter .desktop-auto:nth-last-child(6),\n  .row.no-gutter .desktop-auto:nth-last-child(6)~.desktop-auto {\n    width: 16.66666667%;\n  }\n\n  .row .desktop-auto:nth-last-child(7),\n  .row .desktop-auto:nth-last-child(7)~.col-auto {\n    width: 14.28571429%;\n    width: calc((100% - 16px*6) / 7);\n  }\n\n  .row.no-gutter .desktop-auto:nth-last-child(7),\n  .row.no-gutter .desktop-auto:nth-last-child(7)~.desktop-auto {\n    width: 14.28571429%;\n  }\n\n  .row .desktop-auto:nth-last-child(8),\n  .row .desktop-auto:nth-last-child(8)~.col-auto {\n    width: 12.5%;\n    width: calc((100% - 16px*7) / 8);\n  }\n\n  .row.no-gutter .desktop-auto:nth-last-child(8),\n  .row.no-gutter .desktop-auto:nth-last-child(8)~.desktop-auto {\n    width: 12.5%;\n  }\n\n  .row .desktop-auto:nth-last-child(9),\n  .row .desktop-auto:nth-last-child(9)~.col-auto {\n    width: 11.11111111%;\n    width: calc((100% - 16px*8) / 9);\n  }\n\n  .row.no-gutter .desktop-auto:nth-last-child(9),\n  .row.no-gutter .desktop-auto:nth-last-child(9)~.desktop-auto {\n    width: 11.11111111%;\n  }\n\n  .row .desktop-auto:nth-last-child(10),\n  .row .desktop-auto:nth-last-child(10)~.col-auto {\n    width: 10%;\n    width: calc((100% - 16px*9) / 10);\n  }\n\n  .row.no-gutter .desktop-auto:nth-last-child(10),\n  .row.no-gutter .desktop-auto:nth-last-child(10)~.desktop-auto {\n    width: 10%;\n  }\n\n  .row .desktop-auto:nth-last-child(11),\n  .row .desktop-auto:nth-last-child(11)~.col-auto {\n    width: 9.09090909%;\n    width: calc((100% - 16px*10) / 11);\n  }\n\n  .row.no-gutter .desktop-auto:nth-last-child(11),\n  .row.no-gutter .desktop-auto:nth-last-child(11)~.desktop-auto {\n    width: 9.09090909%;\n  }\n\n  .row .desktop-auto:nth-last-child(12),\n  .row .desktop-auto:nth-last-child(12)~.col-auto {\n    width: 8.33333333%;\n    width: calc((100% - 16px*11) / 12);\n  }\n\n  .row.no-gutter .desktop-auto:nth-last-child(12),\n  .row.no-gutter .desktop-auto:nth-last-child(12)~.desktop-auto {\n    width: 8.33333333%;\n  }\n\n  .row .desktop-auto:nth-last-child(13),\n  .row .desktop-auto:nth-last-child(13)~.col-auto {\n    width: 7.69230769%;\n    width: calc((100% - 16px*12) / 13);\n  }\n\n  .row.no-gutter .desktop-auto:nth-last-child(13),\n  .row.no-gutter .desktop-auto:nth-last-child(13)~.desktop-auto {\n    width: 7.69230769%;\n  }\n\n  .row .desktop-auto:nth-last-child(14),\n  .row .desktop-auto:nth-last-child(14)~.col-auto {\n    width: 7.14285714%;\n    width: calc((100% - 16px*13) / 14);\n  }\n\n  .row.no-gutter .desktop-auto:nth-last-child(14),\n  .row.no-gutter .desktop-auto:nth-last-child(14)~.desktop-auto {\n    width: 7.14285714%;\n  }\n\n  .row .desktop-auto:nth-last-child(15),\n  .row .desktop-auto:nth-last-child(15)~.col-auto {\n    width: 6.66666667%;\n    width: calc((100% - 16px*14) / 15);\n  }\n\n  .row.no-gutter .desktop-auto:nth-last-child(15),\n  .row.no-gutter .desktop-auto:nth-last-child(15)~.desktop-auto {\n    width: 6.66666667%;\n  }\n\n  .row .desktop-auto:nth-last-child(16),\n  .row .desktop-auto:nth-last-child(16)~.col-auto {\n    width: 6.25%;\n    width: calc((100% - 16px*15) / 16);\n  }\n\n  .row.no-gutter .desktop-auto:nth-last-child(16),\n  .row.no-gutter .desktop-auto:nth-last-child(16)~.desktop-auto {\n    width: 6.25%;\n  }\n\n  .row .desktop-auto:nth-last-child(17),\n  .row .desktop-auto:nth-last-child(17)~.col-auto {\n    width: 5.88235294%;\n    width: calc((100% - 16px*16) / 17);\n  }\n\n  .row.no-gutter .desktop-auto:nth-last-child(17),\n  .row.no-gutter .desktop-auto:nth-last-child(17)~.desktop-auto {\n    width: 5.88235294%;\n  }\n\n  .row .desktop-auto:nth-last-child(18),\n  .row .desktop-auto:nth-last-child(18)~.col-auto {\n    width: 5.55555556%;\n    width: calc((100% - 16px*17) / 18);\n  }\n\n  .row.no-gutter .desktop-auto:nth-last-child(18),\n  .row.no-gutter .desktop-auto:nth-last-child(18)~.desktop-auto {\n    width: 5.55555556%;\n  }\n\n  .row .desktop-auto:nth-last-child(19),\n  .row .desktop-auto:nth-last-child(19)~.col-auto {\n    width: 5.26315789%;\n    width: calc((100% - 16px*18) / 19);\n  }\n\n  .row.no-gutter .desktop-auto:nth-last-child(19),\n  .row.no-gutter .desktop-auto:nth-last-child(19)~.desktop-auto {\n    width: 5.26315789%;\n  }\n\n  .row .desktop-auto:nth-last-child(20),\n  .row .desktop-auto:nth-last-child(20)~.col-auto {\n    width: 5%;\n    width: calc((100% - 16px*19) / 20);\n  }\n\n  .row.no-gutter .desktop-auto:nth-last-child(20),\n  .row.no-gutter .desktop-auto:nth-last-child(20)~.desktop-auto {\n    width: 5%;\n  }\n\n  .row .desktop-auto:nth-last-child(21),\n  .row .desktop-auto:nth-last-child(21)~.col-auto {\n    width: 4.76190476%;\n    width: calc((100% - 16px*20) / 21);\n  }\n\n  .row.no-gutter .desktop-auto:nth-last-child(21),\n  .row.no-gutter .desktop-auto:nth-last-child(21)~.desktop-auto {\n    width: 4.76190476%;\n  }\n}\n.mu-flexbox {\n  width: 100%;\n  text-align: left;\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  box-align: center;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center;\n}\n.mu-flexbox .mu-flexbox-item {\n  -webkit-box-flex: 1;\n  -webkit-flex: 1;\n  -ms-flex: 1;\n  flex: 1;\n  min-width: 20px;\n  width: 0;\n}\n.mu-flexbox-item>.mu-flexbox {\n  width: 100%;\n}\n.mu-flexbox .mu-flexbox-item:first-child {\n  margin-left: 0!important;\n  margin-top: 0!important;\n}\n.mu-flex-col {\n  box-orient: vertical;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n  -webkit-flex-direction: column;\n  -ms-flex-direction: column;\n  flex-direction: column;\n}\n.mu-flex-col>.mu-flexbox-item {\n  width: 100%;\n}\n.mu-flex-row {\n  box-direction: row;\n  box-orient: horizontal;\n  -webkit-box-orient: horizontal;\n  -webkit-box-direction: normal;\n  -webkit-flex-direction: row;\n  -ms-flex-direction: row;\n  flex-direction: row;\n}\n.mu-appbar {\n  background-color: #1976d2;\n  color: #303030;\n}\n.mu-avatar {\n  color: #303030;\n  background-color: #727272;\n}\n.mu-badge {\n  background-color: #757575;\n  color: #303030;\n}\n.mu-badge-primary {\n  background-color: #1976d2;\n  color: #303030;\n}\n.mu-badge-secondary {\n  background-color: #ff4081;\n  color: #303030;\n}\nbody {\n  background-color: #303030;\n  color: #ffffff;\n  font-family: Roboto, Lato, sans-serif;\n}\na {\n  color: #ff4081;\n}\n.mu-bottom-nav {\n  background-color: #424242;\n}\n.mu-bottom-nav-shift {\n  background-color: #1976d2;\n}\n.mu-buttom-item {\n  color: rgba(255, 255, 255, 0.7);\n}\n.mu-bottom-nav-shift .mu-buttom-item {\n  color: rgba(48, 48, 48, 0.7);\n}\n.mu-bottom-item-active .mu-bottom-item-text {\n  color: #1976d2;\n}\n.mu-bottom-nav-shift .mu-bottom-item-active .mu-bottom-item-text {\n  color: #303030;\n}\n.mu-bottom-item-active .mu-bottom-item-icon {\n  color: #1976d2;\n}\n.mu-bottom-nav-shift .mu-bottom-item-active .mu-bottom-item-icon {\n  color: #303030;\n}\n.mu-bottom-sheet {\n  background-color: #424242;\n}\n.mu-card {\n  background-color: #303030;\n}\n.mu-card-header-title .mu-card-title {\n  color: rgba(255, 255, 255, 0.87);\n}\n.mu-card-header-title .mu-card-sub-title {\n  color: rgba(255, 255, 255, 0.54);\n}\n.mu-card-media-title {\n  background-color: rgba(0, 0, 0, 0.54);\n}\n.mu-card-media-title .mu-card-title {\n  color: rgba(255, 255, 255, 0.87);\n}\n.mu-card-media-title .mu-card-sub-title {\n  color: rgba(255, 255, 255, 0.54);\n}\n.mu-card-title-container .mu-card-title {\n  color: rgba(255, 255, 255, 0.87);\n}\n.mu-card-title-container .mu-card-sub-title {\n  color: rgba(255, 255, 255, 0.54);\n}\n.mu-card-text {\n  color: #ffffff;\n}\n.mu-checkbox input[type=\"checkbox\"]:checked + .mu-checkbox-wrapper .mu-checkbox-icon-uncheck {\n  color: #1976d2;\n}\n.mu-checkbox input[type=\"checkbox\"]:checked + .mu-checkbox-wrapper .mu-checkbox-ripple-wrapper {\n  color: #1976d2;\n}\n.mu-checkbox-label {\n  color: #ffffff;\n}\n.mu-checkbox.disabled .mu-checkbox-label {\n  color: rgba(255, 255, 255, 0.3);\n}\n.mu-checkbox-icon-uncheck {\n  color: #ffffff;\n}\n.mu-checkbox.disabled .mu-checkbox-icon-uncheck {\n  color: rgba(255, 255, 255, 0.3);\n}\n.mu-checkbox-icon-checked {\n  color: #1976d2;\n}\n.mu-checkbox.disabled .mu-checkbox-icon-checked {\n  color: rgba(255, 255, 255, 0.3);\n}\n.mu-chip {\n  background-color: #4f4f4f;\n  color: rgba(255, 255, 255, 0.87);\n}\n.mu-chip.hover {\n  background-color: #cecece;\n  cursor: pointer;\n}\n.mu-chip.hover .mu-chip-delete-icon {\n  color: rgba(255, 255, 255, 0.4);\n}\n.mu-chip-delete-icon {\n  color: rgba(255, 255, 255, 0.26);\n}\n.mu-circular-progress-determinate-path {\n  stroke: #1976d2;\n}\n.mu-calendar {\n  color: #ffffff;\n}\n.mu-calendar-year {\n  background-color: #424242;\n}\n.mu-date-display {\n  background-color: rgba(255, 255, 255, 0.12);\n  color: #ffffff;\n}\n.mu-day-button-bg {\n  background-color: #1976d2;\n}\n.mu-day-button-text {\n  font-weight: 400;\n  position: relative;\n  color: #ffffff;\n}\n.mu-day-button.now .mu-day-button-text {\n  color: #1976d2;\n}\n.mu-day-button.hover .mu-day-button-text,\n.mu-day-button.selected .mu-day-button-text {\n  color: #303030;\n}\n.mu-year-button-text {\n  color: #ffffff;\n}\n.mu-year-button.selected .mu-year-button-text {\n  color: #1976d2;\n}\n.mu-year-button.hover .mu-year-button-text {\n  color: #1976d2;\n}\n.mu-dialog {\n  background-color: #424242;\n}\n.mu-dialog-footer.scrollable,\n.mu-dialog-header.scrollable {\n  border-bottom-color: rgba(255, 255, 255, 0.3);\n}\n.mu-dialog-title {\n  color: #ffffff;\n}\n.mu-dialog-body {\n  color: rgba(255, 255, 255, 0.6);\n}\n.mu-dropDown-menu-text {\n  color: #ffffff;\n}\n.mu-dropDown-menu-icon {\n  color: rgba(255, 255, 255, 0.3);\n}\n.mu-dropDown-menu-line {\n  background-color: rgba(255, 255, 255, 0.3);\n}\n.mu-flat-button {\n  color: #ffffff;\n  background-color: transparent;\n}\n.mu-flat-button .mu-circle-ripple {\n  color: #ffffff;\n}\n.mu-flat-button-primary {\n  color: #1976d2;\n}\n.mu-flat-button-secondary {\n  color: #ff4081;\n}\n.mu-float-button {\n  background-color: #1976d2;\n  color: #303030;\n}\n.mu-float-button.disabled {\n  color: rgba(255, 255, 255, 0.3);\n  cursor: default;\n  background-color: #4f4f4f;\n}\n.mu-float-button.hover .mu-float-button-wrapper,\n.mu-float-button:active .mu-float-button-wrapper {\n  background-color: rgba(48, 48, 48, 0.3);\n}\n.mu-float-button-secondary {\n  background-color: #ff4081;\n  color: #303030;\n}\n.mu-grid-tile-titlebar {\n  background-color: rgba(0, 0, 0, 0.4);\n}\n.mu-grid-tile-title-container {\n  color: #ffffff;\n}\n.mu-grid-tile-action .mu-icon {\n  color: #ffffff;\n}\n.mu-circle-spinner {\n  border-color: #1976d2;\n}\n.mu-circle-secondary {\n  border-color: #ff4081;\n}\n.mu-linear-progress {\n  background-color: #757575;\n}\n.mu-linear-progress-indeterminate {\n  background-color: #1976d2;\n}\n.mu-linear-progress-determinate {\n  background-color: #1976d2;\n}\n.mu-item-wrapper.hover {\n  background-color: rgba(255, 255, 255, 0.1);\n}\n.mu-item {\n  color: #ffffff;\n}\n.mu-item.selected {\n  color: #1976d2;\n}\n.mu-item-link-icon {\n  color: #757575;\n}\n.mu-item-left {\n  color: #757575;\n}\n.mu-item-right {\n  color: #757575;\n}\n.mu-item-after {\n  color: rgba(255, 255, 255, 0.7);\n}\n.mu-item-text {\n  color: rgba(255, 255, 255, 0.7);\n}\n.mu-menu-item-wrapper {\n  color: #ffffff;\n}\n.mu-menu-item-wrapper.active {\n  color: #ff4081;\n}\n.mu-menu-item-wrapper.hover {\n  background-color: rgba(0, 0, 0, 0.1);\n}\n.mu-menu-item-wrapper.disabled {\n  color: rgba(255, 255, 255, 0.3);\n}\n.mu-menu-item-left-icon {\n  color: #757575;\n}\n.mu-menu-item-right-icon {\n  color: #757575;\n}\n.mu-pagination-item {\n  color: #ffffff;\n}\n.mu-pagination-item.hover {\n  background-color: rgba(0, 0, 0, 0.1);\n}\n.mu-pagination-item.active {\n  color: #ffffff;\n  background-color: #1976d2;\n}\n.mu-pagination-item.disabled {\n  color: rgba(255, 255, 255, 0.3);\n}\n.mu-paper {\n  background-color: #424242;\n  color: #ffffff;\n}\n.mu-picker {\n  background-color: #424242;\n}\n.mu-picker-center-highlight::before,\n.mu-picker-center-highlight::after {\n  background-color: rgba(255, 255, 255, 0.3);\n}\n.mu-picker-slot.mu-picker-slot-divider {\n  color: #ffffff;\n}\n.mu-picker-item {\n  color: rgba(255, 255, 255, 0.7);\n}\n.mu-picker-item.selected {\n  color: #ffffff;\n}\n.mu-popover {\n  background-color: #424242;\n}\n.mu-popup {\n  background-color: #424242;\n}\n.mu-radio input[type=\"radio\"]:checked + .mu-radio-wrapper .mu-radio-icon-uncheck {\n  color: #1976d2;\n}\n.mu-radio input[type=\"radio\"]:checked + .mu-radio-wrapper .mu-radio-ripple-wrapper {\n  color: #1976d2;\n}\n.mu-radio-label {\n  color: #ffffff;\n}\n.mu-radio.disabled .mu-radio-label {\n  color: rgba(255, 255, 255, 0.3);\n}\n.mu-radio-icon-uncheck {\n  color: #ffffff;\n}\n.mu-radio.disabled .mu-radio-icon-uncheck {\n  color: rgba(255, 255, 255, 0.3);\n}\n.mu-radio-icon-checked {\n  color: #1976d2;\n}\n.mu-radio.disabled .mu-radio-icon-checked {\n  color: rgba(255, 255, 255, 0.3);\n}\n.mu-raised-button {\n  background-color: #303030;\n  color: #ffffff;\n}\n.mu-raised-button.hover .mu-raised-button-wrapper {\n  background-color: rgba(255, 255, 255, 0.1);\n}\n.mu-raised-button.disabled {\n  color: rgba(255, 255, 255, 0.3);\n  background-color: #161616;\n}\n.mu-raised-button-primary {\n  background-color: #1976d2;\n}\n.mu-raised-button-secondary {\n  background-color: #ff4081;\n}\n.mu-refresh-control {\n  color: #1976d2;\n}\n.mu-slider-track {\n  background-color: #757575;\n}\n.mu-slider-fill {\n  background-color: #1976d2;\n}\n.mu-slider-fill.disabled {\n  background-color: #757575;\n}\n.mu-slider-thumb {\n  background-color: #1976d2;\n  color: #1976d2;\n}\n.mu-slider.zero .mu-slider-thumb,\n.mu-slider.disabled .mu-slider-thumb {\n  border-color: #757575;\n  color: #757575;\n  background-color: #303030;\n}\n.mu-snackbar {\n  color: #303030;\n  background-color: #ffffff;\n}\n.mu-step-button {\n  background-color: transparent;\n}\n.mu-step-button.hover {\n  background-color: rgba(255, 255, 255, 0.06);\n}\n.mu-step-connector-line {\n  border-color: #bdbdbd;\n}\n.mu-stepper-vertical .mu-step-content {\n  border-left: 1px solid #bdbdbd;\n}\n.mu-step-label {\n  color: #ffffff;\n}\n.mu-step-label.disabled {\n  color: rgba(255, 255, 255, 0.3);\n}\n.mu-step-label-icon {\n  color: #9e9e9e;\n}\n.mu-step-label.disabled .mu-step-label-icon {\n  color: #9e9e9e;\n}\n.mu-step-label.completed .mu-step-label-icon,\n.mu-step-label.active .mu-step-label-icon {\n  color: #1976d2;\n}\n.mu-step-label-circle {\n  background-color: #9e9e9e;\n  color: #303030;\n}\n.mu-step-label.disabled .mu-step-label-circle {\n  background-color: #9e9e9e;\n}\n.mu-step-label.completed .mu-step-label-circle,\n.mu-step-label.active .mu-step-label-circle {\n  background-color: #1976d2;\n}\n.mu-sub-header {\n  color: rgba(255, 255, 255, 0.7);\n}\n.mu-switch input[type=\"checkbox\"]:checked + .mu-switch-wrapper .mu-switch-track {\n  background-color: rgba(25, 118, 210, 0.5);\n}\n.mu-switch input[type=\"checkbox\"]:checked + .mu-switch-wrapper .mu-switch-thumb {\n  background-color: #1976d2;\n  color: #1976d2;\n}\n.mu-switch.disabled input[type=\"checkbox\"]:checked + .mu-switch-wrapper .mu-switch-track {\n  background-color: #757575;\n}\n.mu-switch.disabled input[type=\"checkbox\"]:checked + .mu-switch-wrapper .mu-switch-thumb {\n  background-color: #e0e0e0;\n}\n.mu-switch-label {\n  color: #ffffff;\n}\n.mu-switch.disabled .mu-switch-label {\n  color: rgba(255, 255, 255, 0.3);\n}\n.mu-switch-track {\n  background-color: #757575;\n}\n.mu-switch.disabled .mu-switch-track {\n  background-color: #757575;\n}\n.mu-switch-thumb {\n  color: #ffffff;\n  background-color: #f50057;\n}\n.mu-switch.disabled .mu-switch-thumb {\n  background-color: #e0e0e0;\n}\n.mu-table {\n  background-color: #303030;\n}\n.mu-thead {\n  border-bottom-color: rgba(255, 255, 255, 0.3);\n}\n.mu-th {\n  color: rgba(255, 255, 255, 0.7);\n}\n.mu-tr {\n  border-bottom-color: rgba(255, 255, 255, 0.3);\n  color: #ffffff;\n}\n.mu-tr.selected {\n  background-color: rgba(255, 255, 255, 0.05);\n}\n.mu-tr.hover {\n  background-color: rgba(255, 255, 255, 0.1);\n}\n.mu-tr.stripe {\n  background-color: rgba(237, 245, 253, 0.4);\n}\n.mu-tfoot .mu-tr {\n  border-top-color: rgba(255, 255, 255, 0.3);\n}\n.mu-tabs {\n  background-color: #1976d2;\n}\n.mu-tab-link-highlight {\n  background-color: #ff4081;\n}\n.mu-tab-link {\n  color: rgba(48, 48, 48, 0.7);\n}\n.mu-tab-active {\n  color: #303030;\n}\n.mu-text-field {\n  color: rgba(255, 255, 255, 0.7);\n}\n.mu-text-field.focus-state {\n  color: #1976d2;\n}\n.mu-text-field.focus-state.error {\n  color: #f44336;\n}\n.mu-text-field.disabled {\n  color: rgba(255, 255, 255, 0.3);\n}\n.mu-text-field-input {\n  color: #ffffff;\n}\n.mu-text-field.error .mu-text-field-help {\n  color: #f44336;\n}\n.mu-text-field-line {\n  background-color: rgba(255, 255, 255, 0.3);\n}\n.mu-text-field-line.disabled {\n  border-color: rgba(255, 255, 255, 0.3);\n}\n.mu-text-field-focus-line {\n  background-color: #1976d2;\n}\n.mu-text-field-focus-line.error {\n  background-color: #f44336;\n}\n.mu-text-field-hint {\n  color: rgba(255, 255, 255, 0.3);\n}\n.mu-text-field.has-label .mu-text-field-label.float {\n  color: rgba(255, 255, 255, 0.3);\n}\n.mu-clock-circle {\n  background-color: rgba(255, 255, 255, 0.12);\n}\n.mu-time-display {\n  background-color: rgba(255, 255, 255, 0.12);\n  color: #ffffff;\n}\n.mu-clock-number.selected {\n  background-color: #1976d2;\n  color: #303030;\n}\n.mu-clock-pointer {\n  background-color: #1976d2;\n}\n.mu-clock-pointer-mark {\n  background-color: #303030;\n  border-color: #1976d2;\n}\n.mu-toast {\n  background-color: #ffffff;\n  color: #303030;\n}\n.mu-tooltip {\n  color: #303030;\n}\n.mu-tooltip-ripple.when-shown {\n  background-color: #616161;\n}\n@font-face {\n  font-family: 'Material Icons';\n  font-style: normal;\n  font-weight: 400;\n  src: url(\"assets/fonts/MaterialIcons-Regular.eot\");\n  /* For IE6-8 */\n  src: local(\"Material Icons\"), local(\"MaterialIcons-Regular\"), url(\"assets/fonts/MaterialIcons-Regular.woff2\") format(\"woff2\"), url(\"assets/fonts/MaterialIcons-Regular.woff\") format(\"woff\"), url(\"assets/fonts/MaterialIcons-Regular.ttf\") format(\"truetype\");\n}\n.material-icons {\n  font-family: 'Material Icons';\n  font-weight: normal;\n  font-style: normal;\n  font-size: 24px;\n  /* Preferred icon size */\n  display: inline-block;\n  line-height: 1;\n  text-transform: none;\n  letter-spacing: normal;\n  word-wrap: normal;\n  white-space: nowrap;\n  direction: ltr;\n  /* Support for all WebKit browsers. */\n  -webkit-font-smoothing: antialiased;\n  /* Support for Safari and Chrome. */\n  text-rendering: optimizeLegibility;\n  /* Support for Firefox. */\n  -moz-osx-font-smoothing: grayscale;\n  /* Support for IE. */\n  font-feature-settings: 'liga';\n}\n/*# sourceMappingURL=material-design-icons.css.map */\n.r {\n  color: red;\n}\n.g {\n  color: green;\n}\n"; (require("browserify-css").createStyle(css, { "href": "src/main.css" }, { "insertAt": "bottom" })); module.exports = css;
-},{"browserify-css":2}],28:[function(require,module,exports){
+},{"browserify-css":2}],77:[function(require,module,exports){
 "use strict";
 
 console.log("we are on %s mode", "production" || "development");
@@ -15236,6 +28034,7 @@ Vue.use(MuseUI);
 Vue.component("saldo-parcial", require("./components/saldo-parcial.vue"));
 Vue.component("novo-lancamento", require("./components/novo-lancamento.vue"));
 Vue.component("item-lancamento", require("./components/item-lancamento.vue"));
+Vue.component("red-line", require("./components/red-line.vue"));
 
 var router = new VueRouter({
   routes: [{ path: '/', redirect: '/login' }, { path: '/login', component: require("./features/S0001-login/login.vue") }, { path: '/cadastro', component: require("./features/S0002-cadastro/cadastro.vue") }, { path: '/relatorios', component: require("./features/S0004-relatorios/relatorios.vue") }, { path: '/categorias', component: require("./features/S0005-categorias/categorias.vue") }, { path: '/projecoes', component: require("./features/S0006-projecoes/projecoes.vue") }, { path: '/lancamentos', component: require("./features/S0007-lancamento/lancamento.vue") }]
@@ -15257,4 +28056,4 @@ var appInit = function appInit() {
 
 appInit();
 
-},{"./components/globalstore":16,"./components/item-lancamento.vue":17,"./components/novo-lancamento.vue":18,"./components/saldo-parcial.vue":19,"./features/S0001-login/login.vue":20,"./features/S0002-cadastro/cadastro.vue":21,"./features/S0003-menu/menu.vue":22,"./features/S0004-relatorios/relatorios.vue":23,"./features/S0005-categorias/categorias.vue":24,"./features/S0006-projecoes/projecoes.vue":25,"./features/S0007-lancamento/lancamento.vue":26,"./main.css":27,"muse-ui":10,"vue":13,"vue-router":12}]},{},[28]);
+},{"./components/globalstore":64,"./components/item-lancamento.vue":65,"./components/novo-lancamento.vue":66,"./components/red-line.vue":67,"./components/saldo-parcial.vue":68,"./features/S0001-login/login.vue":69,"./features/S0002-cadastro/cadastro.vue":70,"./features/S0003-menu/menu.vue":71,"./features/S0004-relatorios/relatorios.vue":72,"./features/S0005-categorias/categorias.vue":73,"./features/S0006-projecoes/projecoes.vue":74,"./features/S0007-lancamento/lancamento.vue":75,"./main.css":76,"muse-ui":58,"vue":61,"vue-router":60}]},{},[77]);

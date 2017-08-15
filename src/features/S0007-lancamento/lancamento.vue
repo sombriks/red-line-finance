@@ -10,7 +10,7 @@
       <div class="col-xs-10 col-xs-offset-1">
         <saldo-parcial></saldo-parcial>
       </div>
-      <!-- sobre pensamento orientado a componente... --> 
+      <!-- sobre pensamento orientado a componente... -->
       <div class="col-xs-10 col-xs-offset-1">
         <novo-lancamento></novo-lancamento>
       </div>

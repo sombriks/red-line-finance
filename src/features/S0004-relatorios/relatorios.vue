@@ -11,6 +11,9 @@
       <div class="col-xs-10 col-xs-offset-1">
         <saldo-parcial></saldo-parcial>
       </div>
+      <div class="col-xs-10 col-xs-offset-1">
+        <red-line :lancamentos="lancamentosordenados"></red-line>
+      </div>
     </div>
     <div class="row top-xs">
       <div class="col-xs-10 col-xs-offset-1">
@@ -67,7 +70,3 @@ module.exports = {
   }
 }
 </script>
-
-<style>
-
-</style>

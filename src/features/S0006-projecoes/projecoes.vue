@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="row center-xs top-xs">
-      <div class="col-xs-8 col-xs-offset-2">
+      <div class="col-xs-10 col-xs-offset-1">
         <h1 class="r">Projeções</h1>
         <p>Como você espera que seja o seu perfil de gastos e ganhos? Como você distribui
           seus lançamentos através das categorias?</p>
@@ -11,10 +11,10 @@
     </div>
     <div class="row top-xs">
       <form @submit.prevent="addcategoria"
-            class="col-xs-8 col-xs-offset-2">
+            class="col-xs-10 col-xs-offset-1">
         <mu-list>
           <mu-sub-header>Projeção atual</mu-sub-header>
-          <mu-list-item v-show="globalstore.usuario && globalstore.usuario && (!globalstore.usuario.projecao || globalstore.usuario.projecao.length == 0)"
+          <mu-list-item v-show="!temprojecao"
                         title="Parece que você não tem uma projeção ainda!"></mu-list-item>
           <mu-list-item v-show="globalstore.usuario && globalstore.usuario.projecao"
                         v-for="proj in globalstore.usuario.projecao"
@@ -52,7 +52,7 @@
                             icon="add_box"
                             type="submit"
                             primary
-                            fullWidth /> 
+                            fullWidth />
           <br/>
           <br/>
           <br/>
@@ -91,6 +91,11 @@ module.exports = {
     removecategoria(c) {
       this.globalstore.usuario.projecao = this.globalstore.usuario.projecao.filter(e => e != c)
       this.globalstore.savecontext()
+    }
+  },
+  computed: {
+    temprojecao() {
+      return globalstore.usuario && globalstore.usuario.projecao && globalstore.usuario.projecao.length > 0
     }
   }
 }

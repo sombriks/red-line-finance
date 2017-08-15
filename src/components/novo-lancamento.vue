@@ -52,9 +52,9 @@ module.exports = {
       if (!this.globalstore.usuario.lancamentos)
         Vue.set(this.globalstore.usuario, "lancamentos", []);
       this.globalstore.usuario.lancamentos.push(JSON.parse(JSON.stringify(this.lancamento)));
-      // this.globalstore.usuario.lancamentos = this.globalstore.usuario.lancamentos.sort((a, b) => {
-      // return a.dtlancamento - b.dtlancamento
-      // });  
+      this.globalstore.usuario.lancamentos = this.globalstore.usuario.lancamentos.sort((a, b) => {
+        return b.dtlancamento.localeCompare(a.dtlancamento)
+      });
       this.globalstore.savecontext();
       alert("Lançamento Salvo!");
       this.lancamento = this.newlancamento();
