@@ -27666,7 +27666,7 @@ module.exports = {
       type: "line",
       data: {
         labels: this.makelabels(),
-        datasets: []
+        datasets: this.makedatasets()
       }
     });
   },
@@ -27680,7 +27680,41 @@ module.exports = {
         return e.dtlancamento;
       }).filter(function (v, i, a) {
         return a.indexOf(v) === i;
+      }).reverse();
+    },
+    makedatasets: function makedatasets() {
+      var entradas = { label: "Entradas", data: [], backgroundColor: "green", fill: false };
+      var saidas = { label: "Saídas", data: [], backgroundColor: "red", fill: false };
+      var media = { label: "Saldo", data: [], backgroundColor: "blue", fill: false };
+      var labels = this.makelabels();
+      var acentrada = {};
+      var acsaida = {};
+      labels.map(function (e) {
+        return acentrada[e] = 0;
       });
+      labels.map(function (e) {
+        return acsaida[e] = 0;
+      });
+      this.lancamentos.map(function (e) {
+        if (e.categoria.tipo == "Saída") acsaida[e.dtlancamento] += -1 * parseInt(e.valor);else acentrada[e.dtlancamento] += parseInt(e.valor);
+      });
+      labels.map(function (e) {
+        entradas.data.push(acentrada[e]);
+        saidas.data.push(acsaida[e]);
+      });
+      var acmedia = 0;
+      entradas.data.map(function (e) {
+        return acmedia += e;
+      });
+      saidas.data.map(function (e) {
+        return acmedia += e;
+      });
+      labels.map(function (_) {
+        return media.data.push(acmedia);
+      });
+      var ds = [entradas, saidas, media];
+      console.log(ds);
+      return ds;
     }
   }
 };
@@ -27901,7 +27935,7 @@ module.exports = {
 })()
 if (module.exports.__esModule) module.exports = module.exports.default
 var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
-__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_vm._m(0),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.temlancamentos),expression:"temlancamentos"}],staticClass:"row top-xs"},[_c('div',{staticClass:"col-xs-10 col-xs-offset-1"},[_c('saldo-parcial')],1),_vm._v(" "),_c('div',{staticClass:"col-xs-10 col-xs-offset-1"},[_c('red-line',{attrs:{"lancamentos":_vm.lancamentosordenados}})],1)]),_vm._v(" "),_c('div',{staticClass:"row top-xs"},[_c('div',{staticClass:"col-xs-10 col-xs-offset-1"},[_c('mu-list',[_c('mu-sub-header',[_vm._v("Últimos lançamentos")]),_vm._v(" "),_c('mu-list-item',{directives:[{name:"show",rawName:"v-show",value:(!_vm.temlancamentos),expression:"!temlancamentos"}],attrs:{"title":"Parece que você não tem lançamentos ainda!"}}),_vm._v(" "),_vm._l((_vm.lancamentosordenados),function(lan){return _c('item-lancamento',{key:lan.dtlancamento,attrs:{"lancamento":lan},on:{"removelancamento":function($event){_vm.removelancamento(lan)}}})})],2)],1)])])}
+__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_vm._m(0),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.temlancamentos),expression:"temlancamentos"}],staticClass:"row top-xs"},[_c('div',{staticClass:"col-xs-10 col-xs-offset-1"},[_c('red-line',{attrs:{"lancamentos":_vm.lancamentosordenados}})],1)]),_vm._v(" "),_c('div',{staticClass:"row top-xs"},[_c('div',{staticClass:"col-xs-10 col-xs-offset-1"},[_c('mu-list',[_c('mu-sub-header',[_vm._v("Últimos lançamentos")]),_vm._v(" "),_c('mu-list-item',{directives:[{name:"show",rawName:"v-show",value:(!_vm.temlancamentos),expression:"!temlancamentos"}],attrs:{"title":"Parece que você não tem lançamentos ainda!"}}),_vm._v(" "),_vm._l((_vm.lancamentosordenados),function(lan){return _c('item-lancamento',{key:lan.dtlancamento,attrs:{"lancamento":lan},on:{"removelancamento":function($event){_vm.removelancamento(lan)}}})})],2)],1)])])}
 __vue__options__.staticRenderFns = [function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"row center-xs top-xs"},[_c('div',{staticClass:"col-xs-10 col-xs-offset-1"},[_c('h1',{staticClass:"r"},[_vm._v("Relatórios")]),_vm._v(" "),_c('p',[_vm._v("Coisinhas coloridas pra você se animar... ou se preocupar. Olha as contas!")])])])}]
 
 },{"../../components/globalstore":64}],73:[function(require,module,exports){

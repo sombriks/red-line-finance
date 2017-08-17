@@ -33,20 +33,33 @@ module.exports = {
   methods: {
     makelabels() {
       // one-line magic to remove duplicates
-      return this.lancamentos.map(e => e.dtlancamento).filter((v, i, a) => a.indexOf(v) === i);
+      return this.lancamentos.map(e => e.dtlancamento).filter((v, i, a) => a.indexOf(v) === i).reverse();
     },
     makedatasets() {
-      const entradas = {label:"Entradas", data:[]}
-      const saidas = {label:"Saídas", data:[]}
+      const entradas = { label: "Entradas", data: [], backgroundColor: "green", fill: false }
+      const saidas = { label: "Saídas", data: [], backgroundColor: "red", fill: false }
+      const media = { label: "Saldo", data: [], backgroundColor: "blue", fill: false }
       const labels = this.makelabels()
+      const acentrada = {};
+      const acsaida = {};
+      labels.map(e => acentrada[e] = 0)
+      labels.map(e => acsaida[e] = 0)
       this.lancamentos.map(e => {
-        // if(e.categoria.tipo == "Saída"){
-
-        // }
-
+        if (e.categoria.tipo == "Saída")
+          acsaida[e.dtlancamento] += -1 * parseInt(e.valor)
+        else
+          acentrada[e.dtlancamento] += parseInt(e.valor)
       })
-      const ds = [entradas, saidas];
-
+      labels.map(e => {
+        entradas.data.push(acentrada[e])
+        saidas.data.push(acsaida[e])
+      })
+      let acmedia = 0;
+      entradas.data.map(e => acmedia += e)
+      saidas.data.map(e => acmedia += e)
+      labels.map(_ => media.data.push(acmedia))
+      const ds = [entradas, saidas, media]
+      console.log(ds)
       return ds;
     }
   }

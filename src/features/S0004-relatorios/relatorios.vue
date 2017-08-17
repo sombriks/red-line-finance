@@ -8,9 +8,9 @@
     </div>
     <div class="row top-xs"
          v-show="temlancamentos">
-      <div class="col-xs-10 col-xs-offset-1">
+      <!-- <div class="col-xs-10 col-xs-offset-1">
         <saldo-parcial></saldo-parcial>
-      </div>
+      </div> -->
       <div class="col-xs-10 col-xs-offset-1">
         <red-line :lancamentos="lancamentosordenados"></red-line>
       </div>
