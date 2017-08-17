@@ -23,7 +23,7 @@ module.exports = {
       type: "line",
       data: {
         labels: this.makelabels(),
-        datasets: []
+        datasets: this.makedatasets()
       }
     })
   },
@@ -32,8 +32,22 @@ module.exports = {
   },
   methods: {
     makelabels() {
-      // TODO terminar
+      // one-line magic to remove duplicates
       return this.lancamentos.map(e => e.dtlancamento).filter((v, i, a) => a.indexOf(v) === i);
+    },
+    makedatasets() {
+      const entradas = {label:"Entradas", data:[]}
+      const saidas = {label:"Saídas", data:[]}
+      const labels = this.makelabels()
+      this.lancamentos.map(e => {
+        // if(e.categoria.tipo == "Saída"){
+
+        // }
+
+      })
+      const ds = [entradas, saidas];
+
+      return ds;
     }
   }
 }
