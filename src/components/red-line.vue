@@ -36,9 +36,9 @@ module.exports = {
       return this.lancamentos.map(e => e.dtlancamento).filter((v, i, a) => a.indexOf(v) === i).reverse();
     },
     makedatasets() {
-      const entradas = { label: "Entradas", data: [], backgroundColor: "green", fill: false }
-      const saidas = { label: "Saídas", data: [], backgroundColor: "red", fill: false }
-      const media = { label: "Saldo", data: [], backgroundColor: "blue", fill: false }
+      const entradas = { label: "Entradas", data: [], backgroundColor: "green" }
+      const saidas = { label: "Saídas", data: [], backgroundColor: "red" }
+      const media = { label: "Saldo", data: [], backgroundColor: "blue" }
       const labels = this.makelabels()
       const acentrada = {};
       const acsaida = {};
