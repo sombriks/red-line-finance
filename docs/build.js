@@ -17812,7 +17812,7 @@ process.umask = function() { return 0; };
 },{}],60:[function(require,module,exports){
 (function (process){
 /**
-  * vue-router v2.5.3
+  * vue-router v2.6.0
   * (c) 2017 Evan You
   * @license MIT
   */
@@ -17860,7 +17860,7 @@ var View = {
     // has been toggled inactive but kept-alive.
     var depth = 0;
     var inactive = false;
-    while (parent) {
+    while (parent && parent._routerRoot !== parent) {
       if (parent.$vnode && parent.$vnode.data.routerView) {
         depth++;
       }
@@ -18011,7 +18011,7 @@ function stringifyQuery (obj) {
 
     if (Array.isArray(val)) {
       var result = [];
-      val.slice().forEach(function (val2) {
+      val.forEach(function (val2) {
         if (val2 === undefined) {
           return
         }
@@ -18115,7 +18115,15 @@ function isObjectEqual (a, b) {
   if (aKeys.length !== bKeys.length) {
     return false
   }
-  return aKeys.every(function (key) { return String(a[key]) === String(b[key]); })
+  return aKeys.every(function (key) {
+    var aVal = a[key];
+    var bVal = b[key];
+    // check nested equality
+    if (typeof aVal === 'object' && typeof bVal === 'object') {
+      return isObjectEqual(aVal, bVal)
+    }
+    return String(aVal) === String(bVal)
+  })
 }
 
 function isIncludedRoute (current, target) {
@@ -18246,7 +18254,7 @@ var Link = {
 
 function guardEvent (e) {
   // don't redirect with control keys
-  if (e.metaKey || e.ctrlKey || e.shiftKey) { return }
+  if (e.metaKey || e.altKey || e.ctrlKey || e.shiftKey) { return }
   // don't redirect when preventDefault called
   if (e.defaultPrevented) { return }
   // don't redirect on right click
@@ -18286,14 +18294,6 @@ function install (Vue) {
 
   _Vue = Vue;
 
-  Object.defineProperty(Vue.prototype, '$router', {
-    get: function get () { return this.$root._router }
-  });
-
-  Object.defineProperty(Vue.prototype, '$route', {
-    get: function get () { return this.$root._route }
-  });
-
   var isDef = function (v) { return v !== undefined; };
 
   var registerInstance = function (vm, callVal) {
@@ -18306,15 +18306,26 @@ function install (Vue) {
   Vue.mixin({
     beforeCreate: function beforeCreate () {
       if (isDef(this.$options.router)) {
+        this._routerRoot = this;
         this._router = this.$options.router;
         this._router.init(this);
         Vue.util.defineReactive(this, '_route', this._router.history.current);
+      } else {
+        this._routerRoot = (this.$parent && this.$parent._routerRoot) || this;
       }
       registerInstance(this, this);
     },
     destroyed: function destroyed () {
       registerInstance(this);
     }
+  });
+
+  Object.defineProperty(Vue.prototype, '$router', {
+    get: function get () { return this._routerRoot._router }
+  });
+
+  Object.defineProperty(Vue.prototype, '$route', {
+    get: function get () { return this._routerRoot._route }
   });
 
   Vue.component('router-view', View);
@@ -18909,9 +18920,15 @@ function addRouteRecord (
   }
 
   var normalizedPath = normalizePath(path, parent);
+  var pathToRegexpOptions = route.pathToRegexpOptions || {};
+
+  if (typeof route.caseSensitive === 'boolean') {
+    pathToRegexpOptions.sensitive = route.caseSensitive;
+  }
+
   var record = {
     path: normalizedPath,
-    regex: compileRouteRegex(normalizedPath),
+    regex: compileRouteRegex(normalizedPath, pathToRegexpOptions),
     components: route.components || { default: route.component },
     instances: {},
     name: name,
@@ -18928,11 +18945,11 @@ function addRouteRecord (
   };
 
   if (route.children) {
-    // Warn if route is named and has a default child route.
+    // Warn if route is named, does not redirect and has a default child route.
     // If users navigate to this route by name, the default child will
     // not be rendered (GH Issue #629)
     if (process.env.NODE_ENV !== 'production') {
-      if (route.name && route.children.some(function (child) { return /^\/?$/.test(child.path); })) {
+      if (route.name && !route.redirect && route.children.some(function (child) { return /^\/?$/.test(child.path); })) {
         warn(
           false,
           "Named Route '" + (route.name) + "' has a default child route. " +
@@ -18952,21 +18969,24 @@ function addRouteRecord (
   }
 
   if (route.alias !== undefined) {
-    if (Array.isArray(route.alias)) {
-      route.alias.forEach(function (alias) {
-        var aliasRoute = {
-          path: alias,
-          children: route.children
-        };
-        addRouteRecord(pathList, pathMap, nameMap, aliasRoute, parent, record.path);
-      });
-    } else {
+    var aliases = Array.isArray(route.alias)
+      ? route.alias
+      : [route.alias];
+
+    aliases.forEach(function (alias) {
       var aliasRoute = {
-        path: route.alias,
+        path: alias,
         children: route.children
       };
-      addRouteRecord(pathList, pathMap, nameMap, aliasRoute, parent, record.path);
-    }
+      addRouteRecord(
+        pathList,
+        pathMap,
+        nameMap,
+        aliasRoute,
+        parent,
+        record.path || '/' // matchAs
+      );
+    });
   }
 
   if (!pathMap[record.path]) {
@@ -18987,8 +19007,8 @@ function addRouteRecord (
   }
 }
 
-function compileRouteRegex (path) {
-  var regex = index(path);
+function compileRouteRegex (path, pathToRegexpOptions) {
+  var regex = index(path, [], pathToRegexpOptions);
   if (process.env.NODE_ENV !== 'production') {
     var keys = {};
     regex.keys.forEach(function (key) {
@@ -19029,7 +19049,7 @@ function normalizeLocation (
     if (current.name) {
       next.name = current.name;
       next.params = params;
-    } else if (current.matched) {
+    } else if (current.matched.length) {
       var rawPath = current.matched[current.matched.length - 1].path;
       next.path = fillParams(rawPath, params, ("path " + (current.path)));
     } else if (process.env.NODE_ENV !== 'production') {
@@ -19099,6 +19119,7 @@ function createMatcher (
       if (process.env.NODE_ENV !== 'production') {
         warn(record, ("Route with name '" + name + "' does not exist"));
       }
+      if (!record) { return _createRoute(null, location) }
       var paramNames = record.regex.keys
         .filter(function (key) { return !key.optional; })
         .map(function (key) { return key.name; });
@@ -19309,7 +19330,9 @@ function handleScroll (
     if (isObject && typeof shouldScroll.selector === 'string') {
       var el = document.querySelector(shouldScroll.selector);
       if (el) {
-        position = getElementPosition(el);
+        var offset = shouldScroll.offset && typeof shouldScroll.offset === 'object' ? shouldScroll.offset : {};
+        offset = normalizeOffset(offset);
+        position = getElementPosition(el, offset);
       } else if (isValidPosition(shouldScroll)) {
         position = normalizePosition(shouldScroll);
       }
@@ -19340,13 +19363,13 @@ function getScrollPosition () {
   }
 }
 
-function getElementPosition (el) {
+function getElementPosition (el, offset) {
   var docEl = document.documentElement;
   var docRect = docEl.getBoundingClientRect();
   var elRect = el.getBoundingClientRect();
   return {
-    x: elRect.left - docRect.left,
-    y: elRect.top - docRect.top
+    x: elRect.left - docRect.left - offset.x,
+    y: elRect.top - docRect.top - offset.y
   }
 }
 
@@ -19358,6 +19381,13 @@ function normalizePosition (obj) {
   return {
     x: isNumber(obj.x) ? obj.x : window.pageXOffset,
     y: isNumber(obj.y) ? obj.y : window.pageYOffset
+  }
+}
+
+function normalizeOffset (obj) {
+  return {
+    x: isNumber(obj.x) ? obj.x : 0,
+    y: isNumber(obj.y) ? obj.y : 0
   }
 }
 
@@ -19613,6 +19643,8 @@ function normalizeBase (base) {
       // respect <base> tag
       var baseEl = document.querySelector('base');
       base = (baseEl && baseEl.getAttribute('href')) || '/';
+      // strip full URL origin
+      base = base.replace(/^https?:\/\/[^\/]+/, '');
     } else {
       base = '/';
     }
@@ -19823,9 +19855,12 @@ function flatten (arr) {
 function once (fn) {
   var called = false;
   return function () {
+    var args = [], len = arguments.length;
+    while ( len-- ) args[ len ] = arguments[ len ];
+
     if (called) { return }
     called = true;
-    return fn.apply(this, arguments)
+    return fn.apply(this, args)
   }
 }
 
@@ -19849,9 +19884,10 @@ var HTML5History = (function (History$$1) {
     }
 
     window.addEventListener('popstate', function (e) {
+      var current = this$1.current;
       this$1.transitionTo(getLocation(this$1.base), function (route) {
         if (expectScroll) {
-          handleScroll(router, route, this$1.current, true);
+          handleScroll(router, route, current, true);
         }
       });
     });
@@ -20007,10 +20043,10 @@ function pushHash (path) {
 }
 
 function replaceHash (path) {
-  var i = window.location.href.indexOf('#');
-  window.location.replace(
-    window.location.href.slice(0, i >= 0 ? i : 0) + '#' + path
-  );
+  var href = window.location.href;
+  var i = href.indexOf('#');
+  var base = i >= 0 ? href.slice(0, i) : href;
+  window.location.replace((base + "#" + path));
 }
 
 /*  */
@@ -20086,7 +20122,7 @@ var VueRouter = function VueRouter (options) {
   this.matcher = createMatcher(options.routes || [], this);
 
   var mode = options.mode || 'hash';
-  this.fallback = mode === 'history' && !supportsPushState;
+  this.fallback = mode === 'history' && !supportsPushState && options.fallback !== false;
   if (this.fallback) {
     mode = 'hash';
   }
@@ -20270,7 +20306,7 @@ function createHref (base, fullPath, mode) {
 }
 
 VueRouter.install = install;
-VueRouter.version = '2.5.3';
+VueRouter.version = '2.6.0';
 
 if (inBrowser && window.Vue) {
   window.Vue.use(VueRouter);
@@ -27562,6 +27598,18 @@ var glob = {
         resolve("OK");
       });
     });
+  },
+  temlancamentos: function temlancamentos() {
+    return glob.usuario && glob.usuario.lancamentos && glob.usuario.lancamentos.length > 0;
+  },
+  lancamentosordenados: function lancamentosordenados() {
+    var grupolancamentos = [];
+    if (glob.usuario && glob.usuario.lancamentos) {
+      grupolancamentos = glob.usuario.lancamentos.sort(function (a, b) {
+        return b.dtlancamento.localeCompare(a.dtlancamento);
+      });
+    }
+    return grupolancamentos;
   }
 };
 
@@ -27683,9 +27731,9 @@ module.exports = {
       }).reverse();
     },
     makedatasets: function makedatasets() {
-      var entradas = { label: "Entradas", data: [], backgroundColor: "green", fill: false };
-      var saidas = { label: "Saídas", data: [], backgroundColor: "red", fill: false };
-      var media = { label: "Saldo", data: [], backgroundColor: "blue", fill: false };
+      var entradas = { label: "Entradas", data: [], borderColor: "green", pointStyle: "line", showLine: true };
+      var saidas = { label: "Saídas", data: [], borderColor: "red", pointStyle: "line", showLine: true };
+      var media = { label: "Saldo", data: [], borderColor: "blue", pointStyle: "line", showLine: true };
       var labels = this.makelabels();
       var acentrada = {};
       var acsaida = {};
@@ -27898,44 +27946,15 @@ module.exports = {
   name: "Relatorio",
   data: function data() {
     return {
-      globalstore: globalstore
+      globalstore: globalstore,
+      lancamentosordenados: globalstore.lancamentosordenados()
     };
-  },
-
-  methods: {
-    removelancamento: function removelancamento(lan) {
-      var _this = this;
-
-      confirm("Deseja realmente remover este lançamento?", function (yn) {
-        if (yn == "yes") {
-          var idx = _this.globalstore.usuario.lancamentos.indexOf(lan);
-          if (idx > -1) {
-            _this.globalstore.usuario.lancamentos.splice(idx, 1);
-            _this.globalstore.savecontext();
-          }
-        }
-      });
-    }
-  },
-  computed: {
-    temlancamentos: function temlancamentos() {
-      return globalstore.usuario && globalstore.usuario.lancamentos && globalstore.usuario.lancamentos.length > 0;
-    },
-    lancamentosordenados: function lancamentosordenados() {
-      var grupolancamentos = [];
-      if (globalstore.usuario && globalstore.usuario.lancamentos) {
-        grupolancamentos = globalstore.usuario.lancamentos.sort(function (a, b) {
-          return b.dtlancamento.localeCompare(a.dtlancamento);
-        });
-      }
-      return grupolancamentos;
-    }
   }
 };
 })()
 if (module.exports.__esModule) module.exports = module.exports.default
 var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
-__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_vm._m(0),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.temlancamentos),expression:"temlancamentos"}],staticClass:"row top-xs"},[_c('div',{staticClass:"col-xs-10 col-xs-offset-1"},[_c('red-line',{attrs:{"lancamentos":_vm.lancamentosordenados}})],1)]),_vm._v(" "),_c('div',{staticClass:"row top-xs"},[_c('div',{staticClass:"col-xs-10 col-xs-offset-1"},[_c('mu-list',[_c('mu-sub-header',[_vm._v("Últimos lançamentos")]),_vm._v(" "),_c('mu-list-item',{directives:[{name:"show",rawName:"v-show",value:(!_vm.temlancamentos),expression:"!temlancamentos"}],attrs:{"title":"Parece que você não tem lançamentos ainda!"}}),_vm._v(" "),_vm._l((_vm.lancamentosordenados),function(lan){return _c('item-lancamento',{key:lan.dtlancamento,attrs:{"lancamento":lan},on:{"removelancamento":function($event){_vm.removelancamento(lan)}}})})],2)],1)])])}
+__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_vm._m(0),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.globalstore.temlancamentos),expression:"globalstore.temlancamentos"}],staticClass:"row top-xs"},[_c('div',{staticClass:"col-xs-10 col-xs-offset-1"},[_c('red-line',{attrs:{"lancamentos":_vm.lancamentosordenados}})],1)])])}
 __vue__options__.staticRenderFns = [function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"row center-xs top-xs"},[_c('div',{staticClass:"col-xs-10 col-xs-offset-1"},[_c('h1',{staticClass:"r"},[_vm._v("Relatórios")]),_vm._v(" "),_c('p',[_vm._v("Coisinhas coloridas pra você se animar... ou se preocupar. Olha as contas!")])])])}]
 
 },{"../../components/globalstore":64}],73:[function(require,module,exports){
@@ -28037,12 +28056,36 @@ var globalstore = require("../../components/globalstore");
 var moment = require("moment");
 var Vue = require("vue");
 module.exports = {
-  name: "Lancamento"
+  name: "Lancamento",
+  data: function data() {
+    return {
+      globalstore: globalstore,
+      lancamentosordenados: globalstore.lancamentosordenados()
+    };
+  },
+
+  methods: {
+    removelancamento: function removelancamento(lan) {
+      var _this = this;
+
+      confirm("Deseja realmente remover este lançamento?", function (yn) {
+        if (yn == "yes") {
+          var idx = _this.globalstore.usuario.lancamentos.indexOf(lan);
+          if (idx > -1) {
+            _this.globalstore.usuario.lancamentos.splice(idx, 1);
+            _this.globalstore.savecontext();
+            _this.lancamentosordenados = _this.globalstore.lancamentosordenados();
+          }
+        }
+      });
+    }
+  }
+
 };
 })()
 if (module.exports.__esModule) module.exports = module.exports.default
 var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
-__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_vm._m(0),_vm._v(" "),_c('div',{staticClass:"row top-xs"},[_c('div',{staticClass:"col-xs-10 col-xs-offset-1"},[_c('saldo-parcial')],1),_vm._v(" "),_c('div',{staticClass:"col-xs-10 col-xs-offset-1"},[_c('novo-lancamento')],1)])])}
+__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_vm._m(0),_vm._v(" "),_c('div',{staticClass:"row top-xs"},[_c('div',{staticClass:"col-xs-10 col-xs-offset-1"},[_c('saldo-parcial')],1),_vm._v(" "),_c('div',{staticClass:"col-xs-10 col-xs-offset-1"},[_c('novo-lancamento')],1)]),_vm._v(" "),_c('div',{staticClass:"row top-xs"},[_c('div',{staticClass:"col-xs-10 col-xs-offset-1"},[_c('mu-list',[_c('mu-sub-header',[_vm._v("Últimos lançamentos")]),_vm._v(" "),_c('mu-list-item',{directives:[{name:"show",rawName:"v-show",value:(!_vm.globalstore.temlancamentos),expression:"!globalstore.temlancamentos"}],attrs:{"title":"Parece que você não tem lançamentos ainda!"}}),_vm._v(" "),_vm._l((_vm.lancamentosordenados),function(lan){return _c('item-lancamento',{key:lan.dtlancamento,attrs:{"lancamento":lan},on:{"removelancamento":function($event){_vm.removelancamento(lan)}}})})],2)],1)])])}
 __vue__options__.staticRenderFns = [function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"row center-xs top-xs"},[_c('div',{staticClass:"col-xs-10 col-xs-offset-1"},[_c('h1',{staticClass:"r"},[_vm._v("Lançamentos")]),_vm._v(" "),_c('p',[_vm._v("Papo rápido. Quanto foi, quando foi e, opcionalmente, uma descrição.")])])])}]
 
 },{"../../components/globalstore":64,"moment":57,"vue":61}],76:[function(require,module,exports){
