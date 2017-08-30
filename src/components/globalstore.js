@@ -103,6 +103,18 @@ const glob = {
         resolve("OK");
       });
     });
+  },
+  temlancamentos() {
+    return glob.usuario && glob.usuario.lancamentos && glob.usuario.lancamentos.length > 0
+  },
+  lancamentosordenados() {
+    let grupolancamentos = [];
+    if (glob.usuario && glob.usuario.lancamentos) {
+      grupolancamentos = glob.usuario.lancamentos.sort((a, b) => {
+        return b.dtlancamento.localeCompare(a.dtlancamento)
+      });
+    }
+    return grupolancamentos;
   }
 };
 
