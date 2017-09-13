@@ -1,7 +1,7 @@
 <template>
   <div>
     <router-view></router-view>
-    <mu-icon-menu icon="more_vert" v-show="globalstore.usuario" class="basemenu">
+    <mu-icon-menu icon="menu" v-show="globalstore.usuario" class="basemenu">
       <mu-menu-item title="Lançamento" href="#/lancamentos" rightIcon="add_box" />
       <mu-menu-item title="Projeção" href="#/projecoes" rightIcon="assignment" />
       <mu-menu-item title="Categoria" href="#/categorias" rightIcon="format_list_bulleted" />

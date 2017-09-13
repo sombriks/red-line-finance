@@ -42,15 +42,7 @@
     "transform": [
       "browserify-css",
       "vueify",
-      "envify",
-      [
-        "babelify",
-        {
-          "presets": [
-            "es2015"
-          ]
-        }
-      ]
+      "envify"
     ]
   }
 }
