@@ -1,6 +1,6 @@
 {
   "name": "red-line-finance",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "have some idea about where did your money went",
   "main": "index.js",
   "scripts": {
@@ -20,23 +20,23 @@
   },
   "homepage": "https://github.com/sombriks/red-line-finance#readme",
   "devDependencies": {
-    "browserify": "^14.3.0",
-    "browserify-css": "^0.10.0",
-    "budo": "^10.0.3",
-    "envify": "^4.0.0",
-    "make": "^0.8.1",
+    "browserify": "^16.2.3",
+    "browserify-css": "^0.14.0",
+    "budo": "^11.5.0",
+    "envify": "^4.1.0",
     "vueify": "^9.4.1"
   },
   "dependencies": {
-    "bluebird": "^3.5.0",
-    "chart.js": "^2.6.0",
+    "bluebird": "^3.5.3",
+    "chart.js": "^2.7.3",
     "flexboxgrid": "^6.3.1",
-    "material-design-icons-iconfont": "^3.0.3",
+    "material-design-icons-iconfont": "^4.0.3",
     "md5": "^2.2.1",
-    "moment": "^2.18.1",
-    "muse-ui": "^2.0.3",
-    "vue": "^2.3.4",
-    "vue-router": "^2.4.0"
+    "moment": "^2.23.0",
+    "muse-ui": "^3.0.1",
+    "vue": "^2.5.21",
+    "vue-router": "^3.0.2",
+    "vuex": "^3.0.1"
   },
   "browserify": {
     "transform": [
