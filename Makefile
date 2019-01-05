@@ -1,5 +1,7 @@
 
 export PATH := ./node_modules/.bin:$(PATH)
+# https://stackoverflow.com/questions/21708839/problems-setting-path-in-makefile
+export SHELL := /bin/bash
 
 clean:
 	rm -rf docs
@@ -16,4 +18,5 @@ build: fonts
 	cp -R assets/* docs/assets/
 
 dev: 
+	echo $(PATH)
 	budo src/main.js:build.js -o -l -H 127.0.0.1
