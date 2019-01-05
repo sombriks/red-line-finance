@@ -1,6 +1,7 @@
 
 @import "../node_modules/flexboxgrid/css/flexboxgrid.css";
 @import "../node_modules/muse-ui/dist/muse-ui.css";
+@import "../node_modules/muse-ui/dist/theme-dark.css";
 @import "../assets/material-design-icons.css";
 
 .r {
