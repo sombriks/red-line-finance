@@ -25,10 +25,10 @@ Easily track your financial life and get clues about how your money disappears.
 
 - new entry (fast entry creation)
 - entry listing
-- line graph (entries, projections as the red line)
+- red line graph (entries vs projections as the red line)
 - entry detail (edit one entry)
-- categories
-- new category
+- category listing
+- category detail (create or edit category)
 - projection listing
 - projection detail
 - new profile
@@ -40,7 +40,6 @@ Easily track your financial life and get clues about how your money disappears.
 - categories
 - projections
 - profiles
-
 
 ## Tech-Stack
 
