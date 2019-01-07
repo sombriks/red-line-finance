@@ -16,7 +16,7 @@ const appInit = _ =>
     el: "#app",
     name: "red-line-finance",
     store: require("./store"),
-    router: require("./router"),
+    router: require("./router").router,
     render: r => r(require("./App.vue"))
   });
 

@@ -3,14 +3,36 @@ const VueRouter = require("vue-router");
 
 Vue.use(VueRouter);
 
+const routes = [
+  { path: "/", redirect: "/entries" },
+  {
+    label: "Entries",
+    path: "/entries",
+    icon: "receipt",
+    component: require("./views/entries.vue")
+  },
+  {
+    label: "Categories",
+    path: "/categories",
+    icon: "class",
+    component: require("./views/categories.vue")
+  },
+  {
+    label: "Projections",
+    path: "/projections",
+    icon: "poll",
+    component: require("./views/projections.vue")
+  },
+  {
+    label: "Profiles",
+    path: "/profiles",
+    icon: "person",
+    component: require("./views/profiles.vue")
+  }
+];
+
 const router = new VueRouter({
-  routes: [
-    { path: "/", redirect: "/entries" },
-    { path: "/categories", component: require("./views/categories.vue") },
-    { path: "/entries", component: require("./views/entries.vue") },
-    { path: "/profiles", component: require("./views/profiles.vue") },
-    { path: "/projections", component: require("./views/projections.vue") },
-  ]
+  routes
 });
 
 // TODO vuex and router
@@ -20,4 +42,4 @@ const router = new VueRouter({
 //   else next("/login");
 // });
 
-module.exports = router;
+module.exports = { router, routes };

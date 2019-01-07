@@ -13,10 +13,9 @@ fonts: clean
 	cp -R node_modules/material-design-icons-iconfont/dist/* assets/
 
 build: fonts
-	NODE_ENV=production browserify src/main.js -o docs/build.js
+	NODE_ENV=production browserify -p tinyify src/main.js -o docs/build.js
 	cp index.html docs/index.html
 	cp -R assets/* docs/assets/
 
 dev: 
-	echo $(PATH)
 	budo src/main.js:build.js -o -l -H 127.0.0.1
