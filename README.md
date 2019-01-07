@@ -15,7 +15,11 @@ Easily track your financial life and get clues about how your money disappears.
 - categories
   - a name for your spends or earnings
   - both entries and projections share categories
-- graphs (line plots to see how entries and projections behave)
+  - reasonable default categories
+  - both entries and projections share categories
+- graphs
+  - line plots to see how entries and projections behave
+  - pie plots to see how the expenses and earnings are distributed
 - profiles
   - default
   - create
@@ -31,15 +35,29 @@ Easily track your financial life and get clues about how your money disappears.
 - category detail (create or edit category)
 - projection listing
 - projection detail
+- projection pie (pie chart with projections)
 - new profile
+- profile listing
 - profile login
 
 ## View-Count
 
 - entries
+  - new entry
+  - entry listing
+  - red line graph
 - categories
+  - category listing
+  - category detail
 - projections
+  - projection listing
+  - projection detail
+  - projection pie
 - profiles
+  - new profile
+  - profile listing
+  - profile login
+- about
 
 ## Tech-Stack
 

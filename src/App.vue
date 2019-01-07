@@ -1,6 +1,13 @@
 <template>
   <div>
-    <mu-menu class="fix" dark cover :open.sync="open">
+    <mu-container>
+      <mu-row>
+        <mu-col span="12" sm="10" md="8" lg="6" xl="5">
+          <router-view></router-view>
+        </mu-col>
+      </mu-row>
+    </mu-container>
+    <mu-menu class="fix r" dark cover :open.sync="open">
       <mu-button icon>
         <mu-icon value="menu"></mu-icon>
       </mu-button>
@@ -13,7 +20,6 @@
         </mu-list-item>
       </mu-list>
     </mu-menu>
-    <router-view></router-view>
   </div>
 </template>
 
@@ -37,6 +43,6 @@ module.exports = {
 .fix {
   position: fixed;
   top: 1em;
-  left: 1em;
+  right: 1em;
 }
 </style>

@@ -1,12 +1,10 @@
 <template>
-  <div>
-    
-  </div>
+  <div>projection-pie</div>
 </template>
 
 <script>
 module.exports = {
-  name:"entries"
+  name:"projection-pie"
 }
 </script>
 

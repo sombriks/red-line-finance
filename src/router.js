@@ -28,6 +28,12 @@ const routes = [
     path: "/profiles",
     icon: "person",
     component: require("./views/profiles.vue")
+  },
+  {
+    label: "About",
+    path: "/about",
+    icon: "info",
+    component: require("./views/about.vue")
   }
 ];
 

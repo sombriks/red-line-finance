@@ -1,9 +1,8 @@
 
-@import "../node_modules/flexboxgrid/css/flexboxgrid.css";
 @import "../node_modules/muse-ui/dist/muse-ui.css";
 @import "../assets/material-design-icons.css";
 
-.r {
+.r, H1 {
   color: red;
 }
 .g {
