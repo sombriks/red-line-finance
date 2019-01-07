@@ -6,5 +6,9 @@
     "markdown",
     "latex",
     "plaintext"
-  ]
+  ],
+  "files.autoSave": "onFocusChange",
+  "editor.tabSize": 2,
+  "editor.wordWrapColumn": 120,
+  "prettier.printWidth": 120
 }

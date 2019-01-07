@@ -1,5 +1,9 @@
 <template>
-  <div>profiles</div>
+  <div>
+    <h1>Profiles</h1>
+    <profile-login/>
+    <profile-new/>
+  </div>
 </template>
 
 <script>

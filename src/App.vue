@@ -25,10 +25,17 @@
 
 <script>
 const { routes } = require("./router");
+const { db } = require("./store");
 module.exports = {
   name: "app",
   data() {
     return { open: false, routes: routes.filter(e => e.label) };
+  },
+  created() {
+    db.category.toArray().then(cats => {
+      // XXX is it my job?
+      this.$store.commit("setCategories", cats);
+    });
   },
   methods: {
     nav(path) {
