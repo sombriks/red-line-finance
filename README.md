@@ -67,3 +67,11 @@ Easily track your financial life and get clues about how your money disappears.
 - muse-ui
 - chart.js
 - dexie
+
+## How to run
+
+```bash
+npm install
+make fonts
+make dev
+```
