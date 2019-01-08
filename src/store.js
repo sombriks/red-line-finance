@@ -22,7 +22,7 @@ const db = new Dexie("red-line-finance");
 
 db.version(1).stores({
   category: "++categoryId,categoryDescription,categoryType",
-  entry: "++entryId,entryDtCreation,entryDescription,categoryId",
+  entry: "++entryId,entryDtCreation,entryDescription,entryValue,categoryId",
   projection: "++projectionId,projectionDescription,categoryId"
 });
 
